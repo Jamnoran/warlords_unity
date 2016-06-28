@@ -8,7 +8,7 @@ public class baseWarrior : baseCharacter {
     public baseWarrior()
     {
         CharacterClassName        = "Warrior";
-        CharacterClassDescription = "Forged from the fires of sala'bakke, the warrior is pround and sturdy.";
+        CharacterClassDescription = "Forged from the fires of sala'bakke, the warrior is proud and sturdy.";
         Stamina                   = 100;
         Endurance                 = 10;
         Strength                  = 25;
