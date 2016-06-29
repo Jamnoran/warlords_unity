@@ -41,6 +41,7 @@ public class ServerCommunication : MonoBehaviour {
         {
             print("q key was pressed");
             //sendRequest(new Request());
+            //edit to create character when needed
             writeSocket("{\"request_type\": \"JOIN_SERVER\", character_id:\"1\"}");
         }
         if (Input.GetKeyUp("w"))
