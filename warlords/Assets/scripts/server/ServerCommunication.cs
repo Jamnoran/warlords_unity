@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using LitJson;
+using Assets.scripts.vo;
 
 public class ServerCommunication : MonoBehaviour {
 
@@ -49,6 +50,12 @@ public class ServerCommunication : MonoBehaviour {
             //sendRequest(new Request());
             writeSocket("{\"request_type\": \"GET_STATUS\", character_id:\"1\"}");
         }
+        if (Input.GetKeyUp("e"))
+        {
+            print("e key was pressed");
+            //sendRequest(new Request());
+            writeSocket("{\"request_type\": \"CREATE_CHARACTER\", class:\"WARRIOR\"}");
+        }
 
     }
 
@@ -85,7 +92,9 @@ public class ServerCommunication : MonoBehaviour {
             }
             else if (responseType == "GAME_STATUS")
             {
-                ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
+                ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
+                Debug.Log("Response game status : " + responseGameStatus + " Minions: ");
+
 
             }
         }
