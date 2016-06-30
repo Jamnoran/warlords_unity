@@ -16,7 +16,10 @@ public class ServerCommunication : MonoBehaviour {
     public Int32 Port = 2055;
     internal Boolean isConnected = false;
 
-    public Boolean isServer;
+    public String userId = "1";
+    public String username = "bosse";
+    public String password = "losen";
+    public String email = "bosse@gmail.com";
 
 
 
@@ -40,22 +43,23 @@ public class ServerCommunication : MonoBehaviour {
 
         if (Input.GetKeyUp("q"))
         {
-            print("q key was pressed");
-            //sendRequest(new Request());
-            //edit to create character when needed
-            writeSocket("{\"request_type\": \"JOIN_SERVER\", character_id:\"1\"}");
+            print("q key was pressed  joining a server as userid: " + userId);
+            writeSocket("{\"request_type\": \"JOIN_SERVER\", user_id:\"" + userId + "\"}");
         }
         if (Input.GetKeyUp("w"))
         {
-            print("w key was pressed");
-            //sendRequest(new Request());
-            writeSocket("{\"request_type\": \"GET_STATUS\", character_id:\"1\"}");
+            print("w key was pressed getting server status (what is happening with minions/other heroes)");
+            writeSocket("{\"request_type\": \"GET_STATUS\", user_id:\"" + userId + "\"}");
         }
         if (Input.GetKeyUp("e"))
         {
-            print("e key was pressed");
-            //sendRequest(new Request());
-            writeSocket("{\"request_type\": \"CREATE_CHARACTER\", class:\"WARRIOR\"}");
+            print("e key was pressed creating a hero for a userid: " + userId);
+            writeSocket("{\"request_type\": \"CREATE_HERO\", user_id:\"" + userId + "\", class_type:\"WARRIOR\"}");
+        }
+        if (Input.GetKeyUp("r"))
+        {
+            print("r key was pressed creaing the user (here we need to gather username + email + password)");
+            writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
         }
 
     }
