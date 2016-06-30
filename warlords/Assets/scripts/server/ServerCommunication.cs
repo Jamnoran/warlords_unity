@@ -70,6 +70,10 @@ public class ServerCommunication : MonoBehaviour {
         {
             createUser();
         }
+        if (Input.GetKeyUp("a"))
+        {
+            attackMinion();
+        }
     }
 
     // Send a request to lobby to join a server for joining a dungeon
@@ -100,6 +104,15 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
     }
 
+    int minionCount = 0;
+    void attackMinion()
+    {
+        // Here you will need to check the id of the minion focused to send up to server.
+        // This is a basic attack
+        minionCount = minionCount + 1;
+        print("Trying to attack minion " + minionCount);
+        writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minionCount + "\"}");
+    }
 
 
 
@@ -123,7 +136,7 @@ public class ServerCommunication : MonoBehaviour {
             else if (responseType == "GAME_STATUS")
             {
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
-                Debug.Log("Response game status : " + responseGameStatus + " Heroes: " + responseGameStatus.heroes.Count);
+                Debug.Log("Response game status : " + responseGameStatus + " Heroes: " + responseGameStatus.heroes.Count + " Minions: " + responseGameStatus.minions.Count);
             }
             else if (responseType == "CREATE_USER") {
                 ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
