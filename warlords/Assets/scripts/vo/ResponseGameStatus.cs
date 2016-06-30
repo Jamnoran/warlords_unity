@@ -7,7 +7,7 @@ using Assets.scripts.vo;
 public class ResponseGameStatus {
 	public string response_type = "GAME_STATUS";
     public List<Minion> minions;
-    public List<Champion> champions;
+    public List<Hero> heroes;
     public List<GameAnimation> gameAnimations;
 
     public ResponseGameStatus(){}
