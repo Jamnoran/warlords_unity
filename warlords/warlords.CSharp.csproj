@@ -73,6 +73,7 @@
     <Compile Include="Assets\Libs\LitJson\ParserToken.cs" />
     <Compile Include="Assets\Libs\MiniJSON.cs" />
     <Compile Include="Assets\Libs\SimpleJSON.cs" />
+    <Compile Include="Assets\scripts\camera\cameraFollow.cs" />
     <Compile Include="Assets\scripts\character classes\baseCharacter.cs" />
     <Compile Include="Assets\scripts\character classes\basePriest.cs" />
     <Compile Include="Assets\scripts\character classes\baseWarrior.cs" />

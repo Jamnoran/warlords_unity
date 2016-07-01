@@ -4,6 +4,7 @@ using Assets.scripts.vo;
 using System.Collections.Generic;
 
 public class GameLogic : MonoBehaviour {
+    //list of minions currently alive in our universe.
     private List<Minion> minions = new List<Minion>(); 
 	// Use this for initialization
 	void Start () {
@@ -31,6 +32,8 @@ public class GameLogic : MonoBehaviour {
             if (!found) {
                 // Initiate minion here
                 Debug.Log("Initiate minion");
+              //  Debug.Log("THE MINION COUNT IS: " + minions.Count);
+                //minions.Add(newMinion);
             }
         }
     }
