@@ -13,5 +13,7 @@ namespace Assets.scripts.vo
         public int maxHp;
         public float positionX;
         public float positionY;
+        public float desiredPositionX;
+        public float desiredPositionY;
     }
 }
