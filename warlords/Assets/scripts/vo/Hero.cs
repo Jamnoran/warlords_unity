@@ -16,5 +16,7 @@ namespace Assets.scripts.vo
         public string class_type;
         public float positionX;
         public float positionY;
+        public float desiredPositionX;
+        public float desiredPositionY;
     }
 }

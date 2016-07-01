@@ -131,7 +131,6 @@ public class ServerCommunication : MonoBehaviour {
             {
                 ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
                 Debug.Log("Server information: " + responseServerInfo.clients);
-                //((GameLogic)GameObject.Find("Game").GetComponent(typeof(GameLogic))).handleGameStatus(JsonMapper.ToObject<RequestGameStatus>(request.data));
             }
             else if (responseType == "GAME_STATUS")
             {
@@ -140,6 +139,7 @@ public class ServerCommunication : MonoBehaviour {
                 if (responseGameStatus.gameAnimations.Count > 0) {
                     Debug.Log("Time to do an animation (probably minion has died)");
                 }
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfMinions(responseGameStatus.minions);
             }
             else if (responseType == "CREATE_USER") {
                 ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
