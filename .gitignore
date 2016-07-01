@@ -3,6 +3,7 @@
 # =============== #
 warlords/Temp/
 warlords/Library/
+warlords/.vs/*
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #

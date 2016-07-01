@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using Assets.scripts.vo;
 
 [System.Serializable]
-public class RequestGameStatus {
+public class ResponseGameStatus {
 	public string response_type = "GAME_STATUS";
     public List<Minion> minions;
-    private List<Champion> champions;
-    private List<GameAnimation> animations;
+    public List<Hero> heroes;
+    public List<GameAnimation> gameAnimations;
 
-    public RequestGameStatus (){}
+    public ResponseGameStatus(){}
 
-    
+
 }

@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using LitJson;
+using Assets.scripts.vo;
 
 public class ServerCommunication : MonoBehaviour {
 
@@ -15,7 +16,11 @@ public class ServerCommunication : MonoBehaviour {
     public Int32 Port = 2055;
     internal Boolean isConnected = false;
 
-    public Boolean isServer;
+    public String userId = "1";
+    public String heroId = "1";
+    public String username = "lasse";
+    public String password = "losen";
+    public String email = "lasse@gmail.com";
 
 
 
@@ -30,6 +35,13 @@ public class ServerCommunication : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        handleCommunication();
+    }
+
+
+    void handleCommunication() {
+
+        // Handle communication sent from server to client (this can be a response of a request we have sent or status message etc.)
         String response = readSocket();
         if (response != null && response != "")
         {
@@ -37,37 +49,74 @@ public class ServerCommunication : MonoBehaviour {
             parseJson(response);
         }
 
+
+
+
+
+        // Code for handling input 
         if (Input.GetKeyUp("q"))
         {
-            print("q key was pressed");
-            //sendRequest(new Request());
-            //edit to create character when needed
-            writeSocket("{\"request_type\": \"JOIN_SERVER\", character_id:\"1\"}");
+            joinServer();
         }
         if (Input.GetKeyUp("w"))
         {
-            print("w key was pressed");
-            //sendRequest(new Request());
-            writeSocket("{\"request_type\": \"GET_STATUS\", character_id:\"1\"}");
+            getStatus();            
         }
-
+        if (Input.GetKeyUp("e"))
+        {
+            createHero();
+        }
+        if (Input.GetKeyUp("r"))
+        {
+            createUser();
+        }
+        if (Input.GetKeyUp("a"))
+        {
+            attackMinion();
+        }
     }
 
-
-    public void sendRequest(Request request)
+    // Send a request to lobby to join a server for joining a dungeon
+    void joinServer()
     {
-        String reqJson = JsonMapper.ToJson(request);
-        Debug.Log("Sending this request: " + reqJson);
-        writeSocket(reqJson);
+        print("q key was pressed  joining a server with this hero: " + heroId);
+        writeSocket("{\"request_type\": \"JOIN_SERVER\", hero_id:\"" + heroId + "\"}");
     }
 
-    public void connectToServer()
+    // Send request to dungeon to get status of minions/heroes
+    void getStatus()
     {
-        msg("Client Started");
-        setupSocket();
+        print("w key was pressed getting server status (what is happening with minions/other heroes)");
+        writeSocket("{\"request_type\": \"GET_STATUS\", user_id:\"" + userId + "\"}");
+    }
+
+    // Send request to lobby to create a hero. This must be done after a user has been created or it will crash
+    void createHero()
+    {
+        print("e key was pressed creating a hero for a userid: " + userId);
+        writeSocket("{\"request_type\": \"CREATE_HERO\", user_id:\"" + userId + "\", class_type:\"WARRIOR\"}");
+    }
+
+    // Send request to lobby to create a user. Primary request to be done before other becouse we will need user_id to be able to do the other requests
+    void createUser()
+    {
+        print("r key was pressed creaing the user (here we need to gather username + email + password)");
+        writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
+    }
+
+    int minionCount = 0;
+    void attackMinion()
+    {
+        // Here you will need to check the id of the minion focused to send up to server.
+        // This is a basic attack
+        minionCount = minionCount + 1;
+        print("Trying to attack minion " + minionCount);
+        writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minionCount + "\"}");
     }
 
 
+
+    // Code for parsing responses sent from server to client
     void parseJson(string json)
     {
         Debug.Log("Trying to parse this string to json object: " + json);
@@ -86,11 +135,37 @@ public class ServerCommunication : MonoBehaviour {
             }
             else if (responseType == "GAME_STATUS")
             {
-                ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
-
+                ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
+                Debug.Log("Response game status : " + responseGameStatus + " Heroes: " + responseGameStatus.heroes.Count + " Minions: " + responseGameStatus.minions.Count);
+                if (responseGameStatus.gameAnimations.Count > 0) {
+                    Debug.Log("Time to do an animation (probably minion has died)");
+                }
+            }
+            else if (responseType == "CREATE_USER") {
+                ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
+                Debug.Log("User created with this id to store on device: " + responseCreateUser.user_id);
+                userId = responseCreateUser.user_id;
             }
         }
     }
+
+
+
+    public void sendRequest(Request request)
+    {
+        String reqJson = JsonMapper.ToJson(request);
+        Debug.Log("Sending this request: " + reqJson);
+        writeSocket(reqJson);
+    }
+
+    public void connectToServer()
+    {
+        msg("Client Started");
+        setupSocket();
+    }
+
+
+
 
     private static String getTypeOfResponseFromJson(String json)
     {

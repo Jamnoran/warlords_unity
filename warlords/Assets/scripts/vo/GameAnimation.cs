@@ -7,5 +7,8 @@ namespace Assets.scripts.vo
 {
     public class GameAnimation
     {
+        public int target_id;
+        public int source_id;
+        public string animation_type;
     }
 }

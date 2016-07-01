@@ -3,7 +3,7 @@ using System.Collections;
 
 public class clickToMove : MonoBehaviour {
 
-    private float speed = 10;                   //base movementspeed
+    private float speed = 4;                   //base movementspeed
     private Vector3 targetPosition;             //where are we moving?
     bool isMoving;                              //are we moving?
     const int left_mouse_button = 0;            //move with left mouse button
