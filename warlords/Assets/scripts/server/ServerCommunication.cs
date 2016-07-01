@@ -137,6 +137,9 @@ public class ServerCommunication : MonoBehaviour {
             {
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
                 Debug.Log("Response game status : " + responseGameStatus + " Heroes: " + responseGameStatus.heroes.Count + " Minions: " + responseGameStatus.minions.Count);
+                if (responseGameStatus.gameAnimations.Count > 0) {
+                    Debug.Log("Time to do an animation (probably minion has died)");
+                }
             }
             else if (responseType == "CREATE_USER") {
                 ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
