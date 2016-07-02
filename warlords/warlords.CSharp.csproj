@@ -80,6 +80,7 @@
     <Compile Include="Assets\scripts\character classes\baseCharacter.cs" />
     <Compile Include="Assets\scripts\character classes\basePriest.cs" />
     <Compile Include="Assets\scripts\character classes\baseWarrior.cs" />
+    <Compile Include="Assets\scripts\controll\Target.cs" />
     <Compile Include="Assets\scripts\controll\clickToMove.cs" />
     <Compile Include="Assets\scripts\controll\move.cs" />
     <Compile Include="Assets\scripts\game\GameLogic.cs" />

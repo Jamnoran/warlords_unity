@@ -18,5 +18,6 @@ namespace Assets.scripts.vo
         public float positionZ;
         public float desiredPositionX;
         public float desiredPositionZ;
+        public int targetEnemy = 0;
     }
 }

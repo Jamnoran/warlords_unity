@@ -41,6 +41,9 @@ public class move : MonoBehaviour {
             //update our desired position with the coordinates clicked
             desiredPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             Debug.Log(desiredPosition);
+
+            // Code to see if we clicked on a minion (this should cancel walking if within attacking range)
+            ((Target)GameObject.Find("GameLogicObject").GetComponent(typeof(Target))).minionWithinClickDistance(desiredPosition);
         }
     }
 
@@ -60,7 +63,7 @@ public class move : MonoBehaviour {
 
         // Check that we moved enough from last position to send update to server that we moved more
         float dist = Vector3.Distance(lastSentPosition, transform.position);
-        if (dist > 1.0f)
+        if (dist > 4.0f)
         {
             print("Sending move request to server: " + dist);
             ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).sendMoveRequest(transform.position.x, transform.position.z, desiredPosition.x, desiredPosition.z);

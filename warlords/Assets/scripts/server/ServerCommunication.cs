@@ -107,15 +107,22 @@ public class ServerCommunication : MonoBehaviour {
         print("r key was pressed creaing the user (here we need to gather username + email + password)");
         writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
     }
-
-    int minionCount = 0;
+    
     void attackMinion()
     {
         // Here you will need to check the id of the minion focused to send up to server.
         // This is a basic attack
-        minionCount = minionCount + 1;
-        print("Trying to attack minion " + minionCount);
-        writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minionCount + "\"}");
+        int minonId = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().targetEnemy;
+        if (minonId > 0)
+        {
+            print("Trying to attack minion " + minonId);
+            writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minonId + "\"}");
+        }
+        else
+        {
+            print("You have no target!!! click on something");
+        }
+        
     }
 
     public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)
@@ -152,6 +159,7 @@ public class ServerCommunication : MonoBehaviour {
                     Debug.Log("Time to do an animation (probably minion has died)");
                 }
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfMinions(responseGameStatus.minions);
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfHeroes(responseGameStatus.heroes);
             }
             else if (responseType == "CREATE_USER") {
                 ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
@@ -243,4 +251,8 @@ public class ServerCommunication : MonoBehaviour {
         isConnected = false;
     }
 
+    public string getHeroId()
+    {
+        return heroId;
+    }
 }
