@@ -6,8 +6,7 @@ public class clickToMove : MonoBehaviour {
     private float speed = 4;                   //base movementspeed
     private Vector3 targetPosition;             //where are we moving?
     bool isMoving;                              //are we moving?
-    const int left_mouse_button = 0;            //move with left mouse button
-    private Vector3 lastSentPosition = new Vector3(309.5076f, 0.0f, 317.3135f);           // last sent move position to server (too keep track of not sending move request too often)             
+    const int left_mouse_button = 0;            //move with left mouse button         
 
     // Use this for initialization
     void Start () {
@@ -57,13 +56,6 @@ public class clickToMove : MonoBehaviour {
         if (transform.position == targetPosition)
         {
             isMoving = false;
-        }
-
-        float dist = Vector3.Distance(lastSentPosition, transform.position);
-        
-        if (dist > 0.5f) {
-            print("Sending move request to server: " + dist);
-            ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
         }
 
         Debug.DrawLine(transform.position, targetPosition, Color.red);                    

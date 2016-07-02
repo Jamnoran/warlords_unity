@@ -5,7 +5,11 @@ using System.Collections.Generic;
 
 public class GameLogic : MonoBehaviour {
     //list of minions currently alive in our universe.
-    private List<Minion> minions = new List<Minion>(); 
+    private List<Minion> minions = new List<Minion>();
+    //hold our prefab for the first mob
+    public Transform mob1;
+    int currentMinionInList;
+
 	// Use this for initialization
 	void Start () {
         Debug.Log("Game logic has started");
@@ -32,8 +36,8 @@ public class GameLogic : MonoBehaviour {
             if (!found) {
                 // Initiate minion here
                 Debug.Log("Initiate minion");
-              //  Debug.Log("THE MINION COUNT IS: " + minions.Count);
-                //minions.Add(newMinion);
+                Instantiate(mob1, new Vector3(newMinion.desiredPositionX, 0, newMinion.desiredPositionZ), Quaternion.identity);
+                minions.Add(newMinion);
             }
         }
     }
