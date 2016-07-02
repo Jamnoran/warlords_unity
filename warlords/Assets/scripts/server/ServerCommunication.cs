@@ -74,6 +74,10 @@ public class ServerCommunication : MonoBehaviour {
         {
             attackMinion();
         }
+        if (Input.GetKeyUp("s"))
+        {
+            sendMoveRequest(2.0f, 2.0f, 4.0f, 4.0f);
+        }
     }
 
     // Send a request to lobby to join a server for joining a dungeon
@@ -112,6 +116,14 @@ public class ServerCommunication : MonoBehaviour {
         minionCount = minionCount + 1;
         print("Trying to attack minion " + minionCount);
         writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minionCount + "\"}");
+    }
+
+    public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)
+    {
+        print("Send move request");
+        // This will send to server the players hero location (positionX,positionY) and also the desired position the players hero wants to move to
+        // Make sure this does not get sent too often (every update) because then it will spam server (have a check that handles if the hero has moved more than for example 0.5 then send request)
+        writeSocket("{\"request_type\": \"MOVE\", user_id:\"" + userId + "\", position_x: \"" + positionX + "\", position_z: \"" + positionZ + "\", desired_position_x: \"" + desiredPositionX + "\", desired_position_z: \"" + desiredPositionZ+ "\"}");
     }
 
 

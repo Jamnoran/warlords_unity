@@ -12,8 +12,8 @@ namespace Assets.scripts.vo
         public int hp;
         public int maxHp;
         public float positionX;
-        public float positionY;
+        public float positionZ;
         public float desiredPositionX;
-        public float desiredPositionY;
+        public float desiredPositionZ;
     }
 }
