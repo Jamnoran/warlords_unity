@@ -4,6 +4,7 @@
 warlords/Temp/
 warlords/Library/
 warlords/.vs/*
+warlords/warlords.CSharp.csproj
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #

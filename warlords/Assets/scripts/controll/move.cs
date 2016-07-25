@@ -1,74 +1,155 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.scripts.vo;
 
 public class move : MonoBehaviour {
     int leftMouseButton = 0;
+    int rightMouseButton = 1;
+    private Vector3 targetPosition;
     private Vector3 desiredPosition;
     public float speed = 5;
     public CharacterController controller;
     private Vector3 lastSentPosition = new Vector3(10.81f, 0.39f, 14.25f);           // last sent move position to server (too keep track of not sending move request too often)    
-                                  
-                                                            
+    public bool isMyHero = false;
+    public int heroId = 0;
+
+    public Transform greenPointer;
+    public Transform bluePointer;
+    public Transform redPointer;
+
+
     // Use this for initialization
     void Start () {
-
-        desiredPosition = transform.position;
+        desiredPosition = controller.transform.position;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-        if (Input.GetMouseButton(leftMouseButton))
+        // Constantly check the heroes desired location and update it
+        if(heroId > 0 && ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId) != null)
         {
-            locatePosition();
+            desiredPosition = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId).getDesiredPosition();
         }
 
-       
-        moveToPosition();
-       
+
+        if(controller != null)
+        {
+            // Handle mouse input
+            if (isMyHero && Input.GetMouseButtonUp(leftMouseButton))
+            {
+                getTargetPosition();
+                leftClick();
+            }
+            if (isMyHero && Input.GetMouseButtonUp(rightMouseButton))
+            {
+                getTargetPosition();
+                rightClick();
+            }
+
+            // This should happen even if no mouse button is clicked
+            moveToPosition();
+        }
     }
 
-    //here we try to locate the desired position for our hero to move
-    void locatePosition()
+
+    void getTargetPosition()
     {
         RaycastHit hit;
         //cast a ray from our camera onto the ground to get our desired position
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         //if we hit our ray, save the information to our "hit" variable
-        if(Physics.Raycast(ray, out hit, 10000))
+        if (Physics.Raycast(ray, out hit, 10000))
         {
             //update our desired position with the coordinates clicked
-            desiredPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            Debug.Log(desiredPosition);
-
-            // Code to see if we clicked on a minion (this should cancel walking if within attacking range)
-            ((Target)GameObject.Find("GameLogicObject").GetComponent(typeof(Target))).minionWithinClickDistance(desiredPosition);
+            targetPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
         }
     }
+
+    void leftClick()
+    {
+        // Code to see if we clicked on a minion (this should cancel walking if within attacking range)
+        bool foundTarget = ((Target)GameObject.Find("GameLogicObject").GetComponent(typeof(Target))).click(targetPosition, true);
+        Debug.Log("Left mouse clicked and found target : " + foundTarget);
+        if (foundTarget)
+        {
+            placeTracker(2);
+        }
+        else
+        {
+            placeTracker(3);
+        }
+    }
+
+    void rightClick()
+    {
+        Debug.Log("Right mouse clicked");
+        placeTracker(1);
+
+        bool foundMinion = ((Target)GameObject.Find("GameLogicObject").GetComponent(typeof(Target))).click(targetPosition, true);
+
+        if (((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero() != null)
+        {
+            // If boolean, then attack instead of walk
+            if (foundMinion)
+            {
+                // Here we need to check the attack range of hero and move to that point if we are not within yet. Also set Attacking = true on hero
+            }else
+            {
+                // Update desired position of own hero to send to sever
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().desiredPositionX = targetPosition.x;
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().desiredPositionZ = targetPosition.z;
+                sendMove();
+            }
+        }
+    }
+    
 
     //actually move our hero to the desired position
     void moveToPosition()
     {
-        if(Vector3.Distance(transform.position, desiredPosition)>2){ 
-        //rotate our hero towards the desired position so we allways run forward
-        Quaternion newRotation = Quaternion.LookRotation(desiredPosition-transform.position);
-        newRotation.x = 0f;
-        newRotation.z = 0f;
-        transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * 10);
+        if(Vector3.Distance(controller.transform.position, desiredPosition) > 1.6f)
+        { 
+            //rotate our hero towards the desired position so we allways run forward
+            Quaternion newRotation = Quaternion.LookRotation(desiredPosition - controller.transform.position);
+            newRotation.x = 0f;
+            newRotation.z = 0f;
+            controller.transform.rotation = Quaternion.Slerp(controller.transform.rotation, newRotation, Time.deltaTime * 10);
 
-        //call our charactercontroller to move forward
-        controller.SimpleMove(transform.forward);
+            //call our charactercontroller to move forward
+            controller.SimpleMove(controller.transform.forward);
         }
-
-        // Check that we moved enough from last position to send update to server that we moved more
-        float dist = Vector3.Distance(lastSentPosition, transform.position);
-        if (dist > 4.0f)
+        //Debug.Log("Distance left to desired position: " + Vector3.Distance(controller.transform.position, desiredPosition));
+        
+        if (isMyHero)
         {
-            print("Sending move request to server: " + dist);
-            ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).sendMoveRequest(transform.position.x, transform.position.z, desiredPosition.x, desiredPosition.z);
+            // Check that we moved enough from last position to send update to server that we moved more
+            float dist = Vector3.Distance(lastSentPosition, controller.transform.position);
+            if (dist > 0.5f)
+            {
+                //print("Sending move request to server: " + dist);
+                sendMove();
+            }
         }
     }
 
-  
+    void sendMove()
+    {
+        lastSentPosition = controller.transform.position;
+        ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).sendMoveRequest(controller.transform.position.x, controller.transform.position.z, targetPosition.x, targetPosition.z);
+    }
+
+    void placeTracker(int color)
+    {
+        if (color == 1) {
+            Instantiate(greenPointer, new Vector3(targetPosition.x, targetPosition.y, targetPosition.z), Quaternion.identity);
+        } else if (color == 2)
+        {
+            Instantiate(bluePointer, new Vector3(targetPosition.x, targetPosition.y, targetPosition.z), Quaternion.identity);
+        }
+        else if (color == 3)
+        {
+            Instantiate(redPointer, new Vector3(targetPosition.x, targetPosition.y, targetPosition.z), Quaternion.identity);
+        }
+    }
 }

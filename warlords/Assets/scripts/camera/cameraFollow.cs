@@ -16,7 +16,16 @@ public class cameraFollow : MonoBehaviour {
     void LateUpdate()
     {
         if (Player != null)
+        {
             transform.position = Player.position + Offset;
+        }
+        else
+        {
+            if (((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero() != null && ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().transform != null)
+            {
+                Player = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().transform;
+            }
+        }
     }
 
 }

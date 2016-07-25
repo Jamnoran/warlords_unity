@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Assets.scripts.vo
 {
@@ -13,11 +14,29 @@ namespace Assets.scripts.vo
         public int level;
         public int hp;
         public int maxHp;
+        public int resource;
+        public int maxResource;
         public string class_type;
         public float positionX;
         public float positionZ;
         public float desiredPositionX;
         public float desiredPositionZ;
         public int targetEnemy = 0;
+        public int targetFriendly = 0;
+        public Transform transform;
+
+        public void setTransform(Transform trans)
+        {
+            transform = trans;
+        }
+
+        public Vector3 getTargetPosition()
+        {
+            return new Vector3(desiredPositionX, 0, desiredPositionZ);
+        }
+        public Vector3 getDesiredPosition()
+        {
+            return new Vector3(desiredPositionX, 0, desiredPositionZ);
+        }
     }
 }

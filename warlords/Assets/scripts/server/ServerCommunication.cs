@@ -49,66 +49,50 @@ public class ServerCommunication : MonoBehaviour {
             parseJson(response);
         }
 
-
-
-
-
-        // Code for handling input 
-        if (Input.GetKeyUp("q"))
-        {
-            joinServer();
-        }
-        if (Input.GetKeyUp("w"))
-        {
-            getStatus();            
-        }
-        if (Input.GetKeyUp("e"))
-        {
-            createHero();
-        }
-        if (Input.GetKeyUp("r"))
-        {
-            createUser();
-        }
+        
         if (Input.GetKeyUp("a"))
         {
             attackMinion();
         }
-        if (Input.GetKeyUp("s"))
-        {
-            sendMoveRequest(2.0f, 2.0f, 4.0f, 4.0f);
-        }
     }
 
     // Send a request to lobby to join a server for joining a dungeon
-    void joinServer()
+    public void joinServer()
     {
         print("q key was pressed  joining a server with this hero: " + heroId);
         writeSocket("{\"request_type\": \"JOIN_SERVER\", hero_id:\"" + heroId + "\"}");
     }
 
+    public void endGame()
+    {
+        print("End game request was sent: " + userId);
+        writeSocket("{\"request_type\": \"END_GAME\", hero_id:\"" + userId + "\"}");
+        ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).endGame();
+
+    }
+
     // Send request to dungeon to get status of minions/heroes
-    void getStatus()
+    public void getStatus()
     {
         print("w key was pressed getting server status (what is happening with minions/other heroes)");
         writeSocket("{\"request_type\": \"GET_STATUS\", user_id:\"" + userId + "\"}");
     }
 
     // Send request to lobby to create a hero. This must be done after a user has been created or it will crash
-    void createHero()
+    public void createHero()
     {
         print("e key was pressed creating a hero for a userid: " + userId);
         writeSocket("{\"request_type\": \"CREATE_HERO\", user_id:\"" + userId + "\", class_type:\"WARRIOR\"}");
     }
 
     // Send request to lobby to create a user. Primary request to be done before other becouse we will need user_id to be able to do the other requests
-    void createUser()
+    public void createUser()
     {
         print("r key was pressed creaing the user (here we need to gather username + email + password)");
         writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
     }
-    
-    void attackMinion()
+
+    public void attackMinion()
     {
         // Here you will need to check the id of the minion focused to send up to server.
         // This is a basic attack
@@ -127,7 +111,7 @@ public class ServerCommunication : MonoBehaviour {
 
     public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)
     {
-        print("Send move request");
+        //print("Send move request");
         // This will send to server the players hero location (positionX,positionY) and also the desired position the players hero wants to move to
         // Make sure this does not get sent too often (every update) because then it will spam server (have a check that handles if the hero has moved more than for example 0.5 then send request)
         writeSocket("{\"request_type\": \"MOVE\", user_id:\"" + userId + "\", position_x: \"" + positionX + "\", position_z: \"" + positionZ + "\", desired_position_x: \"" + desiredPositionX + "\", desired_position_z: \"" + desiredPositionZ+ "\"}");
@@ -155,8 +139,9 @@ public class ServerCommunication : MonoBehaviour {
             {
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
                 Debug.Log("Response game status : " + responseGameStatus + " Heroes: " + responseGameStatus.heroes.Count + " Minions: " + responseGameStatus.minions.Count);
-                if (responseGameStatus.gameAnimations.Count > 0) {
-                    Debug.Log("Time to do an animation (probably minion has died)");
+                if (responseGameStatus.gameAnimations.Count > 0)
+                {
+                    ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateAnimations(responseGameStatus.gameAnimations);
                 }
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfMinions(responseGameStatus.minions);
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfHeroes(responseGameStatus.heroes);
@@ -166,10 +151,20 @@ public class ServerCommunication : MonoBehaviour {
                 Debug.Log("User created with this id to store on device: " + responseCreateUser.user_id);
                 userId = responseCreateUser.user_id;
             }
+            else if (responseType == "WORLD")
+            {
+                ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
+                Debug.Log("Creating world: " );
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).createWorld(responseWorld);
+            }
         }
     }
 
-
+    public void sendSpell(int spellId, int targetEnemy, int targetFriendly, Vector3 vector3)
+    {
+        Debug.Log("Sending spell request spell id: " + spellId);
+        writeSocket("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", target_enemy: " + targetEnemy + ", target_friendly: " + targetFriendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
+    }
 
     public void sendRequest(Request request)
     {
