@@ -137,6 +137,7 @@ public class GameLogic : MonoBehaviour
                     prefabToUse = priest;
                 }
                 Transform heroTransform = (Transform) Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ), Quaternion.identity);
+                heroTransform.name = prefabToUse.name;
                 newHero.setTransform(heroTransform);
                 String heroid = ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).getHeroId();
                 int hId = Int32.Parse(heroid);
