@@ -144,6 +144,7 @@ public class GameLogic : MonoBehaviour
                 if (newHero.id == hId)
                 {
                     ((move)heroTransform.GetComponent(typeof(move))).isMyHero = true;
+                    //((revealFogOnMove)GetComponent(typeof(revealFogOnMove))).setHero(heroTransform);
                 }
                 ((move)heroTransform.GetComponent(typeof(move))).heroId = newHero.id;
                 heroes.Add(newHero);

@@ -10,10 +10,19 @@ public class revealFogOnMove : MonoBehaviour
 	
 	void Update ()
 	{
-		
-				TerrainFoW.Current.PaintTerrain (hero.transform.position, TerrainFoW.Current.ExplorationSize, CurrentColor);
-			
-           
-		}
+        if (((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero() != null && ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().transform != null) {
+            TerrainFoW.Current.PaintTerrain(((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().transform.position, TerrainFoW.Current.ExplorationSize, CurrentColor);
+        }
+         
 	}
+
+    public Transform getHero()
+    {
+        return hero;
+    }
+    public void setHero(Transform newHero)
+    {
+        hero = newHero;
+    }
+}
 
