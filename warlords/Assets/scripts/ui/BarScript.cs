@@ -8,8 +8,21 @@ public class BarScript : MonoBehaviour {
 
     [SerializeField]
     private Image content;
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+
+    public float MaxValue { get; set; } //property so we can update maximum health
+
+    public float Value
+    {
+        set
+        {
+            fillAmmount = Map(value, 0, MaxValue, 0, 1);
+        }
+    }
+
+
+
+    void Start () {
 	
 	}
 	
@@ -20,7 +33,10 @@ public class BarScript : MonoBehaviour {
 
     private void HandleBar()
     {
-        content.fillAmount = Map(700, 0, 784, 0, 1);
+        if(fillAmmount != content.fillAmount)
+        { 
+        content.fillAmount = fillAmmount;
+        }
     }
 
     //take heroes min health and max health (inMin and inMax) and translate it to a scale between 0-1 to change healthbar size.
