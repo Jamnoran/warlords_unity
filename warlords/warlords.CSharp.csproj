@@ -66,8 +66,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\FOW\TerrainFoW.cs" />
-    <Compile Include="Assets\FOW\revealFogOnMove.cs" />
     <Compile Include="Assets\Libs\LitJson\IJsonWrapper.cs" />
     <Compile Include="Assets\Libs\LitJson\JsonData.cs" />
     <Compile Include="Assets\Libs\LitJson\JsonException.cs" />
