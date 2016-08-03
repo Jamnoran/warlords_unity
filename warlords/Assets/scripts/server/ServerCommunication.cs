@@ -21,6 +21,7 @@ public class ServerCommunication : MonoBehaviour {
     public String username = "lasse";
     public String password = "losen";
     public String email = "lasse@gmail.com";
+    public Int32 gameId = -1;
 
 
 
@@ -31,6 +32,10 @@ public class ServerCommunication : MonoBehaviour {
         connectToServer();
     }
 
+    void Awake()
+    {
+        DontDestroyOnLoad(transform.gameObject);
+    }
 
     // Update is called once per frame
     void Update()

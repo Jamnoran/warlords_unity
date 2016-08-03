@@ -136,7 +136,7 @@ public class move : MonoBehaviour {
     void sendMove()
     {
         lastSentPosition = controller.transform.position;
-        ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).sendMoveRequest(controller.transform.position.x, controller.transform.position.z, targetPosition.x, targetPosition.z);
+        getCommunication().sendMoveRequest(controller.transform.position.x, controller.transform.position.z, targetPosition.x, targetPosition.z);
     }
 
     void placeTracker(int color)
@@ -151,5 +151,17 @@ public class move : MonoBehaviour {
         {
             Instantiate(redPointer, new Vector3(targetPosition.x, targetPosition.y, targetPosition.z), Quaternion.identity);
         }
+    }
+
+
+    ServerCommunication getCommunication()
+    {
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
+        foreach (GameObject go in gos)
+        {
+            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
+        }
+        return null;
     }
 }

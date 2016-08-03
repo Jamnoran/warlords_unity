@@ -10,6 +10,8 @@ public class GameLogic : MonoBehaviour
     private List<Minion> minions = new List<Minion>();
     private List<Hero> heroes = new List<Hero>();
 
+    // Must have a prefab for communication in case of we want to start game scene without going through lobby (in that case the communication gameobject is not alive)
+    public Transform communication;
     //hold our prefab for the first mob
     public Transform mob1;
     // Hold prefab for a warrior hero
@@ -35,11 +37,49 @@ public class GameLogic : MonoBehaviour
     void Start()
     {
         Debug.Log("Game logic has started");
+        if ((GameObject.Find("Communication")) == null)
+        {
+            Debug.Log("Communication is not set, create from prefab");
+            Instantiate(communication, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+            StartCoroutine(Example());
+        }
+        else
+        {
+            checkIfShouldJoinServer();
+        }
+    }
+
+    IEnumerator Example()
+    {
+        yield return new WaitForSeconds(1);
+        Debug.Log("Waited a second for server connection to start up");
+        checkIfShouldJoinServer();
+    }
+
+    public void checkIfShouldJoinServer()
+    {
+        if (getCommunication().gameId == 0)
+        {
+            getCommunication().joinServer();
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
+    }
+
+    ServerCommunication getCommunication()
+    {
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
+        foreach (GameObject go in gos)
+        {
+            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
+        }
+        return null;
     }
     
 
@@ -117,7 +157,7 @@ public class GameLogic : MonoBehaviour
                         Debug.Log("Minions new hp = " + hero.hp);
                     }
                     // Dont change desired position for own hero
-                    String heroid = ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).getHeroId();
+                    String heroid = getCommunication().getHeroId();
                     if (hero.id != Int32.Parse(heroid))
                     {
                         hero.desiredPositionX = newHero.desiredPositionX;
@@ -139,7 +179,7 @@ public class GameLogic : MonoBehaviour
                 Transform heroTransform = (Transform) Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ), Quaternion.identity);
                 heroTransform.name = prefabToUse.name;
                 newHero.setTransform(heroTransform);
-                String heroid = ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).getHeroId();
+                String heroid = getCommunication().getHeroId();
                 int hId = Int32.Parse(heroid);
                 if (newHero.id == hId)
                 {
@@ -198,14 +238,14 @@ public class GameLogic : MonoBehaviour
     public void sendSpell(int spellId)
     {
         Debug.Log("Send spell " + spellId);
-        ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).sendSpell(spellId, getMyHero().targetEnemy, getMyHero().targetFriendly, getMyHero().getTargetPosition());
+        getCommunication().sendSpell(spellId, getMyHero().targetEnemy, getMyHero().targetFriendly, getMyHero().getTargetPosition());
     }
 
     public Hero getMyHero()
     {
         foreach (var hero in heroes)
         {
-            String heroid = ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).getHeroId();
+            String heroid = getCommunication().getHeroId();
             int hId = Int32.Parse(heroid);
             if (hId == hero.id)
             {

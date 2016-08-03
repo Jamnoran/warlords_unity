@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using Assets.scripts.vo;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class Lobby : MonoBehaviour {
     // Create games buttons
@@ -97,6 +98,8 @@ public class Lobby : MonoBehaviour {
     void startQuickGame()
     {
         Debug.Log("Starting a quick game");
+        ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).gameId = 0;
+        SceneManager.LoadScene("scene1");
     }
     void heroButtonPressed(int button)
     {
