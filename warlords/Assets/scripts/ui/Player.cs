@@ -13,14 +13,15 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            health.CurrentVal -= 10;
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            health.CurrentVal += 10;
-        }
+    }
+
+    public void setCurrentVal(float newValue)
+    {
+        health.CurrentVal = newValue;
+    }
+    public void setMaxValue(float newValue)
+    {
+        health.MaxVal = newValue;
+        health.Initialize();
     }
 }

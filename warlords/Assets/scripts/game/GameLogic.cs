@@ -122,7 +122,7 @@ public class GameLogic : MonoBehaviour
                     // Need too update all new information that comes from the server
                     if (minion.hp != newMinion.hp)
                     {
-                        minion.hp = newMinion.hp;
+                        minion.setHp(newMinion.hp);;
                         Debug.Log("Minions new hp = " + minion.hp);
                     }
                     minion.desiredPositionX = newMinion.desiredPositionX;
@@ -135,6 +135,7 @@ public class GameLogic : MonoBehaviour
                 Debug.Log("Initiate minion");
                 Transform minionTransform = (Transform)Instantiate(mob1, new Vector3(newMinion.desiredPositionX, 2, newMinion.desiredPositionZ), Quaternion.identity);
                 newMinion.setTransform(minionTransform);
+                newMinion.initBars();
                 //((MinionMove)minionTransform.GetComponent(typeof(MinionMove))).minionId = newMinion.id;
                 minions.Add(newMinion);
             }

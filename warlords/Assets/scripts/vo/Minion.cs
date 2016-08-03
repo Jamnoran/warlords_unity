@@ -29,5 +29,19 @@ namespace Assets.scripts.vo
             //Debug.Log("Returning new position : " + desiredPositionX + " x " + desiredPositionZ);
             return new Vector3(desiredPositionX, hightOfTerrain, desiredPositionZ);
         }
+
+        public void setHp(int newHp)
+        {
+            hp = newHp;
+            if (minionTransform != null)
+            {
+                ((Player)minionTransform.GetComponent(typeof(Player))).setCurrentVal(hp);
+            }
+        }
+
+        public void initBars()
+        {
+            ((Player)minionTransform.GetComponent(typeof(Player))).setMaxValue(maxHp);
+        }
     }
 }
