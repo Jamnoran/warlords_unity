@@ -52,11 +52,15 @@ public class Lobby : MonoBehaviour {
         createWarlock.onClick.AddListener(() => { createHeroButtonPressed(2); });
         createRougue.onClick.AddListener(() => { createHeroButtonPressed(3); });
 
-        Hero warrior = new Hero();
-        warrior.class_type = "WARRIOR";
-        warrior.level = 3;
-        heroes.Add(warrior);
-        currentHero = warrior;
+    }
+
+    public void updateHeroes(List<Hero> newListOfHeroes)
+    {
+        heroes = newListOfHeroes;
+        if (currentHero == null && heroes.Count > 0)
+        {
+            currentHero = heroes[0];
+        }
     }
 
     // Update is called once per frame
@@ -112,6 +116,7 @@ public class Lobby : MonoBehaviour {
             {
                 currentHero = hero;
                 foundHero = true;
+                getCommunication().heroId = "" + currentHero.id;
             }
             position = position + 1;
         }
@@ -130,27 +135,43 @@ public class Lobby : MonoBehaviour {
     void createHeroButtonPressed(int button)
     {
         Debug.Log("Creating hero pressed: " + button);
-        Hero hero = new Hero();
+        string classType = "";
         if (button == 0)
         {
-            hero.class_type = "WARRIOR";
+            classType = "WARRIOR";
         }
         else if(button == 1)
         {
-            hero.class_type = "PRIEST";
+            classType = "PRIEST";
         }
         else if (button == 2)
         {
-            hero.class_type = "PRIEST";
+            classType = "PRIEST";
         }
         else if (button == 3)
         {
-            hero.class_type = "PRIEST";
+            classType = "PRIEST";
         }
-        hero.level = 1;
-        heroes.Add(hero);
-        //currentHero = hero;
+        getCommunication().createHero(classType);
+        
         heroesLayout.SetActive(true);
         createHeroLayout.SetActive(false);
+    }
+
+
+
+
+
+
+
+    ServerCommunication getCommunication()
+    {
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
+        foreach (GameObject go in gos)
+        {
+            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
+        }
+        return null;
     }
 }

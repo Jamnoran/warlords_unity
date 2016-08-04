@@ -67,6 +67,13 @@ public class ServerCommunication : MonoBehaviour {
         print("q key was pressed  joining a server with this hero: " + heroId);
         writeSocket("{\"request_type\": \"JOIN_SERVER\", hero_id:\"" + heroId + "\"}");
     }
+    // Send a request to lobby to join a server for joining a dungeon
+    public void getHeroes()
+    {
+        print("Getting heroes for user: " + userId);
+        writeSocket("{\"request_type\": \"GET_HEROES\", user_id:\"" + userId + "\"}");
+    }
+    
 
     public void endGame()
     {
@@ -84,10 +91,11 @@ public class ServerCommunication : MonoBehaviour {
     }
 
     // Send request to lobby to create a hero. This must be done after a user has been created or it will crash
-    public void createHero()
+    public void createHero(String classType)
     {
         print("e key was pressed creating a hero for a userid: " + userId);
-        writeSocket("{\"request_type\": \"CREATE_HERO\", user_id:\"" + userId + "\", class_type:\"WARRIOR\"}");
+        writeSocket("{\"request_type\": \"CREATE_HERO\", user_id:\"" + userId + "\", class_type:\""+ classType + " \"}");
+        getHeroes();
     }
 
     // Send request to lobby to create a user. Primary request to be done before other becouse we will need user_id to be able to do the other requests
@@ -139,6 +147,17 @@ public class ServerCommunication : MonoBehaviour {
             {
                 ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
                 Debug.Log("Server information: " + responseServerInfo.clients);
+                if (Int32.Parse(userId) > 0)
+                {
+                    Debug.Log("Sending request to get heroes");
+                    getHeroes();
+                }
+            }
+            else if (responseType == "HEROES")
+            {
+                ResponseGetHeroes responseGetHeroes = JsonMapper.ToObject<ResponseGetHeroes>(json);
+                Debug.Log("Got these many heroes: " + responseGetHeroes.heroes.Count);
+                ((Lobby)GameObject.Find("LobbyLogic").GetComponent(typeof(Lobby))).updateHeroes(responseGetHeroes.heroes);
             }
             else if (responseType == "GAME_STATUS")
             {
@@ -171,6 +190,25 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", target_enemy: " + targetEnemy + ", target_friendly: " + targetFriendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void sendRequest(Request request)
     {
         String reqJson = JsonMapper.ToJson(request);
@@ -183,7 +221,7 @@ public class ServerCommunication : MonoBehaviour {
         msg("Client Started");
         setupSocket();
     }
-
+    
 
 
 
