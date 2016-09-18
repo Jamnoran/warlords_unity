@@ -127,16 +127,20 @@ public class GameLogic : MonoBehaviour
                     }
                     minion.desiredPositionX = newMinion.desiredPositionX;
                     minion.desiredPositionZ = newMinion.desiredPositionZ;
+
+                    MinionAnimations minionAnimations = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
+                    minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
                 }
             }
             if (!found)
             {
                 // Initiate minion here
                 Debug.Log("Initiate minion");
-                Transform minionTransform = (Transform)Instantiate(mob1, new Vector3(newMinion.desiredPositionX, 2, newMinion.desiredPositionZ), Quaternion.identity);
+                Transform minionTransform = (Transform)Instantiate(mob1, new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ), Quaternion.identity);
                 newMinion.setTransform(minionTransform);
                 newMinion.initBars();
-                //((MinionMove)minionTransform.GetComponent(typeof(MinionMove))).minionId = newMinion.id;
+                MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
+                minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
                 minions.Add(newMinion);
             }
         }
@@ -184,10 +188,10 @@ public class GameLogic : MonoBehaviour
                 int hId = Int32.Parse(heroid);
                 if (newHero.id == hId)
                 {
-                    ((move)heroTransform.GetComponent(typeof(move))).isMyHero = true;
+                    ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
                     //((revealFogOnMove)GetComponent(typeof(revealFogOnMove))).setHero(heroTransform);
                 }
-                ((move)heroTransform.GetComponent(typeof(move))).heroId = newHero.id;
+                ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
                 heroes.Add(newHero);
             }
         }
@@ -273,6 +277,14 @@ public class GameLogic : MonoBehaviour
                 Debug.Log("Heal anination");
                 Hero target = getHero(gameAnimation.target_id);
                 Instantiate(healAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
+            }
+            if (gameAnimation.animation_type == "ATTACK")
+            {
+                Debug.Log("Attack anination");
+                //Minion minion = getMinion(gameAnimation.target_id);
+                Hero target = getHero(gameAnimation.source_id);
+                WarriorAnimations anim = (WarriorAnimations)target.transform.GetComponent(typeof(WarriorAnimations));
+                anim.attackAnimation();
             }
         } 
     }

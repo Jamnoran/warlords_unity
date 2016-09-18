@@ -8,6 +8,7 @@ public class WarriorAnimations : MonoBehaviour {
     bool isMoving;
     private Rigidbody rbody;
     public float moveSpeed = 5.0f;
+    public float rotateSpeed = 3.0F;
     public bool idleAnimationRunning = true;
 
 	// Use this for initialization
@@ -21,31 +22,31 @@ public class WarriorAnimations : MonoBehaviour {
         if (Input.GetKeyDown("1"))
         {
             print("Slash!");
-            anim.Play("sword_and_shield_slash", -1, 0f);
+            attackAnimation();
         }
-        if (Input.GetMouseButton(0))
-        {                 //look to see if the player is clicking left mouse button
-            SetTargetPosition();                                       //where did the player click?
-        }
-
-        if (Input.GetKeyDown("2"))
-        {
-            anim.Play("sword_and_shield_run_inPlace", -1, 0f);
-            //rbody.velocity += transform.forward * moveSpeed;
-        }
-
-        float moveX = targetPosition.x * 20f * Time.deltaTime;
-        float moveZ = targetPosition.z * 20f * Time.deltaTime;
-
-        //rbody.velocity = new Vector3(moveX, 0f, moveZ);
-
 
         //start moving the player towards the desired position
-        transform.LookAt(targetPosition);
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+        //transform.LookAt(targetPosition);
+        Vector3 targetPostition = new Vector3(targetPosition.x,
+                                               character.transform.position.y,
+                                               targetPosition.z);
+        character.transform.LookAt(targetPostition);
+        
+
+
+        // find the target position relative to the player:
+        Vector3 dir = targetPosition - transform.position;
+        // ignore any height difference:
+        dir.y = 0;
+        // calculate velocity limited to the desired speed:
+        Vector3 velocity = Vector3.ClampMagnitude(dir * moveSpeed, moveSpeed);
+        // move the character including gravity:
+        CharacterController controller = (CharacterController)GetComponent(typeof(CharacterController));
+        controller.SimpleMove(velocity);
+        
 
         //if we are at the desired position we must stop moving
-        if (transform.position == targetPosition)
+        if (character.transform.position == targetPosition)
         {
             isMoving = false;
         }
@@ -60,22 +61,16 @@ public class WarriorAnimations : MonoBehaviour {
     }
 
 
-
-    void SetTargetPosition()
+    public void attackAnimation()
     {
+        anim.Play("sword_and_shield_slash", -1, 0f);
+    }
 
-        Plane plane = new Plane(Vector3.up, transform.position);             //create a plane for the player to move on
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);         //cast a ray at where the player is clicking
-        float point = 0f;
-
-        if (plane.Raycast(ray, out point))
-        {
-            targetPosition = ray.GetPoint(point);
-        }
-        //anim.SetBool("walking", true);
+    public void setDesiredLocation(Vector3 position)
+    {
+        targetPosition = position;
         isMoving = true;
         idleAnimationRunning = false;
         anim.Play("sword_and_shield_walk_inPlace", -1, 0f);
     }
-
 }

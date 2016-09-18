@@ -8,7 +8,7 @@ public class move : MonoBehaviour {
     private Vector3 targetPosition;
     private Vector3 desiredPosition;
     public float speed = 5;
-    public CharacterController controller;
+    //public CharacterController controller;
     private Vector3 lastSentPosition = new Vector3(10.81f, 0.39f, 14.25f);           // last sent move position to server (too keep track of not sending move request too often)    
     public bool isMyHero = false;
     public int heroId = 0;
@@ -20,7 +20,7 @@ public class move : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        desiredPosition = controller.transform.position;
+        desiredPosition = transform.position;
 	}
 	
 	// Update is called once per frame
@@ -32,8 +32,8 @@ public class move : MonoBehaviour {
         }
 
 
-        if(controller != null)
-        {
+        //if(transform != null)
+        //{
             // Handle mouse input
             if (isMyHero && Input.GetMouseButtonUp(leftMouseButton))
             {
@@ -48,7 +48,7 @@ public class move : MonoBehaviour {
 
             // This should happen even if no mouse button is clicked
             moveToPosition();
-        }
+        //}
     }
 
 
@@ -100,6 +100,7 @@ public class move : MonoBehaviour {
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().desiredPositionX = targetPosition.x;
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().desiredPositionZ = targetPosition.z;
                 sendMove();
+                getAnimation().setDesiredLocation(targetPosition);
             }
         }
     }
@@ -108,23 +109,10 @@ public class move : MonoBehaviour {
     //actually move our hero to the desired position
     void moveToPosition()
     {
-        if(Vector3.Distance(controller.transform.position, desiredPosition) > 1.6f)
-        { 
-            //rotate our hero towards the desired position so we allways run forward
-            Quaternion newRotation = Quaternion.LookRotation(desiredPosition - controller.transform.position);
-            newRotation.x = 0f;
-            newRotation.z = 0f;
-            controller.transform.rotation = Quaternion.Slerp(controller.transform.rotation, newRotation, Time.deltaTime * 10);
-
-            //call our charactercontroller to move forward
-            controller.SimpleMove(controller.transform.forward);
-        }
-        //Debug.Log("Distance left to desired position: " + Vector3.Distance(controller.transform.position, desiredPosition));
-        
         if (isMyHero)
         {
             // Check that we moved enough from last position to send update to server that we moved more
-            float dist = Vector3.Distance(lastSentPosition, controller.transform.position);
+            float dist = Vector3.Distance(lastSentPosition, transform.position);
             if (dist > 0.5f)
             {
                 //print("Sending move request to server: " + dist);
@@ -135,8 +123,8 @@ public class move : MonoBehaviour {
 
     void sendMove()
     {
-        lastSentPosition = controller.transform.position;
-        getCommunication().sendMoveRequest(controller.transform.position.x, controller.transform.position.z, targetPosition.x, targetPosition.z);
+        lastSentPosition = transform.position;
+        getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
     }
 
     void placeTracker(int color)
@@ -163,5 +151,10 @@ public class move : MonoBehaviour {
             return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
         }
         return null;
+    }
+
+    WarriorAnimations getAnimation()
+    {
+         return (WarriorAnimations)transform.GetComponent(typeof(WarriorAnimations));
     }
 }
