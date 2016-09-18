@@ -7,6 +7,9 @@ public class BarScript : MonoBehaviour {
     private float fillAmmount; //handle our fillammount to increase/decrease the bar
 
     [SerializeField]
+    private float lerpSpeed = 2;
+
+    [SerializeField]
     private Image content;
     // Use this for initialization
 
@@ -34,8 +37,8 @@ public class BarScript : MonoBehaviour {
     private void HandleBar()
     {
         if(fillAmmount != content.fillAmount)
-        { 
-        content.fillAmount = fillAmmount;
+        {
+            content.fillAmount = Mathf.Lerp(content.fillAmount, fillAmmount, Time.deltaTime * lerpSpeed);
         }
     }
 
