@@ -68,7 +68,10 @@ public class GameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyUp("a"))
+        {
+            autoAttack();
+        }
     }
 
     ServerCommunication getCommunication()
@@ -244,6 +247,16 @@ public class GameLogic : MonoBehaviour
     {
         Debug.Log("Send spell " + spellId);
         getCommunication().sendSpell(spellId, getMyHero().targetEnemy, getMyHero().targetFriendly, getMyHero().getTargetPosition());
+    }
+
+
+    public void autoAttack()
+    {
+        // Here you will need to check the id of the minion focused to send up to server.
+        // This is a basic attack
+        int minionId = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().targetEnemy;
+        getCommunication().sendAutoAttack(minionId);
+
     }
 
     public Hero getMyHero()

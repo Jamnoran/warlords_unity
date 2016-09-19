@@ -54,11 +54,6 @@ public class ServerCommunication : MonoBehaviour {
             parseJson(response);
         }
 
-        
-        if (Input.GetKeyUp("a"))
-        {
-            attackMinion();
-        }
     }
 
     // Send a request to lobby to join a server for joining a dungeon
@@ -105,21 +100,16 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
     }
 
-    public void attackMinion()
-    {
-        // Here you will need to check the id of the minion focused to send up to server.
-        // This is a basic attack
-        int minonId = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().targetEnemy;
-        if (minonId > 0)
+    public void sendAutoAttack(int minionId) {
+        if (minionId > 0)
         {
-            print("Trying to attack minion " + minonId);
-            writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minonId + "\"}");
+            print("Trying to attack minion " + minionId);
+            writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minionId + "\"}");
         }
         else
         {
             print("You have no target!!! click on something");
         }
-        
     }
 
     public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)

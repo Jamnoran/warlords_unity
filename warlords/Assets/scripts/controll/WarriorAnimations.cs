@@ -19,7 +19,7 @@ public class WarriorAnimations : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown("1"))
+        if (Input.GetKeyDown("s"))
         {
             print("Slash!");
             attackAnimation();
