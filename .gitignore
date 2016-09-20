@@ -5,6 +5,11 @@ warlords/Temp/
 warlords/Library/
 warlords/.vs/*
 warlords/warlords.CSharp.csproj
+warlords/warlords.exe
+warlords/warlords_Data/
+warlords/player_win_x86.pdb
+warlords/player_win_x86_s.pdb
+
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
