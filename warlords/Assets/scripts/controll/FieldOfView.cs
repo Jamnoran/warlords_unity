@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 public class FieldOfView : MonoBehaviour
 {
+    private Vector3 currentAggro;
+
+    public int minionId = 0;
+    public Vector3 desiredPosition;
 
     public float viewRadius;
     [Range(0, 360)]
@@ -60,11 +64,32 @@ public class FieldOfView : MonoBehaviour
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
+                    /* TODO - send positions to server! */
+                    //if we found target in range add it to the list of targets found.
                     visibleTargets.Add(target);
+                    Debug.Log("Hero, found initiating aggro!");
+                    Debug.Log(gameObject.name);
+                    Transform currentMinion = gameObject.transform;
+                    Debug.Log("Minions position is: " + currentMinion.position);
+                    Debug.Log("Hero position is: " + target.position);
+
+                    //make mob look at target before moving it.
+                    Vector3 targetPostition = new Vector3(target.position.x,
+                                            target.transform.position.y,
+                                            target.position.z);
+                    currentMinion.transform.LookAt(targetPostition);
+                   
                 }
             }
         }
     }
+
+    MinionAnimations getAnimation()
+    {
+        return (MinionAnimations)transform.GetComponent(typeof(MinionAnimations));
+    }
+    
+
 
     void DrawFieldOfView()
     {
