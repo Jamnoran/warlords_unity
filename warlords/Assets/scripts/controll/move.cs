@@ -69,16 +69,16 @@ public class move : MonoBehaviour {
     void leftClick()
     {
         // Code to see if we clicked on a minion (this should cancel walking if within attacking range)
-        bool foundTarget = ((Target)GameObject.Find("GameLogicObject").GetComponent(typeof(Target))).click(targetPosition, true);
-        Debug.Log("Left mouse clicked and found target : " + foundTarget);
-        if (foundTarget)
-        {
-            placeTracker(2);
-        }
-        else
-        {
-            placeTracker(3);
-        }
+        //bool foundTarget = ((Target)GameObject.Find("GameLogicObject").GetComponent(typeof(Target))).click(targetPosition, true);
+        //Debug.Log("Left mouse clicked and found target : " + foundTarget);
+        //if (foundTarget)
+        //{
+        //    placeTracker(2);
+        //}
+        //else
+        //{
+        //    placeTracker(3);
+        //}
     }
 
     void rightClick()
@@ -86,22 +86,22 @@ public class move : MonoBehaviour {
         Debug.Log("Right mouse clicked");
         placeTracker(1);
 
-        bool foundMinion = ((Target)GameObject.Find("GameLogicObject").GetComponent(typeof(Target))).click(targetPosition, true);
+        //bool foundMinion = ((Target)GameObject.Find("GameLogicObject").GetComponent(typeof(Target))).click(targetPosition, true);
 
         if (((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero() != null)
         {
             // If boolean, then attack instead of walk
-            if (foundMinion)
-            {
+            //if (foundMinion)
+            //{
                 // Here we need to check the attack range of hero and move to that point if we are not within yet. Also set Attacking = true on hero
-            }else
-            {
+            //}else
+            //{
                 // Update desired position of own hero to send to sever
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().desiredPositionX = targetPosition.x;
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().desiredPositionZ = targetPosition.z;
-                sendMove();
-                getAnimation().setDesiredLocation(targetPosition);
-            }
+             //   ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().desiredPositionX = targetPosition.x;
+             //   ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().desiredPositionZ = targetPosition.z;
+             //   sendMove();
+             //   getAnimation().setDesiredLocation(targetPosition);
+            //}
         }
     }
     

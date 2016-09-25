@@ -5,6 +5,7 @@ public class clickToMove : MonoBehaviour {
     
     private Vector3 targetPosition;             //where are we moving?
     const int left_mouse_button = 0;            //move with left mouse button        
+    const int right_mouse_button = 1;            //move with mouse mouse button        
     public Transform character;
     public bool isMyHero = false;
     public int heroId = 0;
@@ -13,16 +14,14 @@ public class clickToMove : MonoBehaviour {
     void Start () {
         //start at our current position, standing still
         targetPosition = character.position;
-        
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (isMyHero && Input.GetMouseButton(left_mouse_button)) {                 //look to see if the player is clicking left mouse button
+        if (isMyHero && Input.GetMouseButton(right_mouse_button)) {                 //look to see if the player is clicking right mouse button
             getPosition();                                       //where did the player click?
             MovePlayer();
         }
-
     }
 
     void getPosition()
