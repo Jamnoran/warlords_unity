@@ -248,8 +248,7 @@ public class GameLogic : MonoBehaviour
             if (gameAnimation.animation_type == "MINION_DIED")
             {
                 Debug.Log("Minion died");
-                Minion minion = 
-                    (gameAnimation.target_id);
+                Minion minion = getMinion(gameAnimation.target_id);
                 Destroy(minion.minionTransform.gameObject);
                 // This is wrong, shouldnt do it while in loop (find out correct way to do it) normally done by an iterator but not sure how to do it in c#
                 minions.Remove(minion);
