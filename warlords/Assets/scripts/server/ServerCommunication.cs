@@ -140,6 +140,12 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"MINION_AGGRO\", \"hero_id\":" + heroId + ", \"minion_id\": " + minionId + "}");
     }
 
+    public void heroHasClickedPortal(int heroId)
+    {
+        Debug.Log("The hero: " + heroId + " has clicked the portal");
+        writeSocket("{\"request_type\": \"CLICKED_PORTAL\", \"hero_id\":" + heroId + "}");
+    }
+
 
 
 

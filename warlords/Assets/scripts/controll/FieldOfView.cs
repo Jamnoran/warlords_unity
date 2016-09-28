@@ -51,7 +51,7 @@ public class FieldOfView : MonoBehaviour
         DrawFieldOfView();
     }
 
-    void FindVisibleTargets()
+    public bool FindVisibleTargets()
     {
         visibleTargets.Clear();
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
@@ -93,8 +93,10 @@ public class FieldOfView : MonoBehaviour
                         }
                     }
                 }
+                return true;
             }
         }
+        return false;
     }
 
     GameLogic getGameLogic()
@@ -113,7 +115,9 @@ public class FieldOfView : MonoBehaviour
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
-
+    /// <summary>
+    /// Draw a visual representation of the fov
+    /// </summary>
     void DrawFieldOfView()
     {
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);

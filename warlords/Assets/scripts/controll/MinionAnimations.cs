@@ -3,17 +3,23 @@ using System.Collections;
 using Assets.scripts.vo;
 
 public class MinionAnimations : MonoBehaviour {
+    #region public variables
     public GameObject character;
-    private Animator anim;
     public Vector3 targetPosition;
-    bool isMoving;
-    private Rigidbody rbody;
     public float moveSpeed = 5.0f;
     public bool idleAnimationRunning = true;
     public int heroTargetId = 0;
     public float attackRange = 1.9f;
     public bool sentInAttackRange = false;
     public bool sentClearAttackRange = false;
+    #endregion
+    #region private variables
+    private Animator anim;
+    bool isMoving;
+    private Rigidbody rbody;
+    #endregion
+
+
 
     // Use this for initialization
     void Start () {

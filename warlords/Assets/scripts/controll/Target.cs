@@ -1,26 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
+using Assets.scripts.vo;
 
 public class Target : MonoBehaviour {
-
+    #region private variables
     private Vector3 targetPosition;
-    public float MinTargetDistance = 3.0f;
+    private GameObject typeOftarget;
     const int left_mouse_button = 0;
+    private List<Hero> listOfHeroes = new List<Hero>();
+    #endregion
+    #region public variables
+    public float MinTargetDistance = 3.0f;
+    #endregion
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
+    void Start()
+    {
+        listOfHeroes = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHeroes();
+    }
+
 	// Update is called once per frame
 	void Update () {
         if (Input.GetMouseButton(left_mouse_button))
         {
             getPosition();
             click();
+            findStairs();
         }
     }
+   
 
+    /// <summary>
+    /// Raycast and save the information hit in our private variables above
+    /// </summary>
     void getPosition()
     {
         RaycastHit hit;
@@ -32,11 +45,24 @@ public class Target : MonoBehaviour {
         {
             //update our desired position with the coordinates clicked
             targetPosition = new Vector3(hit.point.x, 0, hit.point.z);
+            //save our type of target so we can check what we have clicked on.
+            typeOftarget = hit.transform.gameObject;
         }
     }
+    
+    /// <summary>
+    /// Connect to our serverobject so we can communicate with it
+    /// </summary>
+    /// <returns>ServerCommunication object</returns>
+    ServerCommunication getCommunication()
+    {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
 
-    // We got a click on a point on map, here we need to handle if its friendly or enemy target or just ground
-    // Return true if we found a target
+    /// <summary>
+    /// We got a click on a point on map, here we need to handle if its friendly or enemy target or just ground
+    /// </summary>
+    /// <returns> Bool (True if target found, False otherwise)</returns>
     public bool click()
     {
         float closestDistanse = 300.0f;
@@ -52,7 +78,7 @@ public class Target : MonoBehaviour {
                 closestDistanse = dist;
             }
         }
-        foreach (var hero in ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHeroes())
+        foreach (var hero in (listOfHeroes))
         {
             Vector3 heroPosition = new Vector3(hero.trans.position.x, 0.1f, hero.trans.position.z);
             float dist = Vector3.Distance(heroPosition, targetPosition);
@@ -71,5 +97,26 @@ public class Target : MonoBehaviour {
         ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetEnemy(0);
         ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetFriendly(0);
         return false;
+    }
+
+    /// <summary>
+    /// Check to see if we find stairs down, If we do we must counter numbers of players
+    /// who have clicked it and handle logic accordingly
+    /// </summary>
+    private void findStairs()
+    {
+        int numberOfheroes = listOfHeroes.Count;
+        if (typeOftarget.transform.root.name == "StairsDown(Clone)")
+        {
+            foreach (var hero in ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHeroes())
+            {
+                getCommunication().heroHasClickedPortal(hero.id);
+            }
+        }
+    }
+
+    void OnGUI()
+    {
+        GUI.Label(new Rect(10, 10, 100, 20), "Hello World!");
     }
 }
