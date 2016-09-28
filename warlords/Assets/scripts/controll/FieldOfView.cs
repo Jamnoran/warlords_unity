@@ -65,10 +65,10 @@ public class FieldOfView : MonoBehaviour
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
+                    visibleTargets.Add(target);
                     if (minionId == 0) { 
                         /* TODO - send positions to server! */
                         //if we found target in range add it to the list of targets found.
-                        visibleTargets.Add(target);
                         Debug.Log("Hero, found initiating aggro!");
                         Debug.Log(gameObject.name);
                         Transform currentMinion = gameObject.transform;
@@ -82,7 +82,6 @@ public class FieldOfView : MonoBehaviour
                         currentMinion.transform.LookAt(targetPostition);
 
                         // Send this information to server
-
                         Hero hero = getGameLogic().getClosestHeroByPosition(target.position);
                         Minion minion = getGameLogic().getClosestMinionByPosition(target.position);
                         if (hero != null && minion != null)

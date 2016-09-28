@@ -26,9 +26,14 @@ public class Target : MonoBehaviour {
         {
             getPosition();
             click();
+            
+        }
+        if (Input.GetMouseButtonUp(left_mouse_button))
+        {
             findStairs();
         }
     }
+
    
 
     /// <summary>
@@ -108,8 +113,11 @@ public class Target : MonoBehaviour {
         int numberOfheroes = listOfHeroes.Count;
         if (typeOftarget.transform.root.name == "StairsDown(Clone)")
         {
+            
             foreach (var hero in ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHeroes())
             {
+                 FieldOfView field = ((FieldOfView)hero.trans.Find("Warrior").GetComponent(typeof(FieldOfView)));
+                field.isPortalInRange();
                 getCommunication().heroHasClickedPortal(hero.id);
             }
         }
