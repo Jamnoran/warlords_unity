@@ -112,24 +112,79 @@ public class ServerCommunication : MonoBehaviour {
         }
     }
 
+    public void sendMinionHasTargetInRange(int minionId, int heroTargetId)
+    {
+        print("Minion has hero in range " + minionId);
+        writeSocket("{\"request_type\": \"MINION_TARGET_IN_RANGE\", user_id:\"" + userId + "\", minion_id: \"" + minionId + "\", hero_id: \"" + heroTargetId + "\"}");
+    }
+
     public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)
     {
-        //print("Send move request");
+        //print("Send move request to server");
         // This will send to server the players hero location (positionX,positionY) and also the desired position the players hero wants to move to
         // Make sure this does not get sent too often (every update) because then it will spam server (have a check that handles if the hero has moved more than for example 0.5 then send request)
         writeSocket("{\"request_type\": \"MOVE\", user_id:\"" + userId + "\", position_x: \"" + positionX + "\", position_z: \"" + positionZ + "\", desired_position_x: \"" + desiredPositionX + "\", desired_position_z: \"" + desiredPositionZ+ "\"}");
     }
 
 
+    public void sendSpell(int spellId, int targetEnemy, int targetFriendly, Vector3 vector3)
+    {
+        Debug.Log("Sending spell request spell id: " + spellId);
+        writeSocket("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", target_enemy: " + targetEnemy + ", target_friendly: " + targetFriendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
+    }
+
+
+    public void sendMinionAggro(int minionId, int heroId)
+    {
+        Debug.Log("Sending minion aggro : " + minionId + " on hero: " + heroId);
+        writeSocket("{\"request_type\": \"MINION_AGGRO\", \"hero_id\":" + heroId + ", \"minion_id\": " + minionId + "}");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Code for parsing responses sent from server to client
     void parseJson(string json)
     {
-        Debug.Log("Trying to parse this string to json object: " + json);
+        //Debug.Log("Trying to parse this string to json object: " + json);
 
         // Do simple string split get response_type and go to next " and then parse the response to that format later.
         String responseType = getTypeOfResponseFromJson(json);
-        Debug.Log("Request type : " + responseType);
+        if (responseType !=  null && responseType != "GAME_STATUS") {
+            Debug.Log("Request type : " + responseType);
+        }
+        
         // Handle different type of request_names
         if (responseType != null)
         {
@@ -152,7 +207,7 @@ public class ServerCommunication : MonoBehaviour {
             else if (responseType == "GAME_STATUS")
             {
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
-                Debug.Log("Response game status : " + responseGameStatus + " Heroes: " + responseGameStatus.heroes.Count + " Minions: " + responseGameStatus.minions.Count);
+               // Debug.Log("Response game status : " + responseGameStatus + " Heroes: " + responseGameStatus.heroes.Count + " Minions: " + responseGameStatus.minions.Count);
                 if (responseGameStatus.gameAnimations.Count > 0)
                 {
                     ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateAnimations(responseGameStatus.gameAnimations);
@@ -173,17 +228,6 @@ public class ServerCommunication : MonoBehaviour {
             }
         }
     }
-
-    public void sendSpell(int spellId, int targetEnemy, int targetFriendly, Vector3 vector3)
-    {
-        Debug.Log("Sending spell request spell id: " + spellId);
-        writeSocket("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", target_enemy: " + targetEnemy + ", target_friendly: " + targetFriendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
-    }
-
-
-
-
-
 
 
 

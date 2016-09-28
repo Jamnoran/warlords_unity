@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.scripts.vo;
 
 public class FieldOfView : MonoBehaviour
 {
@@ -64,31 +65,53 @@ public class FieldOfView : MonoBehaviour
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
-                    /* TODO - send positions to server! */
-                    //if we found target in range add it to the list of targets found.
-                    visibleTargets.Add(target);
-                    Debug.Log("Hero, found initiating aggro!");
-                    Debug.Log(gameObject.name);
-                    Transform currentMinion = gameObject.transform;
-                    Debug.Log("Minions position is: " + currentMinion.position);
-                    Debug.Log("Hero position is: " + target.position);
+                    if (minionId == 0) { 
+                        /* TODO - send positions to server! */
+                        //if we found target in range add it to the list of targets found.
+                        visibleTargets.Add(target);
+                        Debug.Log("Hero, found initiating aggro!");
+                        Debug.Log(gameObject.name);
+                        Transform currentMinion = gameObject.transform;
+                        Debug.Log("Minions position is: " + currentMinion.position);
+                        Debug.Log("Hero position is: " + target.position);
 
-                    //make mob look at target before moving it.
-                    Vector3 targetPostition = new Vector3(target.position.x,
-                                            target.transform.position.y,
-                                            target.position.z);
-                    currentMinion.transform.LookAt(targetPostition);
-                   
+                        //make mob look at target before moving it.
+                        Vector3 targetPostition = new Vector3(target.position.x,
+                                                target.transform.position.y,
+                                                target.position.z);
+                        currentMinion.transform.LookAt(targetPostition);
+
+                        // Send this information to server
+
+                        Hero hero = getGameLogic().getClosestHeroByPosition(target.position);
+                        Minion minion = getGameLogic().getClosestMinionByPosition(target.position);
+                        if (hero != null && minion != null)
+                        {
+                            minionId = minion.id;
+                            Debug.Log("Got minion aggro on this id: " + minionId + " And this heroId: " + hero.id);
+                            getCommunication().sendMinionAggro(minionId, hero.id);
+                        }
+                    }
                 }
             }
         }
     }
 
+    GameLogic getGameLogic()
+    {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+    }
+
+
     MinionAnimations getAnimation()
     {
         return (MinionAnimations)transform.GetComponent(typeof(MinionAnimations));
     }
-    
+
+    ServerCommunication getCommunication()
+    {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
 
 
     void DrawFieldOfView()

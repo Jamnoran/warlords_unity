@@ -98,6 +98,24 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
+    public Hero getClosestHeroByPosition(Vector3 position)
+    {
+        Hero closestHero = null;
+        float closesDistance = 100.0f;
+        foreach (var hero in heroes)
+        {
+            float distance = Vector3.Distance(hero.getTransformPosition(), position);
+            if (distance < closesDistance) {
+                closesDistance = distance;
+                closestHero = hero;
+            }
+        }
+        if (closestHero != null) {
+            return closestHero;
+        }
+        return null;
+    }
+
     public Minion getMinion(int minionId)
     {
         foreach (var minion in minions)
@@ -109,8 +127,28 @@ public class GameLogic : MonoBehaviour
         }
         return null;
     }
-    
 
+    public Minion getClosestMinionByPosition(Vector3 position)
+    {
+        Minion closestMinion = null;
+        float closesDistance = 100.0f;
+        foreach (var minion in minions)
+        {
+            float distance = Vector3.Distance(minion.getTransformPosition(), position);
+            if (distance < closesDistance)
+            {
+                closesDistance = distance;
+                closestMinion = minion;
+            }
+        }
+        if (closestMinion != null)
+        {
+            return closestMinion;
+        }
+        return null;
+    }
+
+    
 
     public void updateListOfMinions(List<Minion> newMinions)
     {
@@ -133,6 +171,9 @@ public class GameLogic : MonoBehaviour
 
                     MinionAnimations minionAnimations = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
                     minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
+                    if (newMinion.heroTarget > 0) {
+                        minionAnimations.heroTargetId = newMinion.heroTarget;
+                    }
                 }
             }
             if (!found)
@@ -186,7 +227,7 @@ public class GameLogic : MonoBehaviour
                 }
                 Transform heroTransform = (Transform) Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ), Quaternion.identity);
                 heroTransform.name = prefabToUse.name;
-                newHero.setTransform(heroTransform);
+                newHero.setTrans(heroTransform);
                 String heroid = getCommunication().getHeroId();
                 int hId = Int32.Parse(heroid);
                 if (newHero.id == hId)
@@ -199,6 +240,45 @@ public class GameLogic : MonoBehaviour
             }
         }
     }
+
+    public void updateAnimations(List<GameAnimation> gameAnimations)
+    {
+        foreach (var gameAnimation in gameAnimations)
+        {
+            if (gameAnimation.animation_type == "MINION_DIED")
+            {
+                Debug.Log("Minion died");
+                Minion minion = 
+                    (gameAnimation.target_id);
+                Destroy(minion.minionTransform.gameObject);
+                // This is wrong, shouldnt do it while in loop (find out correct way to do it) normally done by an iterator but not sure how to do it in c#
+                minions.Remove(minion);
+            }
+            if (gameAnimation.animation_type == "HEAL")
+            {
+                Debug.Log("Heal anination");
+                Hero target = getHero(gameAnimation.target_id);
+                Instantiate(healAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
+            }
+            if (gameAnimation.animation_type == "ATTACK")
+            {
+                Debug.Log("Attack anination");
+                //Minion minion = getMinion(gameAnimation.target_id);
+                Hero target = getHero(gameAnimation.source_id);
+                WarriorAnimations anim = (WarriorAnimations)target.trans.GetComponent(typeof(WarriorAnimations));
+                anim.attackAnimation();
+            }
+            if (gameAnimation.animation_type == "MINION_ATTACK")
+            {
+                Debug.Log("Minion attack anination");
+                Minion minion = getMinion(gameAnimation.target_id);
+                Hero target = getHero(gameAnimation.source_id);
+                MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
+                anim.attackAnimation();
+            }
+        }
+    }
+
 
     public List<Minion> getMinions()
     {
@@ -273,34 +353,6 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
-    public void updateAnimations(List<GameAnimation> gameAnimations)
-    {
-        foreach (var gameAnimation in gameAnimations)
-        {
-            if (gameAnimation.animation_type == "MINION_DIED")
-            {
-                Debug.Log("Minion died");
-                Minion minion = getMinion(gameAnimation.target_id);
-                Destroy(minion.minionTransform.gameObject);
-                // This is wrong, shouldnt do it while in loop (find out correct way to do it) normally done by an iterator but not sure how to do it in c#
-                minions.Remove(minion);
-            }
-            if (gameAnimation.animation_type == "HEAL")
-            {
-                Debug.Log("Heal anination");
-                Hero target = getHero(gameAnimation.target_id);
-                Instantiate(healAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
-            }
-            if (gameAnimation.animation_type == "ATTACK")
-            {
-                Debug.Log("Attack anination");
-                //Minion minion = getMinion(gameAnimation.target_id);
-                Hero target = getHero(gameAnimation.source_id);
-                WarriorAnimations anim = (WarriorAnimations)target.transform.GetComponent(typeof(WarriorAnimations));
-                anim.attackAnimation();
-            }
-        } 
-    }
 
     public void createWorld(ResponseWorld responseWorld)
     {
@@ -330,7 +382,7 @@ public class GameLogic : MonoBehaviour
     {
         foreach (var hero in heroes)
         {
-            Destroy(hero.transform.gameObject);
+            Destroy(hero.trans.gameObject);
         }
         foreach (var minion in minions)
         {

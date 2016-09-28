@@ -18,7 +18,8 @@ namespace Assets.scripts.vo
         public float desiredPositionZ;
         public Transform minionTransform;
         public float hightOfTerrain = 2;
-
+        public int heroTarget = 0;
+        
         internal void setTransform(Transform minTransform)
         {
             minionTransform = minTransform;
@@ -28,6 +29,11 @@ namespace Assets.scripts.vo
         {
             //Debug.Log("Returning new position : " + desiredPositionX + " x " + desiredPositionZ);
             return new Vector3(desiredPositionX, hightOfTerrain, desiredPositionZ);
+        }
+
+        public Vector3 getTransformPosition()
+        {
+            return new Vector3(minionTransform.position.x, minionTransform.position.y, minionTransform.position.z);
         }
 
         public void setHp(int newHp)

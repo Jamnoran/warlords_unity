@@ -9,6 +9,8 @@ public class clickToMove : MonoBehaviour {
     public Transform character;
     public bool isMyHero = false;
     public int heroId = 0;
+    private Vector3 lastSentPosition = new Vector3(10.81f, 0.39f, 14.25f);           // last sent move position to server (too keep track of not sending move request too often)    
+
 
     // Use this for initialization
     void Start () {
@@ -37,13 +39,32 @@ public class clickToMove : MonoBehaviour {
             targetPosition = new Vector3(hit.point.x, 0, hit.point.z);
         }
     }
-
+    
     void MovePlayer()
     {
-        Debug.Log("Sending moveplayer to : " + targetPosition);
+        //Debug.Log("Sending moveplayer to : " + targetPosition);
         getAnimation().setDesiredLocation(targetPosition);
+
+        // Check that we moved enough from last position to send update to server that we moved more
+        float dist = Vector3.Distance(lastSentPosition, transform.position);
+        if (dist > 0.5f)
+        {
+            //print("Sending move request to server: " + dist);
+            sendMove();
+        }
+    }
+    
+    void sendMove()
+    {
+        lastSentPosition = transform.position;
+        getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
     }
 
+
+    ServerCommunication getCommunication()
+    {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
 
     WarriorAnimations getAnimation()
     {

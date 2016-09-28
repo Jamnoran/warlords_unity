@@ -27,12 +27,9 @@ public class WarriorAnimations : MonoBehaviour {
 
         //start moving the player towards the desired position
         //transform.LookAt(targetPosition);
-        Vector3 targetPostition = new Vector3(targetPosition.x,
-                                               character.transform.position.y,
-                                               targetPosition.z);
+        Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
         character.transform.LookAt(targetPostition);
         
-
 
         // find the target position relative to the player:
         Vector3 dir = targetPosition - transform.position;
