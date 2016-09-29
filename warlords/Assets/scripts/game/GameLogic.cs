@@ -13,7 +13,7 @@ public class GameLogic : MonoBehaviour
     // Must have a prefab for communication in case of we want to start game scene without going through lobby (in that case the communication gameobject is not alive)
     public Transform communication;
     //hold our prefab for the first mob
-    public Transform mob1;
+    public Transform minion1;
     // Hold prefab for a warrior hero
     public Transform warrior;
     // Hold prefab for a priest hero
@@ -180,11 +180,13 @@ public class GameLogic : MonoBehaviour
             {
                 // Initiate minion here
                 Debug.Log("Initiate minion");
-                Transform minionTransform = (Transform)Instantiate(mob1, new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ), Quaternion.identity);
+                Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ), Quaternion.identity);
                 newMinion.setTransform(minionTransform);
                 newMinion.initBars();
                 MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
                 minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
+                FieldOfView fieldOfView = ((FieldOfView) minionTransform.Find("mob1").GetComponent(typeof(FieldOfView)));
+                fieldOfView.TYPE_OF_FIELD_OF_VIEW = 1;
                 minions.Add(newMinion);
             }
         }
@@ -236,6 +238,8 @@ public class GameLogic : MonoBehaviour
                     //((revealFogOnMove)GetComponent(typeof(revealFogOnMove))).setHero(heroTransform);
                 }
                 ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
+                FieldOfView fieldOfView = ((FieldOfView) heroTransform.Find("Warrior").GetComponent(typeof(FieldOfView)));
+                fieldOfView.TYPE_OF_FIELD_OF_VIEW = 2;
                 heroes.Add(newHero);
             }
         }
@@ -272,8 +276,12 @@ public class GameLogic : MonoBehaviour
                 Debug.Log("Minion attack anination");
                 Minion minion = getMinion(gameAnimation.target_id);
                 Hero target = getHero(gameAnimation.source_id);
-                MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
-                anim.attackAnimation();
+                if (minion.minionTransform != null)
+                {
+                    MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
+                    anim.attackAnimation();
+                }
+                
             }
         }
     }

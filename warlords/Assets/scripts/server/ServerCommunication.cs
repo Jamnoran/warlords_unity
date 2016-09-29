@@ -114,7 +114,10 @@ public class ServerCommunication : MonoBehaviour {
 
     public void sendMinionHasTargetInRange(int minionId, int heroTargetId)
     {
-        print("Minion has hero in range " + minionId);
+        if (heroTargetId != 0)
+        {
+            print("Minion has hero in range " + minionId);
+        }
         writeSocket("{\"request_type\": \"MINION_TARGET_IN_RANGE\", user_id:\"" + userId + "\", minion_id: \"" + minionId + "\", hero_id: \"" + heroTargetId + "\"}");
     }
 

@@ -5,9 +5,11 @@ using Assets.scripts.vo;
 
 public class FieldOfView : MonoBehaviour
 {
-    private Vector3 currentAggro;
-
-    public int minionId = 0;
+    public int TYPE_OF_FIELD_OF_VIEW = 0;   // 0 == undeclared, 1 == minion, 2 == hero, 3 == for spells.
+    public static int MINION = 1;
+    public static int HERO = 2;
+    private bool sentInitialAggro = false;
+    
     public Vector3 desiredPosition;
 
     public float viewRadius;
@@ -16,9 +18,10 @@ public class FieldOfView : MonoBehaviour
 
     public LayerMask targetMask;
     public LayerMask obstacleMask;
-
     
     public List<Transform> visibleTargets = new List<Transform>();
+    private List<Minion> minions = new List<Minion>();
+    private List<Hero> heroes = new List<Hero>();
 
     public float meshResolution;
     public int edgeResolveIterations;
@@ -53,9 +56,9 @@ public class FieldOfView : MonoBehaviour
 
     public bool FindVisibleTargets()
     {
-        visibleTargets.Clear();
+        //visibleTargets.Clear();
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
-
+       // Debug.Log("Size of target in view radiusu: " + targetsInViewRadius.Length + " And i am : " + gameObject.name);
         for (int i = 0; i < targetsInViewRadius.Length; i++)
         {
             Transform target = targetsInViewRadius[i].transform;
@@ -65,10 +68,20 @@ public class FieldOfView : MonoBehaviour
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
-                    visibleTargets.Add(target);
-                    if (minionId == 0) { 
-                        /* TODO - send positions to server! */
-                        //if we found target in range add it to the list of targets found.
+                    if (!visibleTargets.Contains(target))
+                    {
+                        Debug.Log("Adding to visable size now: " + visibleTargets.Count + " Of type: " + target.name);
+                        visibleTargets.Add(target);
+                    }
+                    //else {
+                        //Debug.Log("Visable already contains this target");
+                    //}
+                    //if we found target in range add it to the list of targets found.
+                    
+                    
+                    // This is what happens if this class is on a minion
+                    if (TYPE_OF_FIELD_OF_VIEW == MINION && !sentInitialAggro && target.name == "Warrior") {
+                        Debug.Log("This target is in range : " + target.name + " from vision of a : " + gameObject.name);
                         Debug.Log("Hero, found initiating aggro!");
                         Debug.Log(gameObject.name);
                         Transform currentMinion = gameObject.transform;
@@ -76,9 +89,7 @@ public class FieldOfView : MonoBehaviour
                         Debug.Log("Hero position is: " + target.position);
 
                         //make mob look at target before moving it.
-                        Vector3 targetPostition = new Vector3(target.position.x,
-                                                target.transform.position.y,
-                                                target.position.z);
+                        Vector3 targetPostition = new Vector3(target.position.x, target.transform.position.y, target.position.z);
                         currentMinion.transform.LookAt(targetPostition);
 
                         // Send this information to server
@@ -86,15 +97,29 @@ public class FieldOfView : MonoBehaviour
                         Minion minion = getGameLogic().getClosestMinionByPosition(target.position);
                         if (hero != null && minion != null)
                         {
-                            minionId = minion.id;
-                            Debug.Log("Got minion aggro on this id: " + minionId + " And this heroId: " + hero.id);
-                            getCommunication().sendMinionAggro(minionId, hero.id);
+                            sentInitialAggro = true;
+                            Debug.Log("Got minion aggro on this id: " + minion.id + " And this heroId: " + hero.id);
+                            getCommunication().sendMinionAggro(minion.id, hero.id);
                         }
                     }
                 }
                 return true;
             }
         }
+        return false;
+    }
+
+    public bool isPortalInRange()
+    {
+        foreach (var target in visibleTargets)
+        {
+            if (target.name.Contains("Stairs"))
+            {
+                Debug.Log("User had portal in range");
+                return true;
+            }
+        }
+        Debug.Log("User was out of reach");
         return false;
     }
 

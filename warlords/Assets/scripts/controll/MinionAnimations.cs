@@ -118,7 +118,10 @@ public class MinionAnimations : MonoBehaviour {
 
     public void sendAttackInRange(int heroId)
     {
-        Debug.Log("Sending that minion is in attack range");
+        if (heroTargetId != 0)
+        {
+            Debug.Log("Sending that minion is in attack range");
+        }
         Minion minion = getGameLogic().getClosestMinionByPosition(character.transform.position);
         getCommunication().sendMinionHasTargetInRange(minion.id, heroId);
     }
@@ -142,7 +145,7 @@ public class MinionAnimations : MonoBehaviour {
         }
         else
         {
-            Debug.Log("Could not find anim object on minion");
+            //Debug.Log("Could not find anim object on minion");
         }
         
     }
