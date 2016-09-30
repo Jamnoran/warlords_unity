@@ -80,11 +80,11 @@
     <Compile Include="Assets\scripts\character classes\baseCharacter.cs" />
     <Compile Include="Assets\scripts\character classes\basePriest.cs" />
     <Compile Include="Assets\scripts\character classes\baseWarrior.cs" />
+    <Compile Include="Assets\scripts\controll\CharacterAnimations.cs" />
     <Compile Include="Assets\scripts\controll\FieldOfView.cs" />
     <Compile Include="Assets\scripts\controll\MinionAnimations.cs" />
     <Compile Include="Assets\scripts\controll\MinionMove.cs" />
     <Compile Include="Assets\scripts\controll\Target.cs" />
-    <Compile Include="Assets\scripts\controll\WarriorAnimations.cs" />
     <Compile Include="Assets\scripts\controll\clickToMove.cs" />
     <Compile Include="Assets\scripts\controll\move.cs" />
     <Compile Include="Assets\scripts\game\DestroyPointer.cs" />
@@ -94,8 +94,11 @@
     <Compile Include="Assets\scripts\testing\TestGUI.cs" />
     <Compile Include="Assets\scripts\ui\BarScript.cs" />
     <Compile Include="Assets\scripts\ui\Cooldown.cs" />
+<<<<<<< HEAD
     <Compile Include="Assets\scripts\ui\Draggable.cs" />
     <Compile Include="Assets\scripts\ui\DropZone.cs" />
+=======
+>>>>>>> 3e91d8ec1a086667858d9cb9f696d9caa48f27bd
     <Compile Include="Assets\scripts\ui\Menu.cs" />
     <Compile Include="Assets\scripts\ui\Player.cs" />
     <Compile Include="Assets\scripts\ui\Stat.cs" />

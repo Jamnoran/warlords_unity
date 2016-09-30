@@ -66,8 +66,8 @@ public class clickToMove : MonoBehaviour {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
-    WarriorAnimations getAnimation()
+    CharacterAnimations getAnimation()
     {
-        return (WarriorAnimations)GetComponent(typeof(WarriorAnimations));
+        return (CharacterAnimations)GetComponent(typeof(CharacterAnimations));
     }
 }

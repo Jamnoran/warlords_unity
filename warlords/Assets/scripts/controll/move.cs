@@ -153,8 +153,8 @@ public class move : MonoBehaviour {
         return null;
     }
 
-    WarriorAnimations getAnimation()
+    CharacterAnimations getAnimation()
     {
-         return (WarriorAnimations)transform.GetComponent(typeof(WarriorAnimations));
+         return (CharacterAnimations)transform.GetComponent(typeof(CharacterAnimations));
     }
 }
