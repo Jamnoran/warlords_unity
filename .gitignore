@@ -9,6 +9,11 @@ warlords/warlords.exe
 warlords/warlords_Data/
 warlords/player_win_x86.pdb
 warlords/player_win_x86_s.pdb
+Library/*
+ProjectSettings/*
+warlords/ProjectSettings/ProjectSettings.asset
+warlords/ProjectSettings/ProjectVersion.txt
+warlords/warlords.CSharp.csproj
 
 
 # ===================================== #
