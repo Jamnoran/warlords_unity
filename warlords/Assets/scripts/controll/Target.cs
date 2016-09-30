@@ -110,7 +110,7 @@ public class Target : MonoBehaviour {
     /// </summary>
     private void findStairs()
     {
-        int numberOfheroes = listOfHeroes.Count;
+        //int numberOfheroes = listOfHeroes.Count;
         if (typeOftarget.transform.root.name == "StairsDown(Clone)")
         {
             

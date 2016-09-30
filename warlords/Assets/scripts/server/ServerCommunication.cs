@@ -23,6 +23,7 @@ public class ServerCommunication : MonoBehaviour {
     public String email = "lasse@gmail.com";
     public Int32 gameId = -1;
 
+    public Boolean local = true;
 
 
     // Use this for initialization
@@ -286,7 +287,15 @@ public class ServerCommunication : MonoBehaviour {
     {
         try
         {
-            mySocket = new TcpClient(Host, Port);
+            if (local)
+            {
+                mySocket = new TcpClient("127.0.0.1", Port);
+            }
+            else
+            {
+                mySocket = new TcpClient(Host, Port);
+            }
+            
             theStream = mySocket.GetStream();
             theWriter = new StreamWriter(theStream);
             theReader = new StreamReader(theStream);

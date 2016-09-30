@@ -238,8 +238,6 @@ public class GameLogic : MonoBehaviour
                     //((revealFogOnMove)GetComponent(typeof(revealFogOnMove))).setHero(heroTransform);
                 }
                 ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
-                FieldOfView fieldOfView = ((FieldOfView) heroTransform.Find("Warrior").GetComponent(typeof(FieldOfView)));
-                fieldOfView.TYPE_OF_FIELD_OF_VIEW = 2;
                 heroes.Add(newHero);
             }
         }
@@ -268,7 +266,7 @@ public class GameLogic : MonoBehaviour
                 Debug.Log("Attack anination");
                 //Minion minion = getMinion(gameAnimation.target_id);
                 Hero target = getHero(gameAnimation.source_id);
-                WarriorAnimations anim = (WarriorAnimations)target.trans.GetComponent(typeof(WarriorAnimations));
+                CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
                 anim.attackAnimation();
             }
             if (gameAnimation.animation_type == "MINION_ATTACK")
