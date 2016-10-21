@@ -33,8 +33,17 @@ public class MinionAnimations : MonoBehaviour {
         // First check if minion has a target to attack, in that case that takes priority over desiredlocation.
         if (heroTargetId > 0 ) {
             //Debug.Log("We got target to move to");
+            
             Hero hero = getGameLogic().getHero(heroTargetId);
-            targetPosition = hero.getTransformPosition();
+            if (hero != null)
+            {
+                targetPosition = hero.getTransformPosition();
+            }
+            else
+            {
+                Debug.Log("Could not find a hero with this id: " + heroTargetId);
+            }
+            
         }
 
 
@@ -121,9 +130,9 @@ public class MinionAnimations : MonoBehaviour {
         if (heroTargetId != 0)
         {
             Debug.Log("Sending that minion is in attack range");
+            Minion minion = getGameLogic().getClosestMinionByPosition(character.transform.position);
+            getCommunication().sendMinionHasTargetInRange(minion.id, heroId);
         }
-        Minion minion = getGameLogic().getClosestMinionByPosition(character.transform.position);
-        getCommunication().sendMinionHasTargetInRange(minion.id, heroId);
     }
 
 

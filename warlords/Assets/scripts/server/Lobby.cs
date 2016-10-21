@@ -60,6 +60,7 @@ public class Lobby : MonoBehaviour {
         if (currentHero == null && heroes.Count > 0)
         {
             currentHero = heroes[0];
+            getCommunication().heroId = "" + currentHero.id;
         }
     }
 
