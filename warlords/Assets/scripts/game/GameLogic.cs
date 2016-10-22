@@ -77,7 +77,6 @@ public class GameLogic : MonoBehaviour
     ServerCommunication getCommunication()
     {
         GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
         foreach (GameObject go in gos)
         {
             return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
@@ -235,7 +234,6 @@ public class GameLogic : MonoBehaviour
                 if (newHero.id == hId)
                 {
                     ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
-                    //((revealFogOnMove)GetComponent(typeof(revealFogOnMove))).setHero(heroTransform);
                 }
                 ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
                 heroes.Add(newHero);
@@ -284,6 +282,27 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    public void clearWorld()
+    {
+        foreach (var minion in minions)
+        {
+            Destroy(minion.minionTransform.gameObject);
+        }
+        minions = new List<Minion>();
+        foreach (var obstacles in world.obstacles)
+        {
+            if (obstacles.transform != null && obstacles.transform.gameObject != null)
+            {
+                Destroy(obstacles.transform.gameObject);
+            }
+            else {
+                Debug.Log("This obstacle has no gameobject : " + obstacles.type);
+            }
+            
+        }
+        world = null;
+        Debug.Log("World is cleared");
+    }
 
     public List<Minion> getMinions()
     {
@@ -365,16 +384,16 @@ public class GameLogic : MonoBehaviour
         world = responseWorld.world;
         foreach (var obstacle in world.obstacles)
         {
-            if (obstacle.type == 1)
+            if (obstacle.type == 1) // Wall
             {
-                obstacle.transform = (Transform)Instantiate(wall, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+                obstacle.transform = (Transform) Instantiate(wall, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }else if (obstacle.type == 3) // Start
             {
-                obstacle.transform = (Transform)Instantiate(start, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+                obstacle.transform = (Transform) Instantiate(start, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }
             else if (obstacle.type == 4) // Stairs down
             {
-                obstacle.transform = (Transform)Instantiate(stairs, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+                obstacle.transform = (Transform) Instantiate(stairs, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }
             else if (obstacle.type == 5) // Light
             {

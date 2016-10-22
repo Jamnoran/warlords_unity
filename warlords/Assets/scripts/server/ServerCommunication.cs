@@ -235,6 +235,9 @@ public class ServerCommunication : MonoBehaviour {
                 ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
                 Debug.Log("Creating world: " );
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).createWorld(responseWorld);
+            }else if (responseType == "CLEAR_WORLD")
+            {
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).clearWorld();
             }
         }
     }

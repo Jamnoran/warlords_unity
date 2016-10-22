@@ -113,18 +113,21 @@ public class Target : MonoBehaviour {
         //int numberOfheroes = listOfHeroes.Count;
         if (typeOftarget.transform.root.name == "StairsDown(Clone)")
         {
-            
-            foreach (var hero in ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHeroes())
+            Hero hero = getGameLogic().getMyHero();
+            Debug.Log("Model name : " + hero.getModelName());
+            FieldOfView field = ((FieldOfView) hero.trans.Find(hero.getModelName()).GetComponent(typeof(FieldOfView)));
+            if (field.isPortalInRange())
             {
-                 FieldOfView field = ((FieldOfView)hero.trans.Find("Warrior").GetComponent(typeof(FieldOfView)));
-                field.isPortalInRange();
-                getCommunication().heroHasClickedPortal(hero.id);
+                Debug.Log("Stair was in range");
             }
+            getCommunication().heroHasClickedPortal(hero.id);
         }
     }
 
-    void OnGUI()
+
+    GameLogic getGameLogic()
     {
-        GUI.Label(new Rect(10, 10, 100, 20), "Hello World!");
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
+    
 }
