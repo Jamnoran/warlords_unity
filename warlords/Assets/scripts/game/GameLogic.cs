@@ -72,6 +72,10 @@ public class GameLogic : MonoBehaviour
         {
             autoAttack();
         }
+        if (Input.GetKeyUp("t"))
+        {
+            test();
+        }
     }
 
     ServerCommunication getCommunication()
@@ -272,7 +276,7 @@ public class GameLogic : MonoBehaviour
                 Debug.Log("Minion attack anination");
                 Minion minion = getMinion(gameAnimation.target_id);
                 Hero target = getHero(gameAnimation.source_id);
-                if (minion.minionTransform != null)
+                if (minion != null && minion.minionTransform != null)
                 {
                     MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
                     anim.attackAnimation();
@@ -296,7 +300,7 @@ public class GameLogic : MonoBehaviour
                 Destroy(obstacles.transform.gameObject);
             }
             else {
-                Debug.Log("This obstacle has no gameobject : " + obstacles.type);
+                //Debug.Log("This obstacle has no gameobject : " + obstacles.type);
             }
             
         }
@@ -377,6 +381,34 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
+    public void teleportHeroes(List<Hero> teleportHeroes)
+    {
+        foreach (var heroInList in teleportHeroes)
+        {
+            Hero hero = getHero(heroInList.id);
+            hero.desiredPositionX = heroInList.desiredPositionX;
+            hero.desiredPositionZ = heroInList.desiredPositionZ;
+            hero.positionX = heroInList.positionX;
+            hero.positionZ = heroInList.positionZ;
+            Vector3 newPosition = new Vector3(hero.positionX, 1.0f, hero.positionZ);
+            hero.trans.position = newPosition;
+            Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
+        }
+    }
+
+    public void test()
+    {
+        foreach (var heroInList in heroes)
+        {
+            float pos = 3.0f;
+            Vector3 newPosition = new Vector3(pos, 1.0f, pos);
+            heroInList.trans.position = newPosition;
+            heroInList.positionZ = pos;
+            heroInList.positionX = pos;
+            heroInList.desiredPositionX = pos;
+            heroInList.desiredPositionZ = pos;
+        }
+    }
 
     public void createWorld(ResponseWorld responseWorld)
     {
