@@ -72,12 +72,15 @@ public class GameLogic : MonoBehaviour
         {
             autoAttack();
         }
+        if (Input.GetKeyUp("t"))
+        {
+            test();
+        }
     }
 
     ServerCommunication getCommunication()
     {
         GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
         foreach (GameObject go in gos)
         {
             return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
@@ -205,7 +208,7 @@ public class GameLogic : MonoBehaviour
                     if (hero.hp != newHero.hp)
                     {
                         hero.hp = newHero.hp;
-                        Debug.Log("Minions new hp = " + hero.hp);
+                        Debug.Log("Heroes new hp = " + hero.hp);
                     }
                     // Dont change desired position for own hero
                     String heroid = getCommunication().getHeroId();
@@ -235,7 +238,6 @@ public class GameLogic : MonoBehaviour
                 if (newHero.id == hId)
                 {
                     ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
-                    //((revealFogOnMove)GetComponent(typeof(revealFogOnMove))).setHero(heroTransform);
                 }
                 ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
                 heroes.Add(newHero);
@@ -274,7 +276,7 @@ public class GameLogic : MonoBehaviour
                 Debug.Log("Minion attack anination");
                 Minion minion = getMinion(gameAnimation.target_id);
                 Hero target = getHero(gameAnimation.source_id);
-                if (minion.minionTransform != null)
+                if (minion != null && minion.minionTransform != null)
                 {
                     MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
                     anim.attackAnimation();
@@ -284,6 +286,27 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    public void clearWorld()
+    {
+        foreach (var minion in minions)
+        {
+            Destroy(minion.minionTransform.gameObject);
+        }
+        minions = new List<Minion>();
+        foreach (var obstacles in world.obstacles)
+        {
+            if (obstacles.transform != null && obstacles.transform.gameObject != null)
+            {
+                Destroy(obstacles.transform.gameObject);
+            }
+            else {
+                //Debug.Log("This obstacle has no gameobject : " + obstacles.type);
+            }
+            
+        }
+        world = null;
+        Debug.Log("World is cleared");
+    }
 
     public List<Minion> getMinions()
     {
@@ -358,6 +381,34 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
+    public void teleportHeroes(List<Hero> teleportHeroes)
+    {
+        foreach (var heroInList in teleportHeroes)
+        {
+            Hero hero = getHero(heroInList.id);
+            hero.desiredPositionX = heroInList.desiredPositionX;
+            hero.desiredPositionZ = heroInList.desiredPositionZ;
+            hero.positionX = heroInList.positionX;
+            hero.positionZ = heroInList.positionZ;
+            Vector3 newPosition = new Vector3(hero.positionX, 1.0f, hero.positionZ);
+            hero.trans.position = newPosition;
+            Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
+        }
+    }
+
+    public void test()
+    {
+        foreach (var heroInList in heroes)
+        {
+            float pos = 3.0f;
+            Vector3 newPosition = new Vector3(pos, 1.0f, pos);
+            heroInList.trans.position = newPosition;
+            heroInList.positionZ = pos;
+            heroInList.positionX = pos;
+            heroInList.desiredPositionX = pos;
+            heroInList.desiredPositionZ = pos;
+        }
+    }
 
     public void createWorld(ResponseWorld responseWorld)
     {
@@ -365,16 +416,16 @@ public class GameLogic : MonoBehaviour
         world = responseWorld.world;
         foreach (var obstacle in world.obstacles)
         {
-            if (obstacle.type == 1)
+            if (obstacle.type == 1) // Wall
             {
-                obstacle.transform = (Transform)Instantiate(wall, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+                obstacle.transform = (Transform) Instantiate(wall, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }else if (obstacle.type == 3) // Start
             {
-                obstacle.transform = (Transform)Instantiate(start, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+                obstacle.transform = (Transform) Instantiate(start, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }
             else if (obstacle.type == 4) // Stairs down
             {
-                obstacle.transform = (Transform)Instantiate(stairs, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+                obstacle.transform = (Transform) Instantiate(stairs, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }
             else if (obstacle.type == 5) // Light
             {

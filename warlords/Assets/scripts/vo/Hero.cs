@@ -44,5 +44,16 @@ namespace Assets.scripts.vo
         {
             return new Vector3(trans.position.x, trans.position.y, trans.position.z);
         }
+
+        public String getModelName()
+        {
+            if (class_type == "WARRIOR") {
+                return "Nordstrom";
+            } else if (class_type == "PRIEST")
+            {
+                return "Kachujin";
+            }
+            return null;
+        }
     }
 }

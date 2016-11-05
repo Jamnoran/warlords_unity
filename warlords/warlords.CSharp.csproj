@@ -109,6 +109,7 @@
     <Compile Include="Assets\scripts\vo\ResponseGameStatus.cs" />
     <Compile Include="Assets\scripts\vo\ResponseGetHeroes.cs" />
     <Compile Include="Assets\scripts\vo\ResponseServerInfo.cs" />
+    <Compile Include="Assets\scripts\vo\ResponseTeleportHeroes.cs" />
     <Compile Include="Assets\scripts\vo\ResponseWorld.cs" />
     <Compile Include="Assets\scripts\vo\World.cs" />
   </ItemGroup>

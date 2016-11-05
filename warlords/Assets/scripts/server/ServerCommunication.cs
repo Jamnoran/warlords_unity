@@ -191,7 +191,7 @@ public class ServerCommunication : MonoBehaviour {
 
         // Do simple string split get response_type and go to next " and then parse the response to that format later.
         String responseType = getTypeOfResponseFromJson(json);
-        if (responseType !=  null && responseType != "GAME_STATUS") {
+        if (responseType != null && responseType != "GAME_STATUS") {
             Debug.Log("Request type : " + responseType);
         }
         
@@ -217,7 +217,6 @@ public class ServerCommunication : MonoBehaviour {
             else if (responseType == "GAME_STATUS")
             {
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
-               // Debug.Log("Response game status : " + responseGameStatus + " Heroes: " + responseGameStatus.heroes.Count + " Minions: " + responseGameStatus.minions.Count);
                 if (responseGameStatus.gameAnimations.Count > 0)
                 {
                     ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateAnimations(responseGameStatus.gameAnimations);
@@ -233,8 +232,15 @@ public class ServerCommunication : MonoBehaviour {
             else if (responseType == "WORLD")
             {
                 ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
-                Debug.Log("Creating world: " );
+                Debug.Log("Creating world: ");
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).createWorld(responseWorld);
+            } else if (responseType == "CLEAR_WORLD")
+            {
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).clearWorld();
+            } else if (responseType == "TELEPORT_HEROES")
+            {
+                ResponseTeleportHeroes responseTeleportHeroes = JsonMapper.ToObject<ResponseTeleportHeroes>(json);
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).teleportHeroes(responseTeleportHeroes.heroes);
             }
         }
     }

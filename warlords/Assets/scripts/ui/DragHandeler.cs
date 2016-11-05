@@ -7,7 +7,20 @@ public class DragHandeler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     public Transform SetThisAsParent;
     public static GameObject itemBeingDragged;
     Vector3 startPosition;
-    Transform startParent;
+    public Transform snapBack;
+    public Transform originalParent;
+    public Transform startParent;
+    public Transform slot1;
+    public Transform slot2;
+    public Transform slot3;
+    public Transform slot4;
+    public Transform slot5;
+    public Transform slot6;
+    public Transform slot7;
+    public Transform slot8;
+    public Transform slot9;
+    public Transform slot10;
+    public Transform slot11;
 
 
     #region IBeginDragHandler implementation
@@ -19,8 +32,7 @@ public class DragHandeler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         startPosition = transform.position;
         startParent = transform.parent;
         GetComponent<CanvasGroup>().blocksRaycasts = false;
-        GameObject myObject = (GameObject)Instantiate(this.gameObject, new Vector3(0,0,0), Quaternion.identity);
-        myObject.transform.SetParent(SetThisAsParent);
+
         
 
     }
@@ -46,6 +58,13 @@ public class DragHandeler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         {
             transform.position = startPosition;
         }
+        if(transform.parent == snapBack)
+        {
+            transform.position = originalParent.position;
+            transform.parent = originalParent;
+            Debug.Log("was in slot1");
+        }
+     
     }
 
     #endregion

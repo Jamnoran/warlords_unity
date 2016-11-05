@@ -80,7 +80,7 @@ public class FieldOfView : MonoBehaviour
                     
                     
                     // This is what happens if this class is on a minion
-                    if (TYPE_OF_FIELD_OF_VIEW == MINION && !sentInitialAggro && target.name == "Warrior") {
+                    if (TYPE_OF_FIELD_OF_VIEW == MINION && !sentInitialAggro && (target.name == "Warrior" || target.name == "Priest")) {
                         Debug.Log("This target is in range : " + target.name + " from vision of a : " + gameObject.name);
                         Debug.Log("Hero, found initiating aggro!");
                         Debug.Log(gameObject.name);
@@ -113,7 +113,7 @@ public class FieldOfView : MonoBehaviour
     {
         foreach (var target in visibleTargets)
         {
-            if (target.name.Contains("Stairs"))
+            if (target.name.Contains("StairsDown(Clone)"))
             {
                 Debug.Log("User had portal in range");
                 return true;

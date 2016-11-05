@@ -26,7 +26,6 @@ public class CharacterAnimations : MonoBehaviour {
         }
 
         //start moving the player towards the desired position
-        //transform.LookAt(targetPosition);
         Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
         character.transform.LookAt(targetPostition);
         
