@@ -27,14 +27,10 @@ public class DragHandeler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        
         itemBeingDragged = gameObject;
         startPosition = transform.position;
         startParent = transform.parent;
         GetComponent<CanvasGroup>().blocksRaycasts = false;
-
-        
-
     }
 
     #endregion
@@ -43,7 +39,9 @@ public class DragHandeler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = eventData.position;
+      
+            transform.position = eventData.position;
+        
     }
 
     #endregion
