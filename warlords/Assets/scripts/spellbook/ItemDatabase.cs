@@ -54,6 +54,7 @@ public class Item
     public double Cooldown { get; set; }
     public int Value { get; set; }
     public string Slug { get; set; }
+    public Sprite Sprite { get; set; }
 
     /**
      * Constructor for Item, sets the fields to the value when created
@@ -65,6 +66,7 @@ public class Item
         this.Description = description;
         this.Cooldown = cooldown;
         this.Value = value;
+        this.Sprite = Resources.Load<Sprite>("Sprites/Spellbook/" + slug);
 
     }
     /**
