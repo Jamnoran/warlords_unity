@@ -1,0 +1,19 @@
+[
+  {
+    "id": 0,
+    "title": "Charge",
+    "description": "Description for charge here",
+    "cooldown":  8.0,
+    "value": 1,
+    "slug": "charge"
+  },
+  {
+    "id": 1,
+    "title": "Bash",
+    "description": "Description for bash here",
+    "cooldown": 2.0,
+    "value": 2,
+    "slug": "bash"
+  }
+
+]

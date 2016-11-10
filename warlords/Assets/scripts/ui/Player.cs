@@ -5,10 +5,10 @@ public class Player : MonoBehaviour {
 
     [SerializeField]
     private Stat health;
-
-	private void Awake()
+   
+    private void Awake()
     {
-        health.Initialize();
+        this.health.Initialize();
     }
 	
 	// Update is called once per frame
@@ -17,11 +17,11 @@ public class Player : MonoBehaviour {
 
     public void setCurrentVal(float newValue)
     {
-        health.CurrentVal = newValue;
+        this.health.CurrentVal = newValue;
     }
     public void setMaxValue(float newValue)
     {
-        health.MaxVal = newValue;
-        health.Initialize();
+        this.health.MaxVal = newValue;
+        this.health.Initialize();
     }
 }

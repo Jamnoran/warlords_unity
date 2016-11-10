@@ -200,7 +200,7 @@ public class GameLogic : MonoBehaviour
                     if (hero.hp != newHero.hp)
                     {
                         hero.hp = newHero.hp;
-                        Debug.Log("Minions new hp = " + hero.hp);
+                        Debug.Log("Heroes new hp = " + hero.hp);
                     }
                     // Dont change desired position for own hero
                     String heroid = getCommunication().getHeroId();
