@@ -22,6 +22,7 @@ public class GameLogic : MonoBehaviour
     // Animation Effects
     public Transform healAnimation;
 
+    private List<Ability> abilities = null;
 
     public Transform door;
     public Transform door90;
@@ -74,20 +75,11 @@ public class GameLogic : MonoBehaviour
         }
         if (Input.GetKeyUp("t"))
         {
-            test();
+            getAbilities();
         }
     }
 
-    ServerCommunication getCommunication()
-    {
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        foreach (GameObject go in gos)
-        {
-            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
-        }
-        return null;
-    }
-    
+   
 
     internal Hero getHero(int heroId)
     {
@@ -357,6 +349,19 @@ public class GameLogic : MonoBehaviour
         getCommunication().sendSpell(spellId, getMyHero().targetEnemy, getMyHero().targetFriendly, getMyHero().getTargetPosition());
     }
 
+    private void getAbilities()
+    {
+        getCommunication().getAbilities();
+    }
+
+    public void setAbilities(List<Ability> updatedAbilities)
+    {
+        abilities = updatedAbilities;
+        foreach (var ability in abilities)
+        {
+            Debug.Log("Ability : " + ability.name);
+        }
+    }
 
     public void autoAttack()
     {
@@ -393,20 +398,6 @@ public class GameLogic : MonoBehaviour
             Vector3 newPosition = new Vector3(hero.positionX, 1.0f, hero.positionZ);
             hero.trans.position = newPosition;
             Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
-        }
-    }
-
-    public void test()
-    {
-        foreach (var heroInList in heroes)
-        {
-            float pos = 3.0f;
-            Vector3 newPosition = new Vector3(pos, 1.0f, pos);
-            heroInList.trans.position = newPosition;
-            heroInList.positionZ = pos;
-            heroInList.positionX = pos;
-            heroInList.desiredPositionX = pos;
-            heroInList.desiredPositionZ = pos;
         }
     }
 
@@ -456,6 +447,17 @@ public class GameLogic : MonoBehaviour
         minions = new List<Minion>();
         heroes = new List<Hero>();
         Debug.Log("Game ended");
+    }
+
+
+    ServerCommunication getCommunication()
+    {
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+        foreach (GameObject go in gos)
+        {
+            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
+        }
+        return null;
     }
 
 }

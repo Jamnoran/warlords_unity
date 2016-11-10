@@ -103,12 +103,14 @@
     <Compile Include="Assets\scripts\ui\Stat.cs" />
     <Compile Include="Assets\scripts\ui\healthcamera.cs" />
     <Compile Include="Assets\scripts\vo\GameAnimation.cs" />
+    <Compile Include="Assets\scripts\vo\Ability.cs" />
     <Compile Include="Assets\scripts\vo\Hero.cs" />
     <Compile Include="Assets\scripts\vo\Minion.cs" />
     <Compile Include="Assets\scripts\vo\Obstacle.cs" />
     <Compile Include="Assets\scripts\vo\Request.cs" />
     <Compile Include="Assets\scripts\vo\Response.cs" />
     <Compile Include="Assets\scripts\vo\ResponseCreateUser.cs" />
+    <Compile Include="Assets\scripts\vo\ResponseAbilities.cs" />
     <Compile Include="Assets\scripts\vo\ResponseGameStatus.cs" />
     <Compile Include="Assets\scripts\vo\ResponseTeleportHeroes.cs" />
     <Compile Include="Assets\scripts\vo\ResponseGetHeroes.cs" />

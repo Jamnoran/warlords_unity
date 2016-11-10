@@ -150,7 +150,11 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"CLICKED_PORTAL\", \"hero_id\":" + heroId + "}");
     }
 
-
+    public void getAbilities()
+    {
+        Debug.Log("Get all abilities");
+        writeSocket("{\"request_type\": \"GET_ABILITIES\", \"user_id\":" + userId + "}");
+    }
 
 
 
@@ -194,7 +198,7 @@ public class ServerCommunication : MonoBehaviour {
         if (responseType != null && responseType != "GAME_STATUS") {
             Debug.Log("Request type : " + responseType);
         }
-        
+
         // Handle different type of request_names
         if (responseType != null)
         {
@@ -224,7 +228,8 @@ public class ServerCommunication : MonoBehaviour {
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfMinions(responseGameStatus.minions);
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfHeroes(responseGameStatus.heroes);
             }
-            else if (responseType == "CREATE_USER") {
+            else if (responseType == "CREATE_USER")
+            {
                 ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
                 Debug.Log("User created with this id to store on device: " + responseCreateUser.user_id);
                 userId = responseCreateUser.user_id;
@@ -234,13 +239,20 @@ public class ServerCommunication : MonoBehaviour {
                 ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
                 Debug.Log("Creating world: ");
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).createWorld(responseWorld);
-            } else if (responseType == "CLEAR_WORLD")
+            }
+            else if (responseType == "CLEAR_WORLD")
             {
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).clearWorld();
-            } else if (responseType == "TELEPORT_HEROES")
+            }
+            else if (responseType == "TELEPORT_HEROES")
             {
                 ResponseTeleportHeroes responseTeleportHeroes = JsonMapper.ToObject<ResponseTeleportHeroes>(json);
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).teleportHeroes(responseTeleportHeroes.heroes);
+            }
+            else if (responseType == "ABILITIES")
+            {
+                ResponseAbilities responseAbilities = JsonMapper.ToObject<ResponseAbilities>(json);
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setAbilities(responseAbilities.abilities);
             }
         }
     }
