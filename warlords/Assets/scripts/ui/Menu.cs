@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class Menu : MonoBehaviour {
 
@@ -13,7 +14,19 @@ public class Menu : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyUp("q"))
         {
-            ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).sendSpell(1);
+            List<int> enemies = new List<int>();
+            enemies.Add(getGameLogic().getMyHero().targetEnemy);
+            List<int> friends = new List<int>();
+            friends.Add(getGameLogic().getMyHero().targetFriendly);
+            getGameLogic().sendSpell(1, enemies, friends);
+        }
+        if (Input.GetKeyUp("w"))
+        {
+            List<int> enemies = new List<int>();
+            enemies.Add(getGameLogic().getMyHero().targetEnemy);
+            List<int> friends = new List<int>();
+            friends.Add(getGameLogic().getMyHero().targetFriendly);
+            getGameLogic().sendSpell(2, enemies, friends);
         }
     }
 
@@ -45,5 +58,11 @@ public class Menu : MonoBehaviour {
         //{
         //}
         //}
+    }
+
+
+    GameLogic getGameLogic()
+    {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
 }

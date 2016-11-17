@@ -38,7 +38,7 @@ public class TestGUI : MonoBehaviour {
         //GUILayout.Label("intellect: " + class2.Intellect);
         //GUILayout.Label("agility: "   + class2.Agility);
         //GUILayout.Label("armor: "     + class2.Armor);
-
+        
 
         GUILayout.Label("Minions left: " + ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMinions().Count);
 
@@ -59,11 +59,11 @@ public class TestGUI : MonoBehaviour {
         {
             GUILayout.Label("Friendly: " + friendlyTarget.hp + "/" + friendlyTarget.maxHp + " Class " + friendlyTarget.class_type);
         }
+       
+    }
 
-
-        if (GUI.Button(new Rect(0, 400, 100, 100), "Spell 1 (Q)"))
-        {
-            ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).sendSpell(1);
-        }
+    GameLogic getGameLogic()
+    {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
 }

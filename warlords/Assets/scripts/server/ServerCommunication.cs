@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Sockets;
 using LitJson;
 using Assets.scripts.vo;
+using System.Collections.Generic;
 
 public class ServerCommunication : MonoBehaviour {
 
@@ -131,10 +132,24 @@ public class ServerCommunication : MonoBehaviour {
     }
 
 
-    public void sendSpell(int spellId, int targetEnemy, int targetFriendly, Vector3 vector3)
+    public void sendSpell(int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3)
     {
-        Debug.Log("Sending spell request spell id: " + spellId);
-        writeSocket("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", target_enemy: " + targetEnemy + ", target_friendly: " + targetFriendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
+        var dt = DateTime.Now;
+        var time = (dt.Hour * 60 * 1000) + (dt.Second * 1000) + dt.Millisecond;
+        Debug.Log("Sending spell request spell id: " + spellId + " At time: " + time);
+        var targets = "[]";
+        if (targetEnemy.Count > 0)
+        {
+            targets = "[" + targetEnemy[0] + "]";
+        }
+        
+        var friendly = "[]";
+        if (targetFriendly.Count > 0)
+        {
+            friendly = "[" + targetFriendly[0] + "]";
+        }
+        Debug.Log("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", time: " + time + ", target_enemy: " + targets + ", target_friendly: " + friendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
+        writeSocket("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", time: " + time + ", target_enemy: " + targets + ", target_friendly: " + friendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
     }
 
 
@@ -248,6 +263,11 @@ public class ServerCommunication : MonoBehaviour {
             {
                 ResponseTeleportHeroes responseTeleportHeroes = JsonMapper.ToObject<ResponseTeleportHeroes>(json);
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).teleportHeroes(responseTeleportHeroes.heroes);
+            }
+            else if (responseType == "COOLDOWN")
+            {
+                ResponseCooldown responseCooldown = JsonMapper.ToObject<ResponseCooldown>(json);
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateCooldown(responseCooldown.ability);
             }
             else if (responseType == "ABILITIES")
             {

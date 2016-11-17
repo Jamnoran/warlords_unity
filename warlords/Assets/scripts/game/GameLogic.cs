@@ -22,7 +22,7 @@ public class GameLogic : MonoBehaviour
     // Animation Effects
     public Transform healAnimation;
 
-    private List<Ability> abilities = null;
+    public List<Ability> abilities = null;
 
     public Transform door;
     public Transform door90;
@@ -72,10 +72,6 @@ public class GameLogic : MonoBehaviour
         if (Input.GetKeyUp("a"))
         {
             autoAttack();
-        }
-        if (Input.GetKeyUp("t"))
-        {
-            getAbilities();
         }
     }
 
@@ -343,13 +339,18 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
-    public void sendSpell(int spellId)
+    public void sendSpell(int spellId, List<int> enemies, List<int> friendly)
     {
         Debug.Log("Send spell " + spellId);
-        getCommunication().sendSpell(spellId, getMyHero().targetEnemy, getMyHero().targetFriendly, getMyHero().getTargetPosition());
+        getCommunication().sendSpell(spellId, enemies, friendly, getMyHero().getTargetPosition());
     }
 
-    private void getAbilities()
+    public List<Ability> getAbilities()
+    {
+        return abilities;
+    }
+
+    private void updateAbilities()
     {
         getCommunication().getAbilities();
     }
@@ -361,6 +362,12 @@ public class GameLogic : MonoBehaviour
         {
             Debug.Log("Ability : " + ability.name);
         }
+    }
+
+    public void updateCooldown(Ability ability)
+    {
+        Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " ");
+
     }
 
     public void autoAttack()

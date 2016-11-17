@@ -19,5 +19,6 @@ namespace Assets.scripts.vo
         public int crittable;
         public String targetType;
         public int baseCD;
+        public String timeWhenOffCooldown;
     }
 }
