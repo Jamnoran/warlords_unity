@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using LitJson;
 using Assets.scripts.vo;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class ServerCommunication : MonoBehaviour {
 
@@ -19,9 +20,9 @@ public class ServerCommunication : MonoBehaviour {
 
     public String userId = "1";
     public String heroId = "1";
-    public String username = "lasse";
-    public String password = "losen";
-    public String email = "lasse@gmail.com";
+    //public String username = "lasse";
+    //public String password = "losen";
+    //public String email = "lasse@gmail.com";
     public Int32 gameId = -1;
 
     public Boolean local = true;
@@ -91,14 +92,14 @@ public class ServerCommunication : MonoBehaviour {
     public void createHero(String classType)
     {
         print("e key was pressed creating a hero for a userid: " + userId);
-        writeSocket("{\"request_type\": \"CREATE_HERO\", user_id:\"" + userId + "\", class_type:\""+ classType + " \"}");
+        writeSocket("{\"request_type\": \"CREATE_HERO\", user_id:\"" + userId + "\", class_type:\""+ classType + "\"}");
         getHeroes();
     }
 
     // Send request to lobby to create a user. Primary request to be done before other becouse we will need user_id to be able to do the other requests
-    public void createUser()
+    public void createUser(string username, string email, string password)
     {
-        print("r key was pressed creaing the user (here we need to gather username + email + password)");
+        print("Creaing the user (here we need to gather username + email + password)");
         writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
     }
 
@@ -248,6 +249,8 @@ public class ServerCommunication : MonoBehaviour {
                 ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
                 Debug.Log("User created with this id to store on device: " + responseCreateUser.user_id);
                 userId = responseCreateUser.user_id;
+                PlayerPrefs.SetString("USER_ID", userId);
+                SceneManager.LoadScene("Lobby");
             }
             else if (responseType == "WORLD")
             {
