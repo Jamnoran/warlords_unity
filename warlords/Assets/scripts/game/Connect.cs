@@ -18,8 +18,10 @@ public class Connect : MonoBehaviour {
         loginButton.onClick.AddListener(login);
         string userId = PlayerPrefs.GetString("USER_ID");
         if (autoLogin && userId != null && !userId.Equals(""))
-        {
-            Debug.Log("Auto login");
+        {   
+            Debug.Log("Auto login, user id : " + userId);
+            Debug.Log("Email: " + PlayerPrefs.GetString("EMAIL"));
+            Debug.Log("Password: " + PlayerPrefs.GetString("PASSWORD"));
             getCommunication().userId = userId;
             SceneManager.LoadScene("Lobby");
         }

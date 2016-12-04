@@ -59,6 +59,18 @@ public class TestGUI : MonoBehaviour {
         {
             GUILayout.Label("Friendly: " + friendlyTarget.hp + "/" + friendlyTarget.maxHp + " Class " + friendlyTarget.class_type);
         }
+
+        // When pressing p (or ability icon in UI) turn this bool to true else false (stopping this part to take much reasorces since it only checks a bool while running game instead of things against gamelogic)
+        bool abilityTabOpen = true;
+        if (abilityTabOpen)
+        {
+            if(getGameLogic().getAbilities() != null) { 
+                foreach (var ability in getGameLogic().getAbilities())
+                {
+                    GUILayout.Label("Ability : " + ability.name);
+                }
+            }
+        }
        
     }
 
