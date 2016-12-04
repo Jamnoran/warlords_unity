@@ -10,12 +10,14 @@ public class Connect : MonoBehaviour {
     public InputField passwordInput;
     public Button registerButton;
     public Button loginButton;
+    public Button resetButton;
     public bool autoLogin = true;
 
 	// Use this for initialization
 	void Start () {
         registerButton.onClick.AddListener(register);
         loginButton.onClick.AddListener(login);
+        resetButton.onClick.AddListener(reset);
         string userId = PlayerPrefs.GetString("USER_ID");
         if (autoLogin && userId != null && !userId.Equals(""))
         {   
@@ -31,6 +33,14 @@ public class Connect : MonoBehaviour {
 	void Update () {
         
 	}
+
+    void reset()
+    {
+        PlayerPrefs.SetString("EMAIL", null);
+        PlayerPrefs.SetString("USER_ID", null);
+        PlayerPrefs.SetString("PASSWORD", null);
+        PlayerPrefs.SetString("USERNAME", null);
+    }
 
     void login()
     {
