@@ -95,8 +95,10 @@
     <Compile Include="Assets\scripts\game\GameLogic.cs" />
     <Compile Include="Assets\scripts\server\Lobby.cs" />
     <Compile Include="Assets\scripts\server\ServerCommunication.cs" />
+    <Compile Include="Assets\scripts\spellbook\Abilities.cs" />
     <Compile Include="Assets\scripts\spellbook\ItemDatabase.cs" />
     <Compile Include="Assets\scripts\spellbook\SpellBook.cs" />
+    <Compile Include="Assets\scripts\spellbook\SpellBookHelpers.cs" />
     <Compile Include="Assets\scripts\testing\TestGUI.cs" />
     <Compile Include="Assets\scripts\testing\TimeTest.cs" />
     <Compile Include="Assets\scripts\ui\BarScript.cs" />
