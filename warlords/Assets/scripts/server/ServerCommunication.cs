@@ -103,6 +103,12 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
     }
 
+    public void loginUser(string email, string password)
+    {
+        print("Login the user (here we need to gather email + password)");
+        writeSocket("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\"}");
+    }
+
     public void sendAutoAttack(int minionId) {
         if (minionId > 0)
         {
@@ -248,6 +254,14 @@ public class ServerCommunication : MonoBehaviour {
             {
                 ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
                 Debug.Log("User created with this id to store on device: " + responseCreateUser.user_id);
+                userId = responseCreateUser.user_id;
+                PlayerPrefs.SetString("USER_ID", userId);
+                SceneManager.LoadScene("Lobby");
+            }
+            else if (responseType == "LOGIN_USER")
+            {
+                ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
+                Debug.Log("User logged in with this id to store on device: " + responseCreateUser.user_id);
                 userId = responseCreateUser.user_id;
                 PlayerPrefs.SetString("USER_ID", userId);
                 SceneManager.LoadScene("Lobby");

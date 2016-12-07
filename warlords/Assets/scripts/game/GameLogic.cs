@@ -202,8 +202,12 @@ public class GameLogic : MonoBehaviour
                     String heroid = getCommunication().getHeroId();
                     if (hero.id != Int32.Parse(heroid))
                     {
+                        Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
                         hero.desiredPositionX = newHero.desiredPositionX;
                         hero.desiredPositionZ = newHero.desiredPositionZ;
+                        Vector3 target = new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ);
+                        CharacterAnimations animation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
+                        animation.setDesiredLocation(target);
                     }
                     hero.positionX = newHero.positionX;
                     hero.positionZ = newHero.positionZ;

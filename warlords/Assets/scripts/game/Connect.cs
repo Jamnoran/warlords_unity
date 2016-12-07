@@ -74,8 +74,7 @@ public class Connect : MonoBehaviour {
             PlayerPrefs.SetString("PASSWORD", password);
             PlayerPrefs.SetString("USERNAME", username);
             Debug.Log("Login");
-            getCommunication().userId = userId;
-            SceneManager.LoadScene("Lobby");
+            getCommunication().loginUser(email, password);
         }else
         {
             Debug.Log("You need to register first");

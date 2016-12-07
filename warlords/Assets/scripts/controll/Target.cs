@@ -55,14 +55,6 @@ public class Target : MonoBehaviour {
         }
     }
     
-    /// <summary>
-    /// Connect to our serverobject so we can communicate with it
-    /// </summary>
-    /// <returns>ServerCommunication object</returns>
-    ServerCommunication getCommunication()
-    {
-        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
-    }
 
     /// <summary>
     /// We got a click on a point on map, here we need to handle if its friendly or enemy target or just ground
@@ -129,5 +121,13 @@ public class Target : MonoBehaviour {
     {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
-    
+
+    /// <summary>
+    /// Connect to our serverobject so we can communicate with it
+    /// </summary>
+    /// <returns>ServerCommunication object</returns>
+    ServerCommunication getCommunication()
+    {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
 }
