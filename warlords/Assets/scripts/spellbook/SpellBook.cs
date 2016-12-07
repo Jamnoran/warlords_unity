@@ -2,66 +2,97 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Assets.scripts.vo;
 
 public class SpellBook : MonoBehaviour {
-    GameObject spellbookPanel;            //this panel keeps the entire spellbook
-    GameObject slotPanel;                 //this panel holds the slot to row up the spells
-    public GameObject spellbookSlot;      //this is a single slot within the slotsPanel
-    public GameObject spellItem;          //this is the actual image representing the spell
-    int slotAmount = 24;                  //amount of slots we wish to produce
-    public List<Item> items = new List<Item>();
+
+    private bool isFetched = false;
+
+    ItemDatabase itemDatabase;
+    GameObject spellbookPanel;
+    GameObject slotPanel;
+    public GameObject spellbookSlot;
+    public GameObject spellbookItem;
+
+    public List<Ability> abilities = new List<Ability>();
     public List<GameObject> slots = new List<GameObject>();
-    ItemDatabase database;
+
+    public int slotAmount = 20;
 
     void Start()
     {
-        database = GetComponent<ItemDatabase>();    
-        spellbookPanel = GameObject.Find("Spellbook panel");
-        slotPanel = spellbookPanel.transform.FindChild("Slots panel").gameObject;
-        generateSlots(slotAmount);
-        addItem(1);
-        addItem(0);
-     
-    }
+        //Grab our panel that holds the spellbook
+        spellbookPanel = GameObject.Find("Spellbook Panel");
+        //Grab the slot panel that holds the slots for all abilities
+        slotPanel = spellbookPanel.transform.FindChild("Slot Panel").gameObject;
 
-  /**
-  * Iterates and adds slots to the slotpanel gameobject
-  * @param slotAmount The number of slots to be generated
-  **/
-    void generateSlots(int slotAmount)
-    {
+
+        //Loop trough the ammount of slots we want and fill the list with spellbook slots
         for (int i = 0; i < slotAmount; i++)
         {
-            items.Add(new Item());
+            //add a null ability to occupy the slots, we can later check if an ability is null and then replace it with a real ability
+            abilities.Add(new Ability());
             slots.Add(Instantiate(spellbookSlot));
             slots[i].transform.SetParent(slotPanel.transform);
+
         }
     }
 
-
-    /**
-     * Add a single spell to the spellbook
-     * @param id The spell id to add to the spellbook
-     **/
-    public void addItem(int id)
+    void Update()
     {
-        Item itemToAdd = database.fetchItemByID(id);
-        for (int i = 0; i < items.Count; i++)
+        if (Input.GetKeyDown("p") && !isFetched )
         {
-            //id-1 represents an empty item
-            if (items[i].ID == -1)
+            abilities = getGameLogic().getAbilities();
+            isFetched = true;
+           
+
+        }
+
+        else if (Input.GetKeyDown("p"))
+        {
+           
+            for (int i = 0; i < slotAmount; i++)
             {
-                items[i] = itemToAdd;
-                GameObject spellItemObject = Instantiate(spellItem);
-                spellItemObject.transform.SetParent(slots[i].transform);
-                spellItemObject.GetComponent<Image>().sprite = itemToAdd.Sprite;
-                spellItemObject.transform.position = slots[i].transform.position;
-                spellItemObject.name = items[i].Title;
-                break;
+
+            }
+            AddItem(0);
+        }
+    }
+
+    public void AddItem(int id)
+    {
+     
+        for (int i = 0; i < abilities.Count; i++)
+        {
+   
+            GameObject spellObject = Instantiate(spellbookItem);
+            spellObject.transform.SetParent(slots[i].transform);
+            spellObject.transform.position = slots[i].transform.position;
+        
+        }
+    }
+
+ /**
+ * Get an item from the database from ID
+ * @param id The items ID you are looking for
+ * @return Item The item matching the param ID if successful, null otherwise
+ **/
+    public Ability fetchItemByID(int id)
+    {
+        for (int i = 0; i < abilities.Count; i++)
+        {
+            if (id == abilities[i].id)
+            {
+                return abilities[i];
             }
         }
-
+        return null;
     }
 
- 
+
+
+    GameLogic getGameLogic()
+    {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+    }
 }
