@@ -6,7 +6,10 @@ using Assets.scripts.vo;
 
 public class SpellBook : MonoBehaviour {
 
-    private bool isFetched = false;
+    private bool spellsAreFetched = false;
+    private bool isSpellBookOpen = false;
+    private Vector3 spellBookOriginalPosition;
+    private Vector3 spellBookHidePosition = new Vector3(1000000, 1000000, 0);
 
     ItemDatabase itemDatabase;
     GameObject spellbookPanel;
@@ -21,12 +24,14 @@ public class SpellBook : MonoBehaviour {
 
     void Start()
     {
+        
         //Grab our panel that holds the spellbook
         spellbookPanel = GameObject.Find("Spellbook Panel");
+        spellBookOriginalPosition = spellbookPanel.transform.position;
         //Grab the slot panel that holds the slots for all abilities
         slotPanel = spellbookPanel.transform.FindChild("Slot Panel").gameObject;
 
-
+      
         //Loop trough the ammount of slots we want and fill the list with spellbook slots
         for (int i = 0; i < slotAmount; i++)
         {
@@ -36,26 +41,45 @@ public class SpellBook : MonoBehaviour {
             slots[i].transform.SetParent(slotPanel.transform);
 
         }
+
+        spellbookPanel.transform.position = spellBookHidePosition;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown("p") && !isFetched )
+        if (Input.GetKeyDown("p"))
         {
-            abilities = getGameLogic().getAbilities();
-            isFetched = true;
-           
+            if (isSpellBookOpen)
+            {
+                spellbookPanel.transform.position = spellBookHidePosition;
+                isSpellBookOpen = false;
+            }
+            else if(!isSpellBookOpen && !spellsAreFetched)
+            {
+                spellbookPanel.transform.position = spellBookOriginalPosition;
+                abilities = getGameLogic().getAbilities();
+                AddItem();
+                isSpellBookOpen = true;
+            }
+            else if(!isSpellBookOpen && spellsAreFetched)
+            {
+                spellbookPanel.transform.position = spellBookOriginalPosition;
+                isSpellBookOpen = true;
+            }
+            
 
+          
+          
+      
         }
 
-        else if (Input.GetKeyDown("p"))
+        else if (Input.GetKeyDown("p") && abilities != null)
         {
-           
-            for (int i = 0; i < slotAmount; i++)
-            {
-
-            }
-            AddItem();
+          
+            
+          
+            
+            spellbookPanel.SetActive(true);
         }
     }
 
