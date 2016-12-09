@@ -266,6 +266,8 @@ public class ServerCommunication : MonoBehaviour {
                 userId = responseCreateUser.user_id;
                 PlayerPrefs.SetString("USER_ID", userId);
                 SceneManager.LoadScene("Lobby");
+                Debug.Log("Getting heroes for user");
+                getHeroes();
             }
             else if (responseType == "WORLD")
             {
