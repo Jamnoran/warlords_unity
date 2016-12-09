@@ -106,7 +106,8 @@ public class ServerCommunication : MonoBehaviour {
     public void loginUser(string email, string password)
     {
         print("Login the user (here we need to gather email + password)");
-        writeSocket("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\"}");
+        print("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\", username:\"\"}");
+        writeSocket("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\", username:\"\"}");
     }
 
     public void sendAutoAttack(int minionId) {
