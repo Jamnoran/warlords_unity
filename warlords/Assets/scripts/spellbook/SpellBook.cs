@@ -55,11 +55,11 @@ public class SpellBook : MonoBehaviour {
             {
 
             }
-            AddItem(0);
+            AddItem();
         }
     }
 
-    public void AddItem(int id)
+    public void AddItem()
     {
      
         for (int i = 0; i < abilities.Count; i++)
@@ -68,7 +68,12 @@ public class SpellBook : MonoBehaviour {
             GameObject spellObject = Instantiate(spellbookItem);
             spellObject.transform.SetParent(slots[i].transform);
             spellObject.transform.position = slots[i].transform.position;
-        
+            Debug.Log(abilities[i].image);
+            
+            Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/"+ abilities[i].image);
+            spellObject.GetComponent<Image>().sprite = abilitySprite;
+
+
         }
     }
 
