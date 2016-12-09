@@ -68,17 +68,17 @@ public class Connect : MonoBehaviour {
         Debug.Log("Login with email : " + email);
 
         string userId = PlayerPrefs.GetString("USER_ID");
-        if (userId != null && !userId.Equals(""))
-        {
+        //if (userId != null && !userId.Equals(""))
+        //{
             PlayerPrefs.SetString("EMAIL", email);
             PlayerPrefs.SetString("PASSWORD", password);
             PlayerPrefs.SetString("USERNAME", username);
             Debug.Log("Login");
             getCommunication().loginUser(email, password);
-        }else
-        {
-            Debug.Log("You need to register first");
-        }
+        //}else
+        //{
+        //    Debug.Log("You need to register first");
+        //}
     }
 
 
