@@ -29,6 +29,7 @@ public class GameLogic : MonoBehaviour
     public Transform wall;
     public Transform start;
     public Transform stairs;
+    public Transform light;
 
     public bool isInGame = false;
     public World world;
@@ -431,7 +432,7 @@ public class GameLogic : MonoBehaviour
             }
             else if (obstacle.type == 5) // Light
             {
-                //obstacle.transform = (Transform)Instantiate(light, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+                obstacle.transform = (Transform)Instantiate(light, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }
         }
     }
