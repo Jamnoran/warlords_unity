@@ -6,7 +6,7 @@ using Assets.scripts.vo;
 using UnityEngine.EventSystems;
 
 public class SpellBook : MonoBehaviour {
-
+    
     private bool spellsAreFetched = false;
     private bool isSpellBookOpen = false;
     private Vector3 spellBookOriginalPosition;
@@ -76,10 +76,6 @@ public class SpellBook : MonoBehaviour {
 
         else if (Input.GetKeyDown("p") && abilities != null)
         {
-          
-            
-          
-            
             spellbookPanel.SetActive(true);
         }
     }
@@ -97,6 +93,8 @@ public class SpellBook : MonoBehaviour {
             
             Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/"+ abilities[i].image);
             spellObject.GetComponent<Image>().sprite = abilitySprite;
+
+            spellObject.transform.name = abilities[i].name;
 
 
         }
