@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using Assets.scripts.vo;
+using UnityEngine.EventSystems;
 
 public class SpellBook : MonoBehaviour {
 
@@ -88,7 +89,7 @@ public class SpellBook : MonoBehaviour {
      
         for (int i = 0; i < abilities.Count; i++)
         {
-   
+            
             GameObject spellObject = Instantiate(spellbookItem);
             spellObject.transform.SetParent(slots[i].transform);
             spellObject.transform.position = slots[i].transform.position;
