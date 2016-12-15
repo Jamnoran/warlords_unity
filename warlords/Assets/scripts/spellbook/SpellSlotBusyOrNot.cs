@@ -4,20 +4,55 @@ using System.Collections.Generic;
 
 public class SpellSlotBusyOrNot : MonoBehaviour {
 
-    private List<string> listOfBusySlots = new List<string>();
+    private List<string> itemOccupyingSlot = new List<string>();
+    private List<Vector3> lockedPosition = new List<Vector3>();
 
-    public void Update()
+    public void addToList(string addThisToList)
     {
-      
+        itemOccupyingSlot.Add(addThisToList);
     }
 
-    public void addToList(string slotNameToSetToBusy)
+    public bool isInList(string isThisInList)
     {
-        listOfBusySlots.Add(slotNameToSetToBusy);
-        for (int i = 0; i < listOfBusySlots.Count; i++)
+        return itemOccupyingSlot.Contains(isThisInList);
+    }
+
+    public void removeFromList(string nameToRemove)
+    {
+        itemOccupyingSlot.Remove(nameToRemove);
+        Debug.Log("Succesfully removed item " + nameToRemove);
+    }
+
+    //---Cordinates----
+
+    public void lockPosition(Vector3 lockThisPosition)
+    {
+        lockedPosition.Add(lockThisPosition);
+        Debug.Log("Locked position:" + lockThisPosition);
+    }
+
+    public bool isLocked(Vector3 isThisInList)
+    {
+        Debug.Log("is locked?: " + isThisInList);
+        return lockedPosition.Contains(isThisInList);
+    }
+
+    public bool checkIfInActionBar(Vector3 checkIfThisIsInActionBar)
+    {
+        if (lockedPosition.Contains(checkIfThisIsInActionBar))
         {
-            Debug.Log(listOfBusySlots[i]);
+            return true;
         }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public void unLockPosition(Vector3 unLockThisPosition)
+    {
+        lockedPosition.Remove(unLockThisPosition);
     }
 
 }

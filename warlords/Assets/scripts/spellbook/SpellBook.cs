@@ -40,6 +40,7 @@ public class SpellBook : MonoBehaviour {
             abilities.Add(new Ability());
             slots.Add(Instantiate(spellbookSlot));
             slots[i].transform.SetParent(slotPanel.transform);
+            slots[i].transform.name = "slot" + i;
 
         }
 
@@ -95,6 +96,7 @@ public class SpellBook : MonoBehaviour {
             spellObject.GetComponent<Image>().sprite = abilitySprite;
 
             spellObject.transform.name = abilities[i].name;
+
 
 
         }
