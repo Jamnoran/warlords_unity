@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.scripts.vo;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameLogic : MonoBehaviour
 {
@@ -41,9 +42,12 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Game logic has started");
         if ((GameObject.Find("Communication")) == null)
         {
-            Debug.Log("Communication is not set, create from prefab");
-            Instantiate(communication, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
-            StartCoroutine(Example());
+            //Debug.Log("Communication is not set, create from prefab");
+            //Instantiate(communication, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+            //StartCoroutine(Example());
+
+            Debug.Log("Go to connect screen.");
+            SceneManager.LoadScene("Connect");
         }
         else
         {
@@ -61,7 +65,7 @@ public class GameLogic : MonoBehaviour
     public void checkIfShouldJoinServer()
     {
         if (getCommunication().gameId == 0)
-        {
+        {   
             getCommunication().joinServer();
         }
 

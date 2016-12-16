@@ -93,6 +93,7 @@
     <Compile Include="Assets\scripts\game\Connect.cs" />
     <Compile Include="Assets\scripts\game\DestroyPointer.cs" />
     <Compile Include="Assets\scripts\game\GameLogic.cs" />
+    <Compile Include="Assets\scripts\game\LightLogic.cs" />
     <Compile Include="Assets\scripts\server\Lobby.cs" />
     <Compile Include="Assets\scripts\server\ServerCommunication.cs" />
     <Compile Include="Assets\scripts\spellbook\Abilities.cs" />
