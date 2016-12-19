@@ -23,7 +23,7 @@ public class GameLogic : MonoBehaviour
     // Animation Effects
     public Transform healAnimation;
 
-    public List<Ability> abilities = null;
+    private List<Ability> abilities = null;
 
     public Transform door;
     public Transform door90;
@@ -375,8 +375,20 @@ public class GameLogic : MonoBehaviour
 
     public void updateCooldown(Ability ability)
     {
-        Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " ");
+        getAbility(ability.id).timeWhenOffCooldown = ability.timeWhenOffCooldown;
+        Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " CD : " + ability.timeWhenOffCooldown);
+    }
 
+    public Ability getAbility(int id)
+    {
+        foreach (var ability in abilities)
+        {
+            if (ability.id == id)
+            {
+                return ability;
+            }
+        }
+        return null;
     }
 
     public void autoAttack()

@@ -114,7 +114,8 @@ public class ServerCommunication : MonoBehaviour {
         if (minionId > 0)
         {
             print("Trying to attack minion " + minionId);
-            writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minionId + "\"}");
+            var time = getMillis();
+            writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minionId + "\", time: \"" + time + "\"}");
         }
         else
         {
@@ -142,8 +143,7 @@ public class ServerCommunication : MonoBehaviour {
 
     public void sendSpell(int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3)
     {
-        var dt = DateTime.Now;
-        var time = (dt.Hour * 60 * 1000) + (dt.Second * 1000) + dt.Millisecond;
+        var time = getMillis();
         Debug.Log("Sending spell request spell id: " + spellId + " At time: " + time);
         var targets = "[]";
         if (targetEnemy.Count > 0)
@@ -181,7 +181,11 @@ public class ServerCommunication : MonoBehaviour {
 
 
 
-
+    private long getMillis()
+    {
+        DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
+    }
 
 
 
