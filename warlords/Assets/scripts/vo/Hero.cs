@@ -55,5 +55,21 @@ namespace Assets.scripts.vo
             }
             return null;
         }
+
+        public void setHp(int newHp)
+        {
+            hp = newHp;
+            if (trans != null)
+            {
+                ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
+                ((HealthUpdate)trans.GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
+            }
+        }
+
+        public void initBars()
+        {
+            ((HealthUpdate)trans.GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
+        }
+
     }
 }

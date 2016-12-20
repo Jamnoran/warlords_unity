@@ -41,13 +41,13 @@ namespace Assets.scripts.vo
             hp = newHp;
             if (minionTransform != null)
             {
-                ((Player)minionTransform.GetComponent(typeof(Player))).setCurrentVal(hp);
+                ((HealthUpdate)minionTransform.GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
             }
         }
 
         public void initBars()
         {
-            ((Player)minionTransform.GetComponent(typeof(Player))).setMaxValue(maxHp);
+            ((HealthUpdate)minionTransform.GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
         }
     }
 }
