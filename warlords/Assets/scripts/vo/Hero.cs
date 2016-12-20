@@ -62,13 +62,13 @@ namespace Assets.scripts.vo
             if (trans != null)
             {
                 ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
-                ((HealthUpdate)trans.GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
             }
         }
 
         public void initBars()
         {
-            ((HealthUpdate)trans.GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
+            ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
+            setHp(maxHp);
         }
 
     }

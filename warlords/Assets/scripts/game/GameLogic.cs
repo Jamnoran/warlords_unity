@@ -199,9 +199,12 @@ public class GameLogic : MonoBehaviour
             {
                 if (newHero.id == hero.id)
                 {
+                    //set initial health for hero
+                    hero.initBars();
                     found = true;
                     if (hero.hp != newHero.hp)
                     {
+                        
                         hero.hp = newHero.hp;
                         hero.setHp(hero.hp);
                         Debug.Log("Heroes new hp = " + hero.hp);
