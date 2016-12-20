@@ -16,6 +16,7 @@ namespace Assets.scripts.vo
         public String description;
         public String image;
         public int baseDamage;
+	public int topDamage;
         public int crittable;
         public String targetType;
         public int baseCD;
