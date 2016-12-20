@@ -113,7 +113,7 @@ public class move : MonoBehaviour {
         {
             // Check that we moved enough from last position to send update to server that we moved more
             float dist = Vector3.Distance(lastSentPosition, transform.position);
-            if (dist > 0.5f)
+            if (dist > 1.0f)
             {
                 //print("Sending move request to server: " + dist);
                 sendMove();

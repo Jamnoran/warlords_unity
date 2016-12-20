@@ -20,5 +20,8 @@ namespace Assets.scripts.vo
         public String targetType;
         public int baseCD;
         public String timeWhenOffCooldown;
+
     }
+
+   
 }

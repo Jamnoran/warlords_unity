@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.scripts.vo;
+using System;
 
 public class TestGUI : MonoBehaviour {
 
-    private baseCharacter class1 = new basePriest();
-    private baseCharacter class2 = new baseWarrior();
+    //private baseCharacter class1 = new basePriest();
+    //private baseCharacter class2 = new baseWarrior();
 
 	// Use this for initialization
 	void Start () {
@@ -67,11 +68,24 @@ public class TestGUI : MonoBehaviour {
             if(getGameLogic().getAbilities() != null) { 
                 foreach (var ability in getGameLogic().getAbilities())
                 {
-                    GUILayout.Label("Ability : " + ability.name);
+                    string coolDownText = "Ready";
+                    var time = getMillis();
+                    if (ability.timeWhenOffCooldown != null && !ability.timeWhenOffCooldown.Equals("") && (long.Parse(ability.timeWhenOffCooldown) >= time))
+                    {
+                        coolDownText = "" + (long.Parse(ability.timeWhenOffCooldown) - time);
+                    }
+                    GUILayout.Label("Ability : " + ability.name + " CD: " + coolDownText);
                 }
             }
         }
        
+    }
+
+
+    private long getMillis()
+    {
+        DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
     }
 
     GameLogic getGameLogic()

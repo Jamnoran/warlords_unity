@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.scripts.vo;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameLogic : MonoBehaviour
 {
@@ -22,13 +23,14 @@ public class GameLogic : MonoBehaviour
     // Animation Effects
     public Transform healAnimation;
 
-    public List<Ability> abilities = null;
+    private List<Ability> abilities = null;
 
     public Transform door;
     public Transform door90;
     public Transform wall;
     public Transform start;
     public Transform stairs;
+    public Transform light;
 
     public bool isInGame = false;
     public World world;
@@ -40,9 +42,12 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Game logic has started");
         if ((GameObject.Find("Communication")) == null)
         {
-            Debug.Log("Communication is not set, create from prefab");
-            Instantiate(communication, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
-            StartCoroutine(Example());
+            //Debug.Log("Communication is not set, create from prefab");
+            //Instantiate(communication, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+            //StartCoroutine(Example());
+
+            Debug.Log("Go to connect screen.");
+            SceneManager.LoadScene("Connect");
         }
         else
         {
@@ -60,7 +65,7 @@ public class GameLogic : MonoBehaviour
     public void checkIfShouldJoinServer()
     {
         if (getCommunication().gameId == 0)
-        {
+        {   
             getCommunication().joinServer();
         }
 
@@ -370,8 +375,20 @@ public class GameLogic : MonoBehaviour
 
     public void updateCooldown(Ability ability)
     {
-        Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " ");
+        getAbility(ability.id).timeWhenOffCooldown = ability.timeWhenOffCooldown;
+        Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " CD : " + ability.timeWhenOffCooldown);
+    }
 
+    public Ability getAbility(int id)
+    {
+        foreach (var ability in abilities)
+        {
+            if (ability.id == id)
+            {
+                return ability;
+            }
+        }
+        return null;
     }
 
     public void autoAttack()
@@ -431,7 +448,7 @@ public class GameLogic : MonoBehaviour
             }
             else if (obstacle.type == 5) // Light
             {
-                //obstacle.transform = (Transform)Instantiate(light, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+                obstacle.transform = (Transform)Instantiate(light, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }
         }
     }

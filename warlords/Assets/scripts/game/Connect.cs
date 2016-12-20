@@ -19,6 +19,13 @@ public class Connect : MonoBehaviour {
         loginButton.onClick.AddListener(login);
         resetButton.onClick.AddListener(reset);
         string userId = PlayerPrefs.GetString("USER_ID");
+
+        string email = PlayerPrefs.GetString("EMAIL");
+        if (email != null && !email.Equals(""))
+        {
+            emailInput.text = email;
+        }
+
         if (autoLogin && userId != null && !userId.Equals(""))
         {   
             Debug.Log("Auto login, user id : " + userId);
