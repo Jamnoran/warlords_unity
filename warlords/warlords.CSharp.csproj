@@ -61,9 +61,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="LitJson">
       <HintPath>Assets\plugins\LitJson.dll</HintPath>
     </Reference>
@@ -108,11 +105,12 @@
     <Compile Include="Assets\scripts\ui\BarScript.cs" />
     <Compile Include="Assets\scripts\ui\Cooldown.cs" />
     <Compile Include="Assets\scripts\ui\DragHandeler.cs" />
+    <Compile Include="Assets\scripts\ui\HealthUpdate.cs" />
     <Compile Include="Assets\scripts\ui\Inventory.cs" />
     <Compile Include="Assets\scripts\ui\Menu.cs" />
-    <Compile Include="Assets\scripts\ui\Player.cs" />
     <Compile Include="Assets\scripts\ui\Slot.cs" />
     <Compile Include="Assets\scripts\ui\Stat.cs" />
+    <Compile Include="Assets\scripts\ui\UpdateHealthGlobe.cs" />
     <Compile Include="Assets\scripts\ui\checkAbilityAvailable.cs" />
     <Compile Include="Assets\scripts\ui\healthcamera.cs" />
     <Compile Include="Assets\scripts\vo\Ability.cs" />

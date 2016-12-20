@@ -34,6 +34,7 @@ public class GameLogic : MonoBehaviour
 
     public bool isInGame = false;
     public World world;
+    public GameObject playerHealth;
 
 
     // Use this for initialization
@@ -159,7 +160,8 @@ public class GameLogic : MonoBehaviour
                     // Need too update all new information that comes from the server
                     if (minion.hp != newMinion.hp)
                     {
-                        minion.setHp(newMinion.hp);;
+                        //update minion hp
+                        minion.setHp(newMinion.hp);
                         Debug.Log("Minions new hp = " + minion.hp);
                     }
                     minion.desiredPositionX = newMinion.desiredPositionX;
@@ -197,10 +199,14 @@ public class GameLogic : MonoBehaviour
             {
                 if (newHero.id == hero.id)
                 {
+                    //set initial health for hero
+                    hero.initBars();
                     found = true;
                     if (hero.hp != newHero.hp)
                     {
+                        
                         hero.hp = newHero.hp;
+                        hero.setHp(hero.hp);
                         Debug.Log("Heroes new hp = " + hero.hp);
                     }
                     // Dont change desired position for own hero
@@ -487,5 +493,6 @@ public class GameLogic : MonoBehaviour
         }
         return null;
     }
+
 
 }
