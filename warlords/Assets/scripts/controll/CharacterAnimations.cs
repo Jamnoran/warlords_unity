@@ -19,11 +19,11 @@ public class CharacterAnimations : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown("s"))
-        {
-            print("Slash!");
-            attackAnimation();
-        }
+        //if (Input.GetKeyDown("s"))
+        //{
+        //    print("Slash!");
+        //    attackAnimation();
+        //}
 
         //start moving the player towards the desired position
         Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);

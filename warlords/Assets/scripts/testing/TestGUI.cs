@@ -15,8 +15,15 @@ public class TestGUI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
+
+        // Handle auto attack, this sets a flag on the hero
+        if (Input.GetKeyUp("a"))
+        {
+            bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
+            Debug.Log("Hero is now attacking : " + !autoAttacking);
+            getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
+        }
+    }
 
     void OnGUI()
     {
@@ -73,6 +80,7 @@ public class TestGUI : MonoBehaviour {
                     if (ability.timeWhenOffCooldown != null && !ability.timeWhenOffCooldown.Equals("") && (long.Parse(ability.timeWhenOffCooldown) >= time))
                     {
                         coolDownText = "" + (long.Parse(ability.timeWhenOffCooldown) - time);
+                        
                     }
                     GUILayout.Label("Ability : " + ability.name + " CD: " + coolDownText);
                 }

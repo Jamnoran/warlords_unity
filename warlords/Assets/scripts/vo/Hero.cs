@@ -16,6 +16,7 @@ namespace Assets.scripts.vo
         public int maxHp;
         public int resource;
         public int maxResource;
+        public bool alive = true; 
         public string class_type;
         public float positionX;
         public float positionZ;
@@ -24,6 +25,7 @@ namespace Assets.scripts.vo
         public int targetEnemy = 0;
         public int targetFriendly = 0;
         public Transform trans;
+        private bool autoAttacking = false;
 
     
         public void setTrans(Transform transf)
@@ -59,9 +61,25 @@ namespace Assets.scripts.vo
         public void setHp(int newHp)
         {
             hp = newHp;
+
+
+            String heroid = getCommunication().getHeroId();
+            bool ownHero = true;
+            if (id != Int32.Parse(heroid))
+            {
+                ownHero = false;
+            }
+            updateHealthBar(ownHero);
+        }
+
+        public void updateHealthBar(bool ownHero)
+        {
             if (trans != null)
             {
-                ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
+                if (ownHero)
+                {
+                    ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
+                }
             }
         }
 
@@ -71,5 +89,24 @@ namespace Assets.scripts.vo
             setHp(maxHp);
         }
 
+        public bool getAutoAttacking()
+        {
+            return autoAttacking;
+        }
+
+        public void setAutoAttacking(bool value)
+        {
+            autoAttacking = value;
+        }
+
+        ServerCommunication getCommunication()
+        {
+            GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+            foreach (GameObject go in gos)
+            {
+                return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
+            }
+            return null;
+        }
     }
 }

@@ -75,10 +75,7 @@ public class GameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp("a"))
-        {
-            autoAttack();
-        }
+        
     }
 
    
@@ -192,6 +189,8 @@ public class GameLogic : MonoBehaviour
 
     public void updateListOfHeroes(List<Hero> newHeroes)
     {
+        String heroid = getCommunication().getHeroId();
+       
         foreach (var newHero in newHeroes)
         {
             bool found = false;
@@ -199,20 +198,19 @@ public class GameLogic : MonoBehaviour
             {
                 if (newHero.id == hero.id)
                 {
-                    //set initial health for hero
-                    hero.initBars();
+                    bool ownHero = true;
+                    if (hero.id != Int32.Parse(heroid))
+                    {
+                        ownHero = false;
+                    }
                     found = true;
                     if (hero.hp != newHero.hp)
                     {
-                        
-                        hero.hp = newHero.hp;
-                        hero.setHp(hero.hp);
-                        Debug.Log("Heroes new hp = " + hero.hp);
+                        Debug.Log("Heroes new hp = " + newHero.hp + " Previous " + hero.hp);
+                        hero.setHp(newHero.hp);
                     }
                     // Dont change desired position for own hero
-                    String heroid = getCommunication().getHeroId();
-                    if (hero.id != Int32.Parse(heroid))
-                    {
+                    if (!ownHero) {
                         Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
                         hero.desiredPositionX = newHero.desiredPositionX;
                         hero.desiredPositionZ = newHero.desiredPositionZ;
@@ -236,14 +234,15 @@ public class GameLogic : MonoBehaviour
                 Transform heroTransform = (Transform) Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ), Quaternion.identity);
                 heroTransform.name = prefabToUse.name;
                 newHero.setTrans(heroTransform);
-                String heroid = getCommunication().getHeroId();
-                int hId = Int32.Parse(heroid);
-                if (newHero.id == hId)
+                if (newHero.id == Int32.Parse(heroid))
                 {
                     ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
+                    newHero.updateHealthBar(true);
                 }
                 ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
                 heroes.Add(newHero);
+                //set initial health for hero
+                newHero.initBars();
             }
         }
     }
@@ -259,6 +258,14 @@ public class GameLogic : MonoBehaviour
                 Destroy(minion.minionTransform.gameObject);
                 // This is wrong, shouldnt do it while in loop (find out correct way to do it) normally done by an iterator but not sure how to do it in c#
                 minions.Remove(minion);
+                foreach(Hero hero in heroes)
+                {
+                    if (minion.id == hero.targetEnemy)
+                    {
+                        hero.targetEnemy = 0;
+                        hero.setAutoAttacking(false);
+                    }
+                }
             }
             if (gameAnimation.animation_type == "HEAL")
             {
@@ -381,8 +388,12 @@ public class GameLogic : MonoBehaviour
 
     public void updateCooldown(Ability ability)
     {
-        getAbility(ability.id).timeWhenOffCooldown = ability.timeWhenOffCooldown;
-        Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " CD : " + ability.timeWhenOffCooldown);
+        if (getAbility(ability.id) != null)
+        {
+            getAbility(ability.id).timeWhenOffCooldown = ability.timeWhenOffCooldown;
+            getAbility(ability.id).waitingForCdResponse = false;
+            Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " CD : " + ability.timeWhenOffCooldown);
+        }
     }
 
     public Ability getAbility(int id)

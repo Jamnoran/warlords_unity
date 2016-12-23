@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.scripts.vo;
 
 public class clickToMove : MonoBehaviour {
     
@@ -23,6 +24,18 @@ public class clickToMove : MonoBehaviour {
         if (isMyHero && Input.GetMouseButton(right_mouse_button)) {                 //look to see if the player is clicking right mouse button
             getPosition();                                       //where did the player click?
             MovePlayer();
+        }
+
+        // Check if hero wants to auto attack
+        if (isMyHero)
+        {
+            Hero hero = getGameLogic().getMyHero();
+            //Debug.Log("Hero.getAutoAttacking " + hero.getAutoAttacking() + " auto attack ready : " + getGameLogic().getAbility(0).isReady());
+            if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0)
+            {
+                getGameLogic().getAbility(0).waitingForCdResponse = true;
+                getGameLogic().autoAttack();
+            }
         }
     }
 
@@ -66,6 +79,10 @@ public class clickToMove : MonoBehaviour {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
+    GameLogic getGameLogic()
+    {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+    }
     CharacterAnimations getAnimation()
     {
         return (CharacterAnimations)GetComponent(typeof(CharacterAnimations));

@@ -16,13 +16,28 @@ namespace Assets.scripts.vo
         public String description;
         public String image;
         public int baseDamage;
-	public int topDamage;
+	    public int topDamage;
         public int crittable;
         public String targetType;
         public int baseCD;
-        public String timeWhenOffCooldown;
+        public String timeWhenOffCooldown = "0";
+        public bool waitingForCdResponse = false;
+
+        public bool isReady()
+        {
+            if (waitingForCdResponse || (timeWhenOffCooldown != null && !timeWhenOffCooldown.Equals("") && (long.Parse(timeWhenOffCooldown) >= getMillis())))
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+        private long getMillis()
+        {
+            DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
+        }
 
     }
-
-   
 }
