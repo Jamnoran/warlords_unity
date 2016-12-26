@@ -25,6 +25,7 @@ public class MinionAnimations : MonoBehaviour {
     void Start () {
         anim = character.GetComponent<Animator>();
         rbody = character.GetComponent<Rigidbody>();
+        targetPosition = character.transform.position;
 	}
 	
 	// Update is called once per frame
@@ -81,12 +82,6 @@ public class MinionAnimations : MonoBehaviour {
             idleAnimationRunning = true;
             //Debug.Log("Starting idle animation again");
             anim.Play("zombie_idle", -1, 0f);
-        }
-
-        if (Input.GetKeyDown("z"))
-        {
-            print("Minoin att!");
-            attackAnimation();
         }
 
     }

@@ -43,10 +43,6 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Game logic has started");
         if ((GameObject.Find("Communication")) == null)
         {
-            //Debug.Log("Communication is not set, create from prefab");
-            //Instantiate(communication, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
-            //StartCoroutine(Example());
-
             Debug.Log("Go to connect screen.");
             SceneManager.LoadScene("Connect");
         }
@@ -181,7 +177,6 @@ public class GameLogic : MonoBehaviour
                 MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
                 minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
                 FieldOfView fieldOfView = ((FieldOfView) minionTransform.Find("mob1").GetComponent(typeof(FieldOfView)));
-                fieldOfView.TYPE_OF_FIELD_OF_VIEW = 1;
                 minions.Add(newMinion);
             }
         }
@@ -410,7 +405,7 @@ public class GameLogic : MonoBehaviour
 
     public void autoAttack()
     {
-        // Here you will need to check the id of the minion focused to send up to server.
+        // Here we will need to check the id of the minion focused to send up to server.
         // This is a basic attack
         int minionId = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().targetEnemy;
         getCommunication().sendAutoAttack(minionId);

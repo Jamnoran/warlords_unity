@@ -85,6 +85,8 @@
     <Compile Include="Assets\scripts\character classes\baseWarrior.cs" />
     <Compile Include="Assets\scripts\controll\CharacterAnimations.cs" />
     <Compile Include="Assets\scripts\controll\FieldOfView.cs" />
+    <Compile Include="Assets\scripts\controll\FieldOfViewAbility.cs" />
+    <Compile Include="Assets\scripts\controll\FieldOfViewMinion.cs" />
     <Compile Include="Assets\scripts\controll\MinionAnimations.cs" />
     <Compile Include="Assets\scripts\controll\MinionMove.cs" />
     <Compile Include="Assets\scripts\controll\Target.cs" />

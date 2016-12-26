@@ -21,7 +21,7 @@ public class LightLogic : MonoBehaviour {
         if (!turnedOn)
         {
             Debug.Log("Hero entered, turn on light : " + other.gameObject.layer);
-            if (other.gameObject.layer == 9) {
+            if (other.gameObject.layer == 10) {
                 lightObject.enabled = true;
                 turnedOn = true;
             }

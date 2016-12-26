@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.scripts.vo;
+using System.Collections.Generic;
 
 public class clickToMove : MonoBehaviour {
     
@@ -17,7 +18,9 @@ public class clickToMove : MonoBehaviour {
     void Start () {
         //start at our current position, standing still
         targetPosition = character.position;
-	}
+        Debug.Log("Setting target position to : " + character.position);
+        getAnimation().setDesiredLocation(targetPosition);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -29,12 +32,31 @@ public class clickToMove : MonoBehaviour {
         // Check if hero wants to auto attack
         if (isMyHero)
         {
-            Hero hero = getGameLogic().getMyHero();
-            //Debug.Log("Hero.getAutoAttacking " + hero.getAutoAttacking() + " auto attack ready : " + getGameLogic().getAbility(0).isReady());
-            if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0)
+            if (getGameLogic() != null)
             {
-                getGameLogic().getAbility(0).waitingForCdResponse = true;
-                getGameLogic().autoAttack();
+                Hero hero = getGameLogic().getMyHero();
+                //Debug.Log("Hero.getAutoAttacking " + hero.getAutoAttacking() + " auto attack ready : " + getGameLogic().getAbility(0).isReady());
+                if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0)
+                {
+                    // Check if user is in range of auto attack otherwise set its location as targetPostion
+                    bool minionInRange = false;
+                    FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
+                    List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, 3f, false);
+                    if (enemiesInRange != null && enemiesInRange.Contains(hero.targetEnemy))
+                    {
+                        minionInRange = true;
+                    }
+                    if (minionInRange)
+                    {
+                        getGameLogic().getAbility(0).waitingForCdResponse = true;
+                        getGameLogic().autoAttack();
+                    }else
+                    {
+                        targetPosition = getGameLogic().getMinion(hero.targetEnemy).getTransformPosition();
+                        MovePlayer();
+                    }
+                    
+                }
             }
         }
     }
@@ -70,18 +92,33 @@ public class clickToMove : MonoBehaviour {
     void sendMove()
     {
         lastSentPosition = transform.position;
-        getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
+        if (getCommunication() != null)
+        {
+            getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
+        }
     }
 
 
     ServerCommunication getCommunication()
     {
-        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+        if (GameObject.Find("Communication") != null)
+        {
+            return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+        }
+        else
+        {
+            return null;
+        }
     }
 
     GameLogic getGameLogic()
     {
-        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        if (GameObject.Find("GameLogicObject") != null) { 
+            return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        }else
+        {
+            return null;
+        }
     }
     CharacterAnimations getAnimation()
     {

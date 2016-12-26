@@ -3,24 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets.scripts.vo;
 
-public class FieldOfView : MonoBehaviour
-{
+public class FieldOfViewAbility : MonoBehaviour {
     public float viewRadius;
     [Range(0, 360)]
     public float viewAngle;
 
     public LayerMask targetMask;
     public LayerMask obstacleMask;
-    
-    public List<Transform> visibleTargets = new List<Transform>();
-    private List<Minion> minions = new List<Minion>();
-    private List<Hero> heroes = new List<Hero>();
 
+    public LayerMask enemyMask;
+    public LayerMask friendlyMask;
+    
     public float meshResolution;
     public int edgeResolveIterations;
     public float edgeDstThreshold;
-
-    public int itemsInRange = 0;
+    
 
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
@@ -30,38 +27,31 @@ public class FieldOfView : MonoBehaviour
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
-
-        StartCoroutine("FindTargetsWithDelay", .2f);
     }
 
     void Update()
     {
-        //if (Input.GetKeyUp("t")){}
-    }
 
-
-
-    IEnumerator FindTargetsWithDelay(float delay)
-    {
-        // Chnage this to when user is alive.
-        while (true)
-        {
-            yield return new WaitForSeconds(delay);
-            FindVisibleTargets();
-        }
     }
 
     void LateUpdate()
     {
         DrawFieldOfView();
     }
-
-
-    public void FindVisibleTargets()
+    
+    public List<int> FindVisibleTargets(float angle, float radius, bool friendly)
     {
-        visibleTargets.Clear();
+        if (friendly)
+        {
+            targetMask = friendlyMask;
+        }else
+        {
+            targetMask = enemyMask;
+        }
+        viewRadius = radius;
+        viewAngle = angle;
+        List<Transform> visibleTargets = new List<Transform>();
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
-        itemsInRange = targetsInViewRadius.Length;
         for (int i = 0; i < targetsInViewRadius.Length; i++)
         {
             Transform target = targetsInViewRadius[i].transform;
@@ -78,20 +68,21 @@ public class FieldOfView : MonoBehaviour
                 }
             }
         }
-    }
-    
-    public bool isPortalInRange()
-    {
-        foreach (var target in visibleTargets)
-        {
-            if (target.name.Contains("StairsDown"))
-            {
-                Debug.Log("User had portal in range");
-                return true;
+        if (visibleTargets.Count > 0) {
+            List<int> targets = new List<int>();
+            foreach (Transform trans in visibleTargets){
+                if (friendly){
+                    Hero hero = getGameLogic().getClosestHeroByPosition(trans.position);
+                    targets.Add(hero.id);
+                } else {
+                    Minion min = getGameLogic().getClosestMinionByPosition(trans.position);
+                    targets.Add(min.id);
+                }
             }
+            return targets;
+        } else {
+            return null;
         }
-        Debug.Log("User was out of reach");
-        return false;
     }
 
     GameLogic getGameLogic()

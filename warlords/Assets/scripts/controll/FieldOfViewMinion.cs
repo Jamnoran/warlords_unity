@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets.scripts.vo;
 
-public class FieldOfView : MonoBehaviour
+public class FieldOfViewMinion : MonoBehaviour
 {
+    private bool sentInitialAggro = false;
+
     public float viewRadius;
     [Range(0, 360)]
     public float viewAngle;
@@ -34,16 +36,9 @@ public class FieldOfView : MonoBehaviour
         StartCoroutine("FindTargetsWithDelay", .2f);
     }
 
-    void Update()
-    {
-        //if (Input.GetKeyUp("t")){}
-    }
-
-
 
     IEnumerator FindTargetsWithDelay(float delay)
     {
-        // Chnage this to when user is alive.
         while (true)
         {
             yield return new WaitForSeconds(delay);
@@ -55,7 +50,6 @@ public class FieldOfView : MonoBehaviour
     {
         DrawFieldOfView();
     }
-
 
     public void FindVisibleTargets()
     {
@@ -74,24 +68,34 @@ public class FieldOfView : MonoBehaviour
                     if (!visibleTargets.Contains(target))
                     {
                         visibleTargets.Add(target);
+                        // This is what happens if this class is on a minion
+                        if (!sentInitialAggro)
+                        {
+                            Debug.Log("This target is in range : " + target.name);
+                            Debug.Log("Hero, found initiating aggro!");
+                            Debug.Log(gameObject.name);
+                            Transform currentMinion = gameObject.transform;
+                            Debug.Log("Minions position is: " + currentMinion.position);
+                            Debug.Log("Hero position is: " + target.position);
+
+                            //make mob look at target before moving it.
+                            Vector3 targetPostition = new Vector3(target.position.x, target.transform.position.y, target.position.z);
+                            currentMinion.transform.LookAt(targetPostition);
+
+                            // Send this information to server
+                            Hero hero = getGameLogic().getClosestHeroByPosition(target.position);
+                            Minion minion = getGameLogic().getClosestMinionByPosition(target.position);
+                            if (hero != null && minion != null)
+                            {
+                                sentInitialAggro = true;
+                                Debug.Log("Got minion aggro on this id: " + minion.id + " And this heroId: " + hero.id);
+                                getCommunication().sendMinionAggro(minion.id, hero.id);
+                            }
+                        }
                     }
                 }
             }
         }
-    }
-    
-    public bool isPortalInRange()
-    {
-        foreach (var target in visibleTargets)
-        {
-            if (target.name.Contains("StairsDown"))
-            {
-                Debug.Log("User had portal in range");
-                return true;
-            }
-        }
-        Debug.Log("User was out of reach");
-        return false;
     }
 
     GameLogic getGameLogic()
