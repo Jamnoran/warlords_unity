@@ -12,6 +12,7 @@ namespace Assets.scripts.vo
         public int user_id;
         public int xp;
         public int level;
+        public int topGameLvl;
         public int hp;
         public int maxHp;
         public int resource;

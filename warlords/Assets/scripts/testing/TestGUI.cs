@@ -2,51 +2,49 @@
 using System.Collections;
 using Assets.scripts.vo;
 using System;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TestGUI : MonoBehaviour {
 
-    //private baseCharacter class1 = new basePriest();
-    //private baseCharacter class2 = new baseWarrior();
+    public GameObject menu;
+    public Button exit;
+    public Button restart;
+    private bool isShowing = false;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
+    // Use this for initialization
+    void Start () {
+        menu.SetActive(false);
+        restart.onClick.AddListener(() => { restartLevel(); });
+        exit.onClick.AddListener(() => { exitToLobby(); });
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
+
         // Handle auto attack, this sets a flag on the hero
-        if (Input.GetKeyUp("a"))
+        if (getGameLogic().isMyHeroAlive())
         {
-            bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
-            Debug.Log("Hero is now attacking : " + !autoAttacking);
-            getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
+            if (Input.GetKeyUp("a"))
+            {
+                bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
+                Debug.Log("Hero is now attacking : " + !autoAttacking);
+                getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
+            }else if (Input.GetKeyUp("s"))
+            {
+                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+            }
+        }
+        if (Input.GetKeyDown("escape"))
+        {
+            isShowing = !isShowing;
         }
     }
 
     void OnGUI()
     {
-        //fetch our priest base stats and display on GUI
-        //GUILayout.Label(class1.CharacterClassName);
-        //GUILayout.Label(class1.CharacterClassDescription);
-        //GUILayout.Label("stamina: "   + class1.Stamina);
-        //GUILayout.Label("endurance: " + class1.Endurance);
-        //GUILayout.Label("strength: "  + class1.Strength);
-        //GUILayout.Label("intellect: " + class1.Intellect);
-        //GUILayout.Label("agility: "   + class1.Agility);
-        //GUILayout.Label("armor: "     + class1.Armor);
-
-        //fetch our warrior base stats and display on GUI
-        //GUILayout.Label(class2.CharacterClassName);
-        //GUILayout.Label(class2.CharacterClassDescription);
-        //GUILayout.Label("stamina: "   + class2.Stamina);
-        //GUILayout.Label("endurance: " + class2.Endurance);
-        //GUILayout.Label("strength: "  + class2.Strength);
-        //GUILayout.Label("intellect: " + class2.Intellect);
-        //GUILayout.Label("agility: "   + class2.Agility);
-        //GUILayout.Label("armor: "     + class2.Armor);
-        
 
         GUILayout.Label("Minions left: " + ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMinions().Count);
 
@@ -54,6 +52,8 @@ public class TestGUI : MonoBehaviour {
         if (hero != null)
         {
             GUILayout.Label("Hero: " + hero.hp + "/" + hero.maxHp);
+
+            GUILayout.Label("XP: " + hero.xp + " Level: " + hero.level);
         }
 
         Minion enemy = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroEnemyTarget();
@@ -86,7 +86,42 @@ public class TestGUI : MonoBehaviour {
                 }
             }
         }
+
+        bool allDead = true;
+        foreach(Hero heroHp in getGameLogic().getHeroes())
+        {
+            if (heroHp.hp > 0)
+            {
+                allDead = false;
+            }
+        }
+        if (getGameLogic().getHeroes() == null || getGameLogic().getHeroes().Count == 0)
+        {
+            // If we have yet recieved the heroes dont show menu
+            allDead = false;
+        }
+        if (allDead)
+        {
+            menu.SetActive(true);
+        }else if(!allDead && isShowing) {
+            menu.SetActive(true);
+        }else
+        {
+            menu.SetActive(false);
+        }
        
+    }
+
+    private void restartLevel()
+    {
+        Debug.Log("Sending restart level");
+        getCommunication().restartLevel();
+    }
+
+    private void exitToLobby()
+    {
+        Debug.Log("Exit to lobby screen");
+        SceneManager.LoadScene("Lobby");
     }
 
 
@@ -99,5 +134,18 @@ public class TestGUI : MonoBehaviour {
     GameLogic getGameLogic()
     {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+    }
+
+
+    ServerCommunication getCommunication()
+    {
+        if (GameObject.Find("Communication") != null)
+        {
+            return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+        }
+        else
+        {
+            return null;
+        }
     }
 }

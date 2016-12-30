@@ -24,38 +24,40 @@ public class clickToMove : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (isMyHero && Input.GetMouseButton(right_mouse_button)) {                 //look to see if the player is clicking right mouse button
-            getPosition();                                       //where did the player click?
-            MovePlayer();
-        }
-
-        // Check if hero wants to auto attack
-        if (isMyHero)
+        if (getGameLogic().isMyHeroAlive())
         {
-            if (getGameLogic() != null)
+            if (isMyHero && Input.GetMouseButton(right_mouse_button))
+            {                 //look to see if the player is clicking right mouse button
+                getPosition();                                       //where did the player click?
+                MovePlayer();
+            }
+
+            // Check if hero wants to auto attack
+            if (isMyHero)
             {
-                Hero hero = getGameLogic().getMyHero();
-                //Debug.Log("Hero.getAutoAttacking " + hero.getAutoAttacking() + " auto attack ready : " + getGameLogic().getAbility(0).isReady());
-                if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0)
+                if (getGameLogic() != null)
                 {
-                    // Check if user is in range of auto attack otherwise set its location as targetPostion
-                    bool minionInRange = false;
-                    FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
-                    List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, 3f, false);
-                    if (enemiesInRange != null && enemiesInRange.Contains(hero.targetEnemy))
+                    Hero hero = getGameLogic().getMyHero();
+                    //Debug.Log("Hero.getAutoAttacking " + hero.getAutoAttacking() + " auto attack ready : " + getGameLogic().getAbility(0).isReady());
+                    if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0)
                     {
-                        minionInRange = true;
+                        // Check if user is in range of auto attack otherwise set its location as targetPostion
+                        FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
+                        List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, 3f, false);
+                        if (enemiesInRange != null && enemiesInRange.Contains(hero.targetEnemy))
+                        {
+                            // Is in range
+                            getAnimation().stopMove();
+                            getGameLogic().getAbility(0).waitingForCdResponse = true;
+                            getGameLogic().autoAttack();
+                        }
+                        else
+                        {
+                            targetPosition = getGameLogic().getMinion(hero.targetEnemy).getTransformPosition();
+                            MovePlayer();
+                        }
+
                     }
-                    if (minionInRange)
-                    {
-                        getGameLogic().getAbility(0).waitingForCdResponse = true;
-                        getGameLogic().autoAttack();
-                    }else
-                    {
-                        targetPosition = getGameLogic().getMinion(hero.targetEnemy).getTransformPosition();
-                        MovePlayer();
-                    }
-                    
                 }
             }
         }
@@ -120,6 +122,7 @@ public class clickToMove : MonoBehaviour {
             return null;
         }
     }
+
     CharacterAnimations getAnimation()
     {
         return (CharacterAnimations)GetComponent(typeof(CharacterAnimations));

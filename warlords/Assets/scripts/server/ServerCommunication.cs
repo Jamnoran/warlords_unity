@@ -123,6 +123,18 @@ public class ServerCommunication : MonoBehaviour {
         }
     }
 
+    public void sendStopHero(int heroId)
+    {
+            print("Sending stop hero");
+            writeSocket("{\"request_type\": \"STOP_HERO\", user_id:\"" + userId + "\", hero_id: \"" + heroId + "\"}");
+    }
+
+    public void restartLevel()
+    {
+        print("Sending restart level");
+        writeSocket("{\"request_type\": \"RESTART_LEVEL\", user_id:\"" + userId + "\"}");
+    }
+
     public void sendMinionHasTargetInRange(int minionId, int heroTargetId)
     {
         if (heroTargetId != 0)
@@ -297,6 +309,11 @@ public class ServerCommunication : MonoBehaviour {
             {
                 ResponseAbilities responseAbilities = JsonMapper.ToObject<ResponseAbilities>(json);
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setAbilities(responseAbilities.abilities);
+            }
+            else if (responseType == "STOP_HERO")
+            {
+                ResponseStopHero responseStopHero = JsonMapper.ToObject<ResponseStopHero>(json);
+                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).stopHero(responseStopHero.hero);
             }
         }
     }

@@ -175,7 +175,7 @@ public class GameLogic : MonoBehaviour
                 newMinion.setTransform(minionTransform);
                 newMinion.initBars();
                 MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
-                minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
+                minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 1.0f, newMinion.desiredPositionZ));
                 FieldOfView fieldOfView = ((FieldOfView) minionTransform.Find("mob1").GetComponent(typeof(FieldOfView)));
                 minions.Add(newMinion);
             }
@@ -199,11 +199,10 @@ public class GameLogic : MonoBehaviour
                         ownHero = false;
                     }
                     found = true;
-                    if (hero.hp != newHero.hp)
-                    {
-                        Debug.Log("Heroes new hp = " + newHero.hp + " Previous " + hero.hp);
-                        hero.setHp(newHero.hp);
-                    }
+                    hero.setHp(newHero.hp);
+                    hero.xp = newHero.xp;
+                    hero.level = newHero.level;
+                    hero.resource = newHero.resource;
                     // Dont change desired position for own hero
                     if (!ownHero) {
                         Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
@@ -289,6 +288,18 @@ public class GameLogic : MonoBehaviour
                 
             }
         }
+    }
+
+    public void stopHero(int heroId)
+    {
+        Debug.Log("Stopping hero.");
+        Hero hero = getHero(heroId);
+        hero.desiredPositionX = hero.positionX;
+        hero.desiredPositionZ = hero.positionZ;
+
+        CharacterAnimations heroAnimation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
+        heroAnimation.stopMove();
+        hero.setAutoAttacking(false);
     }
 
     public void clearWorld()
@@ -409,7 +420,6 @@ public class GameLogic : MonoBehaviour
         // This is a basic attack
         int minionId = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().targetEnemy;
         getCommunication().sendAutoAttack(minionId);
-
     }
 
     public Hero getMyHero()
@@ -424,6 +434,11 @@ public class GameLogic : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public bool isMyHeroAlive()
+    {
+        return (getMyHero().hp > 0);
     }
 
     public void teleportHeroes(List<Hero> teleportHeroes)
