@@ -48,6 +48,7 @@ public class clickToMove : MonoBehaviour {
                         {
                             // Is in range
                             getAnimation().stopMove();
+                            getAnimation().rotateToTarget(getGameLogic().getMinion(hero.targetEnemy).getTransformPosition());
                             getGameLogic().getAbility(0).waitingForCdResponse = true;
                             getGameLogic().autoAttack();
                         }

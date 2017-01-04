@@ -9,6 +9,7 @@ public class Target : MonoBehaviour {
     private Vector3 targetPosition;
     private GameObject typeOftarget;
     const int left_mouse_button = 0;
+    const int right_mouse_button = 1;
     private List<Hero> listOfHeroes = new List<Hero>();
     #endregion
     #region public variables
@@ -25,12 +26,24 @@ public class Target : MonoBehaviour {
         if (Input.GetMouseButton(left_mouse_button))
         {
             getPosition();
-            click();
+            click(true);
             
         }
         if (Input.GetMouseButtonUp(left_mouse_button))
         {
             findStairs();
+        }
+
+        if (Input.GetMouseButton(right_mouse_button))
+        {
+            getPosition();
+            if (click(false))
+            {
+                getGameLogic().getMyHero().setAutoAttacking(true);
+            }else
+            {
+                getGameLogic().getMyHero().setAutoAttacking(false);
+            }
         }
     }
 
@@ -60,7 +73,7 @@ public class Target : MonoBehaviour {
     /// We got a click on a point on map, here we need to handle if its friendly or enemy target or just ground
     /// </summary>
     /// <returns> Bool (True if target found, False otherwise)</returns>
-    public bool click()
+    public bool click(bool leftClick)
     {
         float closestDistanse = 300.0f;
         foreach (var minion in ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMinions())
@@ -90,9 +103,11 @@ public class Target : MonoBehaviour {
         if(closestDistanse < 300.0f) {
             return true;
         }
-        
-        ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetEnemy(0);
-        ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetFriendly(0);
+
+        if (leftClick) {
+            getGameLogic().setHeroTargetEnemy(0);
+            getGameLogic().setHeroTargetFriendly(0);
+        }
         return false;
     }
 

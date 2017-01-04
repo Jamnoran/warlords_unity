@@ -109,5 +109,10 @@ namespace Assets.scripts.vo
             }
             return null;
         }
+
+        CharacterAnimations getAnimation()
+        {
+            return (CharacterAnimations) trans.GetComponent(typeof(CharacterAnimations));
+        }
     }
 }

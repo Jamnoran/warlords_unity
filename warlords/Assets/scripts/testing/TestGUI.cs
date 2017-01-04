@@ -87,6 +87,8 @@ public class TestGUI : MonoBehaviour {
             }
         }
 
+        GUILayout.Label("Auto attacking : " + getGameLogic().getMyHero().getAutoAttacking());
+
         bool allDead = true;
         foreach(Hero heroHp in getGameLogic().getHeroes())
         {

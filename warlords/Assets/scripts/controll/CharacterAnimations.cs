@@ -56,6 +56,14 @@ public class CharacterAnimations : MonoBehaviour {
         }
     }
 
+    public void rotateToTarget(Vector3 postition)
+    {
+        Debug.Log("Rotating towards target");
+        Vector3 rotatingPostition = new Vector3(postition.x, character.transform.position.y, postition.z);
+        character.transform.LookAt(rotatingPostition);
+
+    }
+
     public void attackAnimation()
     {
         anim.Play("auto", -1, 0f);
