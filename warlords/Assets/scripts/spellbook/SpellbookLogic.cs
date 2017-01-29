@@ -25,7 +25,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     private GameObject originalParent;
     private Vector3 originalPosition;
     private Vector3 currentPosition;
-    private GameObject currentParent;
+    private Transform currentParent;
 
     // Initialize spellbookslots and other crap
     public void Start()
@@ -57,7 +57,8 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         
         originalPosition = this.transform.position;
         originalParent = this.transform.parent.gameObject;
-        currentParent = this.transform.parent.gameObject;
+        currentParent = spell.transform.parent;
+        currentPosition = spell.transform.position;
     }
 
     public void OnDrag(PointerEventData data)
@@ -74,8 +75,8 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     {
      
             this.transform.position = snapToActiveSpell(this.transform.position.x, this.transform.position.y, listOfSpellSlots);
-            currentPosition = this.transform.position;
-        currentParent = this.transform.parent.gameObject;
+            currentPosition = spell.transform.position;
+        currentParent = spell.transform.parent;
         Debug.Log("Current parent is: " + currentParent);
         
     }
@@ -97,6 +98,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
             if ((spellX <= spellSlots[i].transform.position.x + 10) && (spellX >= spellSlots[i].transform.position.x - 10) && (spellY <= spellSlots[i].transform.position.y + 10) && (spellY >= spellSlots[i].transform.position.y - 10))
             {
 
+                //if slot is free
                 if (!getSlotTracker().isSlotTaken(spellSlots[i].name))
                 {
                     Debug.Log("Slot is free, adding spell " + spell.transform.name);
@@ -106,14 +108,18 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
                     return spellSlots[i].transform.position;
                 }
 
+                //if slot is taken
                 else if (getSlotTracker().isSlotTaken(spellSlots[i].name) && spellSlots[i].transform.childCount > 0)
                 {
-                    var foo = spellSlots[i].transform.GetChild(0);
+                    var curPar = spell.transform.parent;
+                    Debug.Log("spell: " + spell);
                     Debug.Log("Slot is occupied by spell " + spellSlots[i].transform.GetChild(0));
-                    getSlotTracker().removeFromList(spell.transform.parent.transform.name);
-                    spell.transform.SetParent(originalParent.transform);
-                    
-                    return originalPosition;
+                    //push current spell to where new spell was
+                    spellSlots[i].transform.GetChild(0).position = curPar.transform.position;
+                    spellSlots[i].transform.GetChild(0).SetParent(curPar);
+                    //push new spell to new parent
+                    spell.transform.parent = spellSlots[i].transform;
+                    return spellSlots[i].transform.position;
                 }
             }
         }
