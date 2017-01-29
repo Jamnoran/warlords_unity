@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
 {
+    public GameObject spell;
     private GameObject spellSlot1;
     private GameObject spellSlot2;
     private GameObject spellSlot3;
@@ -19,13 +20,17 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     //in this list we keep information about all the slots in the players action bar so we can calculate where to drop spells etc
     private List<GameObject> listOfSpellSlots = new List<GameObject>();
     //keep track of slots that allready have an ability in the players action bar so we can swap it with the one currently selected
-    private List<string> listOfBusySpellSlots = new List<string>();    
+    private List<string> listOfBusySpellSlots = new List<string>();
     //store the original position of our spell so we can snap it back to the spellbook if placed in invalid places
+    private GameObject originalParent;
     private Vector3 originalPosition;
+    private Vector3 currentPosition;
+    private GameObject currentParent;
 
     // Initialize spellbookslots and other crap
     public void Start()
     {
+        spell = GameObject.Find(this.transform.name);
         spellSlot1 = GameObject.FindWithTag("spell1");
         spellSlot2 = GameObject.FindWithTag("spell2");
         spellSlot3 = GameObject.FindWithTag("spell3");
@@ -51,6 +56,8 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         listOfSpellSlots.Add(spellSlot11);
         
         originalPosition = this.transform.position;
+        originalParent = this.transform.parent.gameObject;
+        currentParent = this.transform.parent.gameObject;
     }
 
     public void OnDrag(PointerEventData data)
@@ -67,6 +74,9 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     {
      
             this.transform.position = snapToActiveSpell(this.transform.position.x, this.transform.position.y, listOfSpellSlots);
+            currentPosition = this.transform.position;
+        currentParent = this.transform.parent.gameObject;
+        Debug.Log("Current parent is: " + currentParent);
         
     }
 
@@ -80,68 +90,41 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     /// <returns>Vector3 position to drop spell.</returns>
     public Vector3 snapToActiveSpell(float spellX, float spellY, List<GameObject> spellSlots)
     {
+
         for (int i = 0; i < spellSlots.Count; i++)
         {
+
             if ((spellX <= spellSlots[i].transform.position.x + 10) && (spellX >= spellSlots[i].transform.position.x - 10) && (spellY <= spellSlots[i].transform.position.y + 10) && (spellY >= spellSlots[i].transform.position.y - 10))
             {
-                getSlotTracker().addToList(spellSlots[i].transform.name);
-                return spellSlots[i].transform.position;
+
+                if (!getSlotTracker().isSlotTaken(spellSlots[i].name))
+                {
+                    Debug.Log("Slot is free, adding spell " + spell.transform.name);
+                    spell.transform.SetParent(spellSlots[i].transform);
+                    getSlotTracker().addToList(spellSlots[i].name, spell.name);
+                    
+                    return spellSlots[i].transform.position;
+                }
+
+                else if (getSlotTracker().isSlotTaken(spellSlots[i].name) && spellSlots[i].transform.childCount > 0)
+                {
+                    var foo = spellSlots[i].transform.GetChild(0);
+                    Debug.Log("Slot is occupied by spell " + spellSlots[i].transform.GetChild(0));
+                    getSlotTracker().removeFromList(spell.transform.parent.transform.name);
+                    spell.transform.SetParent(originalParent.transform);
+                    
+                    return originalPosition;
+                }
             }
         }
+        getSlotTracker().removeFromList(spell.transform.parent.transform.name);
+        spell.transform.SetParent(originalParent.transform);
+         
         return originalPosition;
     }
 
 
-    public void OnMove(AxisEventData data)
-    {
-        Debug.Log("OnMove called.");
-    }
-
-    public void OnPointerClick(PointerEventData data)
-    {
-        Debug.Log("OnPointerClick called.");
-    }
-
-    public void OnPointerDown(PointerEventData data)
-    {
-         
-    }
-
-    public void OnPointerEnter(PointerEventData data)
-    {
-        
-        Debug.Log("OnPointerEnter called on: ");
-    }
-
-    public void OnPointerExit(PointerEventData data)
-    {
-        Debug.Log("OnPointerExit called.");
-    }
-
-    public void OnPointerUp(PointerEventData data)
-    {
-        Debug.Log("OnPointerUp called.");
-    }
-
-    public void OnScroll(PointerEventData data)
-    {
-        Debug.Log("OnScroll called.");
-    }
-
-    public void OnSelect(BaseEventData data)
-    {
-        Debug.Log("OnSelect called.");
-    }
-
-    public void OnSubmit(BaseEventData data)
-    {
-        Debug.Log("OnSubmit called.");
-    }
-
-    public void OnUpdateSelected(BaseEventData data)
-    {
-        Debug.Log("OnUpdateSelected called.");
-    }
+  
 
     SpellSlotBusyOrNot getSlotTracker()
     {
