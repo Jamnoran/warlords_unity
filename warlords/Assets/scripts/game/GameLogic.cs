@@ -269,7 +269,7 @@ public class GameLogic : MonoBehaviour
             }
             if (gameAnimation.animation_type == "ATTACK")
             {
-                Debug.Log("Attack anination");
+                Debug.Log("Attack animation");
                 //Minion minion = getMinion(gameAnimation.target_id);
                 Hero target = getHero(gameAnimation.source_id);
                 CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
@@ -438,7 +438,14 @@ public class GameLogic : MonoBehaviour
 
     public bool isMyHeroAlive()
     {
-        return (getMyHero().hp > 0);
+        if (getMyHero() != null)
+        {
+            return (getMyHero().hp > 0);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void teleportHeroes(List<Hero> teleportHeroes)

@@ -43,7 +43,7 @@ public class clickToMove : MonoBehaviour {
                     {
                         // Check if user is in range of auto attack otherwise set its location as targetPostion
                         FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
-                        List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, 3f, false);
+                        List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, hero.attackRange, false);
                         if (enemiesInRange != null && enemiesInRange.Contains(hero.targetEnemy))
                         {
                             // Is in range

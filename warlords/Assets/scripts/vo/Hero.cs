@@ -27,6 +27,7 @@ namespace Assets.scripts.vo
         public int targetFriendly = 0;
         public Transform trans;
         private bool autoAttacking = false;
+        public float attackRange = 3.0f;
 
     
         public void setTrans(Transform transf)

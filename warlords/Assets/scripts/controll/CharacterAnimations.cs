@@ -74,7 +74,10 @@ public class CharacterAnimations : MonoBehaviour {
         targetPosition = position;
         isMoving = true;
         idleAnimationRunning = false;
-        anim.Play("walk", -1, 0f);
+        if (anim != null)
+        {
+            anim.Play("walk", -1, 0f);
+        }
     }
 
     public void stopMove()

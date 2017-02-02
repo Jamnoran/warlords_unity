@@ -117,8 +117,9 @@ public class Target : MonoBehaviour {
     /// </summary>
     private void findStairs()
     {
+        Debug.Log("Checking if stairs is focused : " + typeOftarget.transform.root.name);
         //int numberOfheroes = listOfHeroes.Count;
-        if (typeOftarget.transform.root.name == "StairsDown(Clone)")
+        if (typeOftarget.transform.root.name.Contains("StairsDown"))
         {
             Hero hero = getGameLogic().getMyHero();
             Debug.Log("Model name : " + hero.getModelName());
