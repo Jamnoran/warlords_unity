@@ -205,7 +205,7 @@ public class GameLogic : MonoBehaviour
                     hero.resource = newHero.resource;
                     // Dont change desired position for own hero
                     if (!ownHero) {
-                        Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
+                        //Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
                         hero.desiredPositionX = newHero.desiredPositionX;
                         hero.desiredPositionZ = newHero.desiredPositionZ;
                         Vector3 target = new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ);
@@ -409,6 +409,22 @@ public class GameLogic : MonoBehaviour
             if (ability.id == id)
             {
                 return ability;
+            }
+        }
+        return null;
+    }
+    /// <summary>
+    /// Get an abilities ID by name, this is usefull for example when sending ability ID to server but you only have access to the name (i.e action bar)
+    /// </summary>
+    /// <param name="name">The name of the ability you wish to fetch ID for</param>
+    /// <returns>int - The corresponding ID for the ability name</returns>
+    public int? getAbilityIdByAbilityName(string name)
+    {
+        foreach (var ability in abilities)
+        {
+            if (ability.name == name)
+            {
+                return ability.id;
             }
         }
         return null;

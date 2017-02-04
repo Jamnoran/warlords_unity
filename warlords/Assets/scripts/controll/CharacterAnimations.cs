@@ -48,7 +48,7 @@ public class CharacterAnimations : MonoBehaviour {
             if (!isMoving && !idleAnimationRunning)
             {
                 idleAnimationRunning = true;
-                Debug.Log("Starting idle animation again");
+                //Debug.Log("Starting idle animation again");
                 anim.Play("idle", -1, 0f);
             }
         }else { 
