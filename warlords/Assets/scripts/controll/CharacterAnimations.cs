@@ -9,7 +9,7 @@ public class CharacterAnimations : MonoBehaviour {
     private Rigidbody rbody;
     public float moveSpeed = 5.0f;
     public float rotateSpeed = 3.0F;
-    public bool idleAnimationRunning = true;
+    public bool sentStopAnimation = false;
 
 	// Use this for initialization
 	void Start () {
@@ -20,9 +20,8 @@ public class CharacterAnimations : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-
-        if (getGameLogic().isMyHeroAlive())
-        {
+        //if (getGameLogic().isMyHeroAlive())
+        //{
             //start moving the player towards the desired position
             Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
             character.transform.LookAt(targetPostition);
@@ -45,15 +44,14 @@ public class CharacterAnimations : MonoBehaviour {
                 isMoving = false;
             }
 
-            if (!isMoving && !idleAnimationRunning)
+            if (!isMoving && !sentStopAnimation)
             {
-                idleAnimationRunning = true;
-                Debug.Log("Starting idle animation again");
-                anim.Play("idle", -1, 0f);
+                sentStopAnimation = true;
+                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
             }
-        }else { 
+        //}else { 
             // Play dead animation
-        }
+        //}
     }
 
     public void rotateToTarget(Vector3 postition)
@@ -69,15 +67,22 @@ public class CharacterAnimations : MonoBehaviour {
         anim.Play("auto", -1, 0f);
     }
 
+    public void runAnimation()
+    {
+        anim.Play("walk", -1, 0f);
+    }
+
+    public void idleAnimation()
+    {
+        Debug.Log("Starting idle animation again");
+        anim.Play("idle", -1, 0f);
+    }
+
     public void setDesiredLocation(Vector3 position)
     {
         targetPosition = position;
         isMoving = true;
-        idleAnimationRunning = false;
-        if (anim != null)
-        {
-            anim.Play("walk", -1, 0f);
-        }
+        sentStopAnimation = false;
     }
 
     public void stopMove()
@@ -85,6 +90,21 @@ public class CharacterAnimations : MonoBehaviour {
         targetPosition = character.transform.position;
     }
 
+
+
+
+
+    ServerCommunication getCommunication()
+    {
+        if (GameObject.Find("Communication") != null)
+        {
+            return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+        }
+        else
+        {
+            return null;
+        }
+    }
 
 
     GameLogic getGameLogic()

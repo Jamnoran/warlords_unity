@@ -193,18 +193,13 @@ public class GameLogic : MonoBehaviour
             {
                 if (newHero.id == hero.id)
                 {
-                    bool ownHero = true;
-                    if (hero.id != Int32.Parse(heroid))
-                    {
-                        ownHero = false;
-                    }
                     found = true;
                     hero.setHp(newHero.hp);
                     hero.xp = newHero.xp;
                     hero.level = newHero.level;
                     hero.resource = newHero.resource;
                     // Dont change desired position for own hero
-                    if (!ownHero) {
+                    if (hero.id != Int32.Parse(heroid)) {
                         Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
                         hero.desiredPositionX = newHero.desiredPositionX;
                         hero.desiredPositionZ = newHero.desiredPositionZ;
@@ -230,6 +225,7 @@ public class GameLogic : MonoBehaviour
                 newHero.setTrans(heroTransform);
                 if (newHero.id == Int32.Parse(heroid))
                 {
+                    Debug.Log("Setting hero id: " + newHero.id + " To my own hero");
                     ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
                     newHero.updateHealthBar(true);
                 }
@@ -274,6 +270,21 @@ public class GameLogic : MonoBehaviour
                 Hero target = getHero(gameAnimation.source_id);
                 CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
                 anim.attackAnimation();
+            }
+            if (gameAnimation.animation_type == "HERO_RUN")
+            {
+                Debug.Log("Run animation");
+                //Minion minion = getMinion(gameAnimation.target_id);
+                Hero target = getHero(gameAnimation.source_id);
+                CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
+                anim.runAnimation();
+            }
+            if (gameAnimation.animation_type == "HERO_IDLE")
+            {
+                Debug.Log("Idle animation");
+                Hero target = getHero(gameAnimation.source_id);
+                CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
+                anim.idleAnimation();
             }
             if (gameAnimation.animation_type == "MINION_ATTACK")
             {

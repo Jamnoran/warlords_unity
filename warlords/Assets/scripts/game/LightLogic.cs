@@ -9,6 +9,10 @@ public class LightLogic : MonoBehaviour {
         if(lightObject != null)
         {
             lightObject.enabled = false;
+            if (getGameLogic().world.worldLevel == 2)
+            {
+                lightObject.enabled = true;
+            }
         }
 	}
 	
@@ -27,4 +31,18 @@ public class LightLogic : MonoBehaviour {
             }
         }
     }
+
+
+    GameLogic getGameLogic()
+    {
+        if (GameObject.Find("GameLogicObject") != null)
+        {
+            return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        }
+        else
+        {
+            return null;
+        }
+    }
+
 }
