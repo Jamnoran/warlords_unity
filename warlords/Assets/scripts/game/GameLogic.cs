@@ -424,6 +424,22 @@ public class GameLogic : MonoBehaviour
         }
         return null;
     }
+    /// <summary>
+    /// Get an abilities ID by name, this is usefull for example when sending ability ID to server but you only have access to the name (i.e action bar)
+    /// </summary>
+    /// <param name="name">The name of the ability you wish to fetch ID for</param>
+    /// <returns>int - The corresponding ID for the ability name</returns>
+    public int? getAbilityIdByAbilityName(string name)
+    {
+        foreach (var ability in abilities)
+        {
+            if (ability.name == name)
+            {
+                return ability.id;
+            }
+        }
+        return null;
+    }
 
     public void autoAttack()
     {
