@@ -31,6 +31,7 @@ public class GameLogic : MonoBehaviour
     public Transform start;
     public Transform stairs;
     public Transform light;
+    public Transform floor;
 
     public bool isInGame = false;
     public World world;
@@ -510,6 +511,10 @@ public class GameLogic : MonoBehaviour
             else if (obstacle.type == 5) // Light
             {
                 obstacle.transform = (Transform)Instantiate(light, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+            }
+            else if (obstacle.type == 6) // Floor
+            {
+                obstacle.transform = (Transform)Instantiate(floor, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
             }
         }
     }

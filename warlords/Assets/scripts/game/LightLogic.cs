@@ -8,7 +8,7 @@ public class LightLogic : MonoBehaviour {
 	void Start () {
         if(lightObject != null)
         {
-            lightObject.enabled = false;
+            //lightObject.enabled = false;
             if (getGameLogic().world.worldLevel == 2)
             {
                 lightObject.enabled = true;
