@@ -44,7 +44,7 @@ public class CharacterAnimations : MonoBehaviour {
                 isMoving = false;
             }
 
-            if (!isMoving && !sentStopAnimation)
+            if (!isMoving && !sentStopAnimation && getGameLogic().getClosestHeroByPosition(character.transform.position).id == getGameLogic().getMyHero().id)
             {
                 sentStopAnimation = true;
                 getCommunication().sendStopHero(getGameLogic().getMyHero().id);
