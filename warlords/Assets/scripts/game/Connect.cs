@@ -74,7 +74,7 @@ public class Connect : MonoBehaviour {
     {
         Debug.Log("Login with email : " + email);
 
-        string userId = PlayerPrefs.GetString("USER_ID");
+        //string userId = PlayerPrefs.GetString("USER_ID");
         //if (userId != null && !userId.Equals(""))
         //{
             PlayerPrefs.SetString("EMAIL", email);

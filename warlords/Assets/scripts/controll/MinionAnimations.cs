@@ -116,7 +116,7 @@ public class MinionAnimations : MonoBehaviour {
 
     public void stopMovement()
     {
-        Vector3 targetPostition = new Vector3(character.transform.position.x, character.transform.position.y, character.transform.position.z);
+        //Vector3 targetPostition = new Vector3(character.transform.position.x, character.transform.position.y, character.transform.position.z);
     }
 
 

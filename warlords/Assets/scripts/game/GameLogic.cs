@@ -291,7 +291,7 @@ public class GameLogic : MonoBehaviour
             {
                 Debug.Log("Minion attack anination");
                 Minion minion = getMinion(gameAnimation.target_id);
-                Hero target = getHero(gameAnimation.source_id);
+                //Hero target = getHero(gameAnimation.source_id);
                 if (minion != null && minion.minionTransform != null)
                 {
                     MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));

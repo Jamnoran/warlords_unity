@@ -315,6 +315,11 @@ public class ServerCommunication : MonoBehaviour {
                 ResponseStopHero responseStopHero = JsonMapper.ToObject<ResponseStopHero>(json);
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).stopHero(responseStopHero.hero);
             }
+            else if (responseType == "HERO_BUFF")
+            {
+                ResponseHeroBuff responseHeroBuff = JsonMapper.ToObject<ResponseHeroBuff>(json);
+                //((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).stopHero(responseStopHero.hero);
+            }
         }
     }
 
