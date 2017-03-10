@@ -54,22 +54,22 @@ public class SpellBook : MonoBehaviour {
             {
                 spellbookPanel.transform.position = spellBookHidePosition;
                 isSpellBookOpen = false;
-                Debug.Log("spellbook is open");
             }
             else if(!isSpellBookOpen && !spellsAreFetched)
             {
+                
                 spellbookPanel.transform.position = spellBookOriginalPosition;
-                abilities = getGameLogic().getAbilities();
-                AddItem();
-                isSpellBookOpen = true;
-                spellsAreFetched = true;
-                Debug.Log("Spellbooks was not opened and spells not fetched");
+                //this has been commented out until furthert notice since abilities seems to be loaded correctly from start
+                //abilities = getGameLogic().getAbilities();
+                //AddItem();
+                //isSpellBookOpen = true;
+                //spellsAreFetched = true;
             }
             else if(!isSpellBookOpen && spellsAreFetched)
             {
                 spellbookPanel.transform.position = spellBookOriginalPosition;
                 isSpellBookOpen = true;
-                Debug.Log("Spellbook was not opened and spells was fetched");
+
             }
             
         }
