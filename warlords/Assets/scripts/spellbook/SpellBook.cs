@@ -54,6 +54,7 @@ public class SpellBook : MonoBehaviour {
             {
                 spellbookPanel.transform.position = spellBookHidePosition;
                 isSpellBookOpen = false;
+                Debug.Log("spellbook is open");
             }
             else if(!isSpellBookOpen && !spellsAreFetched)
             {
@@ -61,17 +62,16 @@ public class SpellBook : MonoBehaviour {
                 abilities = getGameLogic().getAbilities();
                 AddItem();
                 isSpellBookOpen = true;
+                spellsAreFetched = true;
+                Debug.Log("Spellbooks was not opened and spells not fetched");
             }
             else if(!isSpellBookOpen && spellsAreFetched)
             {
                 spellbookPanel.transform.position = spellBookOriginalPosition;
                 isSpellBookOpen = true;
+                Debug.Log("Spellbook was not opened and spells was fetched");
             }
             
-
-          
-          
-      
         }
 
         else if (Input.GetKeyDown("p") && abilities != null)
