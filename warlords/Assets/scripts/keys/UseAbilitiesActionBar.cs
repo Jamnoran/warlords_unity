@@ -11,10 +11,6 @@ public class UseAbilitiesActionBar : MonoBehaviour
     public GameObject spell5;
     public GameObject spell6;
     public GameObject spell7;
-    public GameObject spell8;
-    public GameObject spell9;
-    public GameObject spell10;
-    public GameObject spell11;
     // Use this for initialization
     void Start()
     {
@@ -25,10 +21,7 @@ public class UseAbilitiesActionBar : MonoBehaviour
         spell5 = GameObject.Find("spell5");
         spell6 = GameObject.Find("spell6");
         spell7 = GameObject.Find("spell7");
-        spell8 = GameObject.Find("spell8");
-        spell9 = GameObject.Find("spell9");
-        spell10 = GameObject.Find("spell10");
-        spell11 = GameObject.Find("spell11");
+
     }
 
    
@@ -62,14 +55,7 @@ public class UseAbilitiesActionBar : MonoBehaviour
         {
             FindSpellAux(spell7, "spell7");
         }
-        if (Input.GetKeyDown(KeyCode.Alpha8))
-        {
-            FindSpellAux(spell8, "spell8");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            FindSpellAux(spell9, "spell9");
-        }
+      
     }
 
     private void FindSpellAux(GameObject spell, string spellString)

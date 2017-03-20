@@ -13,10 +13,6 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     private GameObject spellSlot5;
     private GameObject spellSlot6;
     private GameObject spellSlot7;
-    private GameObject spellSlot8;
-    private GameObject spellSlot9;
-    private GameObject spellSlot10;
-    private GameObject spellSlot11;
     //in this list we keep information about all the slots in the players action bar so we can calculate where to drop spells etc
     private List<GameObject> listOfSpellSlots = new List<GameObject>();
     //keep track of slots that allready have an ability in the players action bar so we can swap it with the one currently selected
@@ -38,10 +34,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         spellSlot5 = GameObject.FindWithTag("spell5");
         spellSlot6 = GameObject.FindWithTag("spell6");
         spellSlot7 = GameObject.FindWithTag("spell7");
-        spellSlot8 = GameObject.FindWithTag("spell8");
-        spellSlot9 = GameObject.FindWithTag("spell9");
-        spellSlot10 = GameObject.FindWithTag("spell10");
-        spellSlot11 = GameObject.FindWithTag("spell11");
+
         //add all spellSlots to the list
         listOfSpellSlots.Add(spellSlot1);
         listOfSpellSlots.Add(spellSlot2);
@@ -50,10 +43,8 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         listOfSpellSlots.Add(spellSlot5);
         listOfSpellSlots.Add(spellSlot6);
         listOfSpellSlots.Add(spellSlot7);
-        listOfSpellSlots.Add(spellSlot8);
-        listOfSpellSlots.Add(spellSlot9);
-        listOfSpellSlots.Add(spellSlot10);
-        listOfSpellSlots.Add(spellSlot11);
+
+
         
         originalPosition = this.transform.position;
         originalParent = this.transform.parent.gameObject;
@@ -70,6 +61,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     {
      
     }
+
 
     public void OnEndDrag(PointerEventData data)
     {
@@ -136,4 +128,6 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         return ((SpellSlotBusyOrNot)GameObject.Find("SpellSlotBusyOrNot").GetComponent(typeof(SpellSlotBusyOrNot)));
     }
+
+
 }

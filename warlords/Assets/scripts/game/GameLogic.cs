@@ -442,6 +442,23 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Get the description of the ability so we can show it to the user
+    /// </summary>
+    /// <param name="name">Name of the ability that we wish to find description for</param>
+    /// <returns>String containing the description if one is found, otherwhise empty string</returns>
+    public string getAbilityDescriptionByAbilityName(string name)
+    {
+        foreach (var ability in abilities)
+        {
+            if (ability.name == name && ability.description != null)
+            {
+                return ability.description;
+            }
+        }
+        return "";
+    }
+
     public void autoAttack()
     {
         // Here we will need to check the id of the minion focused to send up to server.

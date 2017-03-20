@@ -59,11 +59,11 @@ public class SpellBook : MonoBehaviour {
             {
                 
                 spellbookPanel.transform.position = spellBookOriginalPosition;
-                //this has been commented out until furthert notice since abilities seems to be loaded correctly from start
-                //abilities = getGameLogic().getAbilities();
-                //AddItem();
-                //isSpellBookOpen = true;
-                //spellsAreFetched = true;
+             
+                abilities = getGameLogic().getAbilities();
+                AddItem();
+                isSpellBookOpen = true;
+                spellsAreFetched = true;
             }
             else if(!isSpellBookOpen && spellsAreFetched)
             {
