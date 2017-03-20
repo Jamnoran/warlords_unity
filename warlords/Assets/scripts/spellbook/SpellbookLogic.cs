@@ -46,7 +46,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         listOfSpellSlots.Add(spellSlot7);
 
         //Initilize size of spell icon
-        spell.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+        ChangeScaleOnIcon(0.8f, 0.8f, 0.8f);
 
 
         
@@ -100,6 +100,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
                     Debug.Log("Slot is free, adding spell " + spell.transform.name);
                     spell.transform.SetParent(spellSlots[i].transform);
                     getSlotTracker().addToList(spellSlots[i].name, spell.name);
+                    ChangeScaleOnIcon(31f, 3f, 0.5f);
                     
                     return spellSlots[i].transform.position;
                 }
@@ -121,12 +122,15 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         }
         getSlotTracker().removeFromList(spell.transform.parent.transform.name);
         spell.transform.SetParent(originalParent.transform);
-         
+        ChangeScaleOnIcon(0.8f, 0.8f, 0.8f);
         return originalPosition;
     }
 
 
-  
+  private void ChangeScaleOnIcon(float xValue, float yValue, float zValue)
+    {
+        spell.transform.localScale = new Vector3(xValue, yValue, zValue);
+    }
 
     SpellSlotBusyOrNot getSlotTracker()
     {
