@@ -23,6 +23,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     private Vector3 currentPosition;
     private Transform currentParent;
 
+
     // Initialize spellbookslots and other crap
     public void Start()
     {
@@ -43,6 +44,9 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         listOfSpellSlots.Add(spellSlot5);
         listOfSpellSlots.Add(spellSlot6);
         listOfSpellSlots.Add(spellSlot7);
+
+        //Initilize size of spell icon
+        spell.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
 
 
         

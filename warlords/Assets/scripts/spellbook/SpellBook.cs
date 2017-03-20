@@ -21,7 +21,7 @@ public class SpellBook : MonoBehaviour {
     public List<Ability> abilities = new List<Ability>();
     public List<GameObject> slots = new List<GameObject>();
 
-    public int slotAmount = 20;
+    public int slotAmount = 12;
 
     void Start()
     {

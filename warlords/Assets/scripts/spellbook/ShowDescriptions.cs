@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-public class ShowDescriptions : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ShowDescriptions : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler
 {
     private string description;
     private Text desc;
@@ -19,11 +19,29 @@ public class ShowDescriptions : MonoBehaviour, IPointerEnterHandler, IPointerExi
         descriptionPanel.transform.position = descriptionHidePosition;
     }
 
+    public void OnDrag(PointerEventData eventData)
+    {
+
+        descriptionPanel.transform.position = descriptionHidePosition;
+        desc.text = "";
+        Debug.Log("draging item");
+
+    }
+
     public void OnPointerEnter(PointerEventData data)
     {
-        descriptionPanel.transform.position = new Vector3(this.transform.position.x+100, this.transform.position.y-50, 0);
-        desc.text = description;
-        Debug.Log("description: " + description);
+        if (transform.parent.name == "Slot(Clone)")
+        {
+            descriptionPanel.transform.position = new Vector3(this.transform.position.x + 100, this.transform.position.y - 50, 0);
+            desc.text = description;
+            Debug.Log("description: " + description);
+        }
+        else
+        {
+            descriptionPanel.transform.position = descriptionHidePosition;
+            desc.text = "";
+        }
+   
     }
     public void OnPointerExit(PointerEventData data)
     {
@@ -31,6 +49,8 @@ public class ShowDescriptions : MonoBehaviour, IPointerEnterHandler, IPointerExi
         desc.text = "";
         Debug.Log("Mouse has left the building");
     }
+
+
 
     GameLogic getGameLogic()
     {
