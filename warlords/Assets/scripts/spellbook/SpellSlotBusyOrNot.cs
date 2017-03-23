@@ -17,7 +17,7 @@ public class SpellSlotBusyOrNot : MonoBehaviour {
     }
 
     public void removeFromList(string slotNameToRemoveFromList)
-    {
+    {   
         Debug.Log("Removed: " + slotNameToRemoveFromList);
         listOfBusySlots.Remove(slotNameToRemoveFromList);
 

@@ -97,11 +97,18 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
                 //if slot is free
                 if (!getSlotTracker().isSlotTaken(spellSlots[i].name))
                 {
+                    if (spell.transform.parent.name != "Slot(Clone)")
+                    {
+                        getSlotTracker().removeFromList(spell.transform.parent.name);
+                    }
+                    
+                    Debug.Log("Current paren slot is: " + spell.transform.parent.name);
                     Debug.Log("Slot is free, adding spell " + spell.transform.name);
                     spell.transform.SetParent(spellSlots[i].transform);
                     getSlotTracker().addToList(spellSlots[i].name, spell.name);
                     ChangeScaleOnIcon(31f, 3f, 0.5f);
-                    
+                    //todo: if previous was a spellbar slot, free it
+                   
                     return spellSlots[i].transform.position;
                 }
 
