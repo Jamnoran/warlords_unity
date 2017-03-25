@@ -130,7 +130,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         getSlotTracker().removeFromList(spell.transform.parent.transform.name);
         spell.transform.SetParent(originalParent.transform);
         ChangeScaleOnIcon(0.8f, 0.8f, 0.8f);
-        return originalPosition;
+        return this.transform.parent.transform.position;
     }
 
 
