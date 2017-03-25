@@ -61,9 +61,10 @@ public class SpellBook : MonoBehaviour {
                 spellbookPanel.transform.position = spellBookOriginalPosition;
              
                 abilities = getGameLogic().getAbilities();
-                AddItem();
                 isSpellBookOpen = true;
                 spellsAreFetched = true;
+                AddItem();
+               
             }
             else if(!isSpellBookOpen && spellsAreFetched)
             {
