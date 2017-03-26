@@ -3,8 +3,9 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
+public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHandler, IBeginDragHandler
 {
+    private GameObject spellBook;
     public GameObject spell;
     private GameObject spellSlot1;
     private GameObject spellSlot2;
@@ -22,11 +23,14 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     private Vector3 originalPosition;
     private Vector3 currentPosition;
     private Transform currentParent;
+    private Transform tempParent;
 
 
     // Initialize spellbookslots and other crap
     public void Start()
     {
+
+        spellBook = GameObject.FindWithTag("slotpanel");
         spell = GameObject.Find(this.transform.name);
         spellSlot1 = GameObject.FindWithTag("spell1");
         spellSlot2 = GameObject.FindWithTag("spell2");
@@ -58,7 +62,9 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnDrag(PointerEventData data)
     {
+      
         this.gameObject.transform.position = Input.mousePosition;
+        spell.transform.SetParent(spellBook.transform);
     }
 
     public void OnDrop(PointerEventData data)
@@ -67,13 +73,20 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     }
 
 
+    public void OnBeginDrag(PointerEventData data)
+    {
+        tempParent = this.transform.parent;
+        var name = tempParent.name;
+        var foo = "";
+    }
+
     public void OnEndDrag(PointerEventData data)
     {
-     
-            this.transform.position = snapToActiveSpell(this.transform.position.x, this.transform.position.y, listOfSpellSlots);
-            currentPosition = spell.transform.position;
+        
+        this.transform.position = snapToActiveSpell(this.transform.position.x, this.transform.position.y, listOfSpellSlots);
+        currentPosition = spell.transform.position;
         currentParent = spell.transform.parent;
-        Debug.Log("Current parent is: " + currentParent);
+        Debug.Log("Current parent is: " + currentParent.name);
         
     }
 
@@ -101,10 +114,9 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
                     {
                         getSlotTracker().removeFromList(spell.transform.parent.name);
                     }
-                    
-                    Debug.Log("Current paren slot is: " + spell.transform.parent.name);
-                    Debug.Log("Slot is free, adding spell " + spell.transform.name);
+                    getSlotTracker().removeFromList(tempParent.name);
                     spell.transform.SetParent(spellSlots[i].transform);
+                    
                     getSlotTracker().addToList(spellSlots[i].name, spell.name);
                     ChangeScaleOnIcon(31f, 3f, 0.5f);
                     //todo: if previous was a spellbar slot, free it
@@ -115,19 +127,21 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
                 //if slot is taken
                 else if (getSlotTracker().isSlotTaken(spellSlots[i].name) && spellSlots[i].transform.childCount > 0)
                 {
-                    var curPar = spell.transform.parent;
-                    Debug.Log("spell: " + spell);
-                    Debug.Log("Slot is occupied by spell " + spellSlots[i].transform.GetChild(0));
+                    var curPar = tempParent;
+
                     //push current spell to where new spell was
                     spellSlots[i].transform.GetChild(0).position = curPar.transform.position;
                     spellSlots[i].transform.GetChild(0).SetParent(curPar);
                     //push new spell to new parent
                     spell.transform.parent = spellSlots[i].transform;
+                    getSlotTracker().addToList(spellSlots[i].name, spell.name);
+                   
+
                     return spellSlots[i].transform.position;
                 }
             }
         }
-        getSlotTracker().removeFromList(spell.transform.parent.transform.name);
+        getSlotTracker().removeFromList(this.transform.parent.name);
         spell.transform.SetParent(originalParent.transform);
         ChangeScaleOnIcon(0.8f, 0.8f, 0.8f);
         return this.transform.parent.transform.position;
