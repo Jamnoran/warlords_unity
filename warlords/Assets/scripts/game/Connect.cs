@@ -12,13 +12,20 @@ public class Connect : MonoBehaviour {
     public Button loginButton;
     public Button resetButton;
     public bool autoLogin = true;
+    
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         registerButton.onClick.AddListener(register);
         loginButton.onClick.AddListener(login);
         resetButton.onClick.AddListener(reset);
-        string userId = PlayerPrefs.GetString("USER_ID");
+        int userId = PlayerPrefs.GetInt("USER_ID");
+
+        if (autoLogin) {
+            PlayerPrefs.SetInt("AUTO_LOGIN", 1);
+        } else {
+            PlayerPrefs.SetInt("AUTO_LOGIN", 0);
+        }
 
         string email = PlayerPrefs.GetString("EMAIL");
         if (email != null && !email.Equals(""))
@@ -26,12 +33,12 @@ public class Connect : MonoBehaviour {
             emailInput.text = email;
         }
 
-        if (autoLogin && userId != null && !userId.Equals(""))
+        if (autoLogin && userId > 0)
         {   
             Debug.Log("Auto login, user id : " + userId);
             Debug.Log("Email: " + PlayerPrefs.GetString("EMAIL"));
             Debug.Log("Password: " + PlayerPrefs.GetString("PASSWORD"));
-            getCommunication().userId = userId;
+			getLobbyCommunication().userId = userId;
             SceneManager.LoadScene("Lobby");
         }
     }
@@ -66,14 +73,13 @@ public class Connect : MonoBehaviour {
         PlayerPrefs.SetString("PASSWORD", password);
         PlayerPrefs.SetString("USERNAME", username);
 
-        getCommunication().createUser(username, email, password);
+		getLobbyCommunication().createUser(username, email, password);
 
     }
 
     void sendLogin(string username, string email, string password)
     {
         Debug.Log("Login with email : " + email);
-
         //string userId = PlayerPrefs.GetString("USER_ID");
         //if (userId != null && !userId.Equals(""))
         //{
@@ -81,7 +87,7 @@ public class Connect : MonoBehaviour {
             PlayerPrefs.SetString("PASSWORD", password);
             PlayerPrefs.SetString("USERNAME", username);
             Debug.Log("Login");
-            getCommunication().loginUser(email, password);
+			getLobbyCommunication().loginUser(email, password);
         //}else
         //{
         //    Debug.Log("You need to register first");
@@ -91,11 +97,19 @@ public class Connect : MonoBehaviour {
 
 
 
-
-
     ServerCommunication getCommunication()
     {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
+	LobbyCommunication getLobbyCommunication()
+	{
+		GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+		//Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
+		foreach (GameObject go in gos)
+		{
+			return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
+		}
+		return null;
+	}
 }

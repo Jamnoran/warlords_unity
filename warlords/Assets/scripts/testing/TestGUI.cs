@@ -43,94 +43,73 @@ public class TestGUI : MonoBehaviour {
         }
     }
 
-    void OnGUI()
-    {
-
+    void OnGUI() {
         GUILayout.Label("Minions left: " + ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMinions().Count);
 
-        Hero hero = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero();
-        if (hero != null)
-        {
-            GUILayout.Label("Hero: " + hero.hp + "/" + hero.maxHp);
-
-            GUILayout.Label("XP: " + hero.xp + " Level: " + hero.level);
-        }
+        //Hero hero = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero();
 
         Minion enemy = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroEnemyTarget();
-        if(enemy != null)
-        {
+        if(enemy != null) {
             GUILayout.Label("Enemy target: " + enemy.hp + "/" + enemy.maxHp);
         }
 
         Hero friendlyTarget = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroFriendlyTarget();
-        if (friendlyTarget != null)
-        {
+        if (friendlyTarget != null) {
             GUILayout.Label("Friendly: " + friendlyTarget.hp + "/" + friendlyTarget.maxHp + " Class " + friendlyTarget.class_type);
         }
 
-        if (getGameLogic().getMyHero() != null)
-        {
+        if (getGameLogic().getMyHero() != null) {
             GUILayout.Label("Auto attacking : " + getGameLogic().getMyHero().getAutoAttacking());
         }
 
         bool allDead = true;
-        foreach(Hero heroHp in getGameLogic().getHeroes())
-        {
-            if (heroHp.hp > 0)
-            {
+        foreach(Hero heroHp in getGameLogic().getHeroes()) {
+            if (heroHp.hp > 0) {
                 allDead = false;
             }
         }
-        if (getGameLogic().getHeroes() == null || getGameLogic().getHeroes().Count == 0)
-        {
+        if (getGameLogic().getHeroes() == null || getGameLogic().getHeroes().Count == 0) {
             // If we have yet recieved the heroes dont show menu
             allDead = false;
         }
-        if (allDead)
-        {
+        if (allDead) {
             menu.SetActive(true);
         }else if(!allDead && isShowing) {
             menu.SetActive(true);
-        }else
-        {
+        }else {
             menu.SetActive(false);
         }
        
     }
 
-    private void restartLevel()
-    {
+    private void restartLevel() {
         Debug.Log("Sending restart level");
         getCommunication().restartLevel();
     }
 
-    private void exitToLobby()
-    {
+    private void exitToLobby() {
+        getCommunication().endGame();
+        getCommunication().closeCommunication();
+
         Debug.Log("Exit to lobby screen");
         SceneManager.LoadScene("Lobby");
     }
 
 
-    private long getMillis()
-    {
+    private long getMillis() {
         DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
     }
 
-    GameLogic getGameLogic()
-    {
+    GameLogic getGameLogic() {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
 
 
-    ServerCommunication getCommunication()
-    {
-        if (GameObject.Find("Communication") != null)
-        {
+    ServerCommunication getCommunication() {
+        if (GameObject.Find("Communication") != null) {
             return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
-        }
-        else
-        {
+        } else {
             return null;
         }
     }

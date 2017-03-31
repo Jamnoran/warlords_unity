@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.scripts.vo;
 
 public class CharacterAnimations : MonoBehaviour {
     public GameObject character;
     private Animator anim;
     public Vector3 targetPosition;
     bool isMoving;
-    private Rigidbody rbody;
     public float moveSpeed = 5.0f;
     public float rotateSpeed = 3.0F;
     public bool sentStopAnimation = false;
@@ -14,12 +14,10 @@ public class CharacterAnimations : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         anim = character.GetComponent<Animator>();
-        rbody = character.GetComponent<Rigidbody>();
 	}
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         //if (getGameLogic().isMyHeroAlive())
         //{
             //start moving the player towards the desired position
@@ -44,8 +42,8 @@ public class CharacterAnimations : MonoBehaviour {
                 isMoving = false;
             }
 
-            if (!isMoving && !sentStopAnimation && getGameLogic().getClosestHeroByPosition(character.transform.position).id == getGameLogic().getMyHero().id)
-            {
+            Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
+            if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
                 sentStopAnimation = true;
                 getCommunication().sendStopHero(getGameLogic().getMyHero().id);
             }
@@ -54,39 +52,33 @@ public class CharacterAnimations : MonoBehaviour {
         //}
     }
 
-    public void rotateToTarget(Vector3 postition)
-    {
+    public void rotateToTarget(Vector3 postition) {
         Debug.Log("Rotating towards target");
         Vector3 rotatingPostition = new Vector3(postition.x, character.transform.position.y, postition.z);
         character.transform.LookAt(rotatingPostition);
 
     }
 
-    public void attackAnimation()
-    {
+    public void attackAnimation() {
         anim.Play("auto", -1, 0f);
     }
 
-    public void runAnimation()
-    {
+    public void runAnimation() {
         anim.Play("walk", -1, 0f);
     }
 
-    public void idleAnimation()
-    {
+    public void idleAnimation() {
         Debug.Log("Starting idle animation again");
         anim.Play("idle", -1, 0f);
     }
 
-    public void setDesiredLocation(Vector3 position)
-    {
+    public void setDesiredLocation(Vector3 position) {
         targetPosition = position;
         isMoving = true;
         sentStopAnimation = false;
     }
 
-    public void stopMove()
-    {
+    public void stopMove() {
         targetPosition = character.transform.position;
     }
 
@@ -94,27 +86,19 @@ public class CharacterAnimations : MonoBehaviour {
 
 
 
-    ServerCommunication getCommunication()
-    {
-        if (GameObject.Find("Communication") != null)
-        {
+    ServerCommunication getCommunication()  {
+        if (GameObject.Find("Communication") != null) {
             return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
 
 
-    GameLogic getGameLogic()
-    {
-        if (GameObject.Find("GameLogicObject") != null)
-        {
+    GameLogic getGameLogic() {
+        if (GameObject.Find("GameLogicObject") != null) {
             return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
-        }
-        else
-        {
+        } else {
             return null;
         }
     }

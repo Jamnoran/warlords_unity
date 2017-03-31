@@ -6,7 +6,7 @@ public class move : MonoBehaviour {
     int leftMouseButton = 0;
     int rightMouseButton = 1;
     private Vector3 targetPosition;
-    private Vector3 desiredPosition;
+    //private Vector3 desiredPosition;
     public float speed = 5;
     //public CharacterController controller;
     private Vector3 lastSentPosition = new Vector3(10.81f, 0.39f, 14.25f);           // last sent move position to server (too keep track of not sending move request too often)    
@@ -20,7 +20,7 @@ public class move : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        desiredPosition = transform.position;
+        //desiredPosition = transform.position;
 	}
 	
 	// Update is called once per frame
@@ -28,7 +28,7 @@ public class move : MonoBehaviour {
         // Constantly check the heroes desired location and update it
         if(heroId > 0 && ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId) != null)
         {
-            desiredPosition = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId).getDesiredPosition();
+            //desiredPosition = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId).getDesiredPosition();
         }
 
 

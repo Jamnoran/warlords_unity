@@ -10,29 +10,11 @@ using UnityEngine.SceneManagement;
 
 public class ServerCommunication : MonoBehaviour {
 
-    private TcpClient mySocket;
-    private NetworkStream theStream;
-    private StreamWriter theWriter;
-    private StreamReader theReader;
-    public String Host = "127.0.0.1";
-    public Int32 Port = 2055;
-    internal Boolean isConnected = false;
-
-    public String userId = "1";
-    public String heroId = "1";
-    //public String username = "lasse";
-    //public String password = "losen";
-    //public String email = "lasse@gmail.com";
-    public Int32 gameId = -1;
-
-    public Boolean local = true;
-
+    private SocketConnection socketConnection;
 
     // Use this for initialization
     void Start()
     {
-        Debug.Log("Starting server.");
-        connectToServer();
     }
 
     void Awake()
@@ -45,38 +27,26 @@ public class ServerCommunication : MonoBehaviour {
     {
         handleCommunication();
     }
-
-
-    void handleCommunication() {
-
-        // Handle communication sent from server to client (this can be a response of a request we have sent or status message etc.)
-        String response = readSocket();
-        if (response != null && response != "")
-        {
-            // Parse response to from json to object
-            parseJson(response);
-        }
-
-    }
-
-    // Send a request to lobby to join a server for joining a dungeon
-    public void joinServer()
-    {
-        print("q key was pressed  joining a server with this hero: " + heroId);
-        writeSocket("{\"request_type\": \"JOIN_SERVER\", hero_id:\"" + heroId + "\"}");
-    }
-    // Send a request to lobby to join a server for joining a dungeon
-    public void getHeroes()
-    {
-        print("Getting heroes for user: " + userId);
-        writeSocket("{\"request_type\": \"GET_HEROES\", user_id:\"" + userId + "\"}");
-    }
     
+
+    public int getHeroId()
+    {
+        return getLobbyCommunication().heroId;
+    }
+
+
+
+
+    // Send a request to lobby to join a server for joining a dungeon
+    public void joinGame(string gameId) {
+        print("Joining game with this hero : " + getHeroId() + " game id: " + gameId);
+        sendRequest(new RequestJoinGame(getHeroId(), gameId));
+    }
 
     public void endGame()
     {
-        print("End game request was sent: " + userId);
-        writeSocket("{\"request_type\": \"END_GAME\", hero_id:\"" + userId + "\"}");
+        print("End game request was sent: " + getHeroId());
+        writeSocket("{\"request_type\": \"END_GAME\", hero_id:\"" + getHeroId() + "\"}");
         ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).endGame();
 
     }
@@ -85,116 +55,69 @@ public class ServerCommunication : MonoBehaviour {
     public void getStatus()
     {
         print("w key was pressed getting server status (what is happening with minions/other heroes)");
-        writeSocket("{\"request_type\": \"GET_STATUS\", user_id:\"" + userId + "\"}");
-    }
-
-    // Send request to lobby to create a hero. This must be done after a user has been created or it will crash
-    public void createHero(String classType)
-    {
-        print("e key was pressed creating a hero for a userid: " + userId);
-        writeSocket("{\"request_type\": \"CREATE_HERO\", user_id:\"" + userId + "\", class_type:\""+ classType + "\"}");
-        getHeroes();
-    }
-
-    // Send request to lobby to create a user. Primary request to be done before other becouse we will need user_id to be able to do the other requests
-    public void createUser(string username, string email, string password)
-    {
-        print("Creaing the user (here we need to gather username + email + password)");
-        writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
-    }
-
-    public void loginUser(string email, string password)
-    {
-        print("Login the user (here we need to gather email + password)");
-        print("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\", username:\"\"}");
-        writeSocket("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\", username:\"\"}");
+        writeSocket("{\"request_type\": \"GET_STATUS\", hero_id:\"" + getHeroId() + "\"}");
     }
 
     public void sendAutoAttack(int minionId) {
-        if (minionId > 0)
-        {
+        if (minionId > 0) {
             print("Trying to attack minion " + minionId);
             var time = getMillis();
-            writeSocket("{\"request_type\": \"ATTACK\", user_id:\"" + userId + "\", minion_id: \"" + minionId + "\", time: \"" + time + "\"}");
-        }
-        else
-        {
+            sendRequest(new RequestAttack(getHeroId(), minionId, time));
+        } else {
             print("You have no target!!! click on something");
         }
     }
 
-    public void sendStopHero(int heroId)
-    {
-            print("Sending stop hero");
-            writeSocket("{\"request_type\": \"STOP_HERO\", user_id:\"" + userId + "\", hero_id: \"" + heroId + "\"}");
-    }
 
-    public void restartLevel()
-    {
+    public void restartLevel()  {
         print("Sending restart level");
-        writeSocket("{\"request_type\": \"RESTART_LEVEL\", user_id:\"" + userId + "\"}");
+        writeSocket("{\"request_type\": \"RESTART_LEVEL\", hero_id:\"" + getHeroId() + "\"}");
     }
 
-    public void sendMinionHasTargetInRange(int minionId, int heroTargetId)
-    {
-        if (heroTargetId != 0)
-        {
+    public void sendMinionHasTargetInRange(int minionId, int heroTargetId)  {
+        if (heroTargetId != 0) {
             print("Minion has hero in range " + minionId);
         }
-        writeSocket("{\"request_type\": \"MINION_TARGET_IN_RANGE\", user_id:\"" + userId + "\", minion_id: \"" + minionId + "\", hero_id: \"" + heroTargetId + "\"}");
+        writeSocket("{\"request_type\": \"MINION_TARGET_IN_RANGE\", hero_id:\"" + getHeroId() + "\", minion_id: \"" + minionId + "\", hero_id: \"" + heroTargetId + "\"}");
     }
 
-    public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)
-    {
+    public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)  {
         //print("Send move request to server");
         // This will send to server the players hero location (positionX,positionY) and also the desired position the players hero wants to move to
         // Make sure this does not get sent too often (every update) because then it will spam server (have a check that handles if the hero has moved more than for example 0.5 then send request)
-        writeSocket("{\"request_type\": \"MOVE\", user_id:\"" + userId + "\", position_x: \"" + positionX + "\", position_z: \"" + positionZ + "\", desired_position_x: \"" + desiredPositionX + "\", desired_position_z: \"" + desiredPositionZ+ "\"}");
+        writeSocket("{\"request_type\": \"MOVE\", hero_id:\"" + getHeroId() + "\", position_x: \"" + positionX + "\", position_z: \"" + positionZ + "\", desired_position_x: \"" + desiredPositionX + "\", desired_position_z: \"" + desiredPositionZ+ "\"}");
     }
 
+    public void sendStopHero(int heroId) {
+        print("Sending stop hero");
+        //writeSocket("{\"request_type\":\"STOP_HERO\", \"hero_id\":" + heroId + "}");
+        sendRequest(new RequestStopHero(heroId));
+    }
 
-    public void sendSpell(int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3)
-    {
+    public void sendSpell(int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3) {
         var time = getMillis();
         Debug.Log("Sending spell request spell id: " + spellId + " At time: " + time);
-        var targets = "[]";
-        if (targetEnemy.Count > 0)
-        {
-            targets = "[" + targetEnemy[0] + "]";
-        }
-        
-        var friendly = "[]";
-        if (targetFriendly.Count > 0)
-        {
-            friendly = "[" + targetFriendly[0] + "]";
-        }
-        Debug.Log("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", time: " + time + ", target_enemy: " + targets + ", target_friendly: " + friendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
-        writeSocket("{\"request_type\": \"SPELL\", user_id:\"" + userId + "\", spell_id: " + spellId + ", time: " + time + ", target_enemy: " + targets + ", target_friendly: " + friendly + ", target_position_x: \"" + vector3.x + "\", target_position_z: \"" + vector3.z + "\"}");
+        sendRequest(new RequestSpell(getHeroId(), spellId, targetEnemy, targetFriendly, vector3, time));
     }
 
-
-    public void sendMinionAggro(int minionId, int heroId)
-    {
+    public void sendMinionAggro(int minionId, int heroId) {
         Debug.Log("Sending minion aggro : " + minionId + " on hero: " + heroId);
         writeSocket("{\"request_type\": \"MINION_AGGRO\", \"hero_id\":" + heroId + ", \"minion_id\": " + minionId + "}");
     }
 
-    public void heroHasClickedPortal(int heroId)
-    {
+    public void heroHasClickedPortal(int heroId) {
         Debug.Log("The hero: " + heroId + " has clicked the portal");
         writeSocket("{\"request_type\": \"CLICKED_PORTAL\", \"hero_id\":" + heroId + "}");
     }
 
-    public void getAbilities()
-    {
+    public void getAbilities() {
         Debug.Log("Get all abilities");
-        writeSocket("{\"request_type\": \"GET_ABILITIES\", \"user_id\":" + userId + "}");
+        writeSocket("{\"request_type\": \"GET_ABILITIES\", \"user_id\":" + getHeroId() + "}");
     }
 
 
 
-    private long getMillis()
-    {
+    private long getMillis() {
         DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
     }
@@ -233,93 +156,52 @@ public class ServerCommunication : MonoBehaviour {
         //Debug.Log("Trying to parse this string to json object: " + json);
 
         // Do simple string split get response_type and go to next " and then parse the response to that format later.
-        String responseType = getTypeOfResponseFromJson(json);
-        if (responseType != null && responseType != "GAME_STATUS") {
-            Debug.Log("Request type : " + responseType);
+        String responseType = JsonUtil.getTypeOfResponseFromJson(json);
+        if (responseType != null) {
+        } else {
+            responseType = JsonUtil.getTypeOfRequestFromJson(json);
+        }
+
+        if (responseType != null && !responseType.Equals("") && responseType != "GAME_STATUS") {
+            Debug.Log("Type request: " + responseType);
         }
 
         // Handle different type of request_names
-        if (responseType != null)
-        {
-            if (responseType == "SERVER_INFO")
-            {
-                ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
-                Debug.Log("Server information: " + responseServerInfo.clients);
-                if (Int32.Parse(userId) > 0)
-                {
-                    Debug.Log("Sending request to get heroes");
-                    getHeroes();
-                }
-            }
-            else if (responseType == "HEROES")
-            {
-                ResponseGetHeroes responseGetHeroes = JsonMapper.ToObject<ResponseGetHeroes>(json);
-                Debug.Log("Got these many heroes: " + responseGetHeroes.heroes.Count);
-                ((Lobby)GameObject.Find("LobbyLogic").GetComponent(typeof(Lobby))).updateHeroes(responseGetHeroes.heroes);
-            }
-            else if (responseType == "GAME_STATUS")
-            {
+        if (responseType != null) {
+            if (responseType.Equals("GAME_STATUS")) {
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
                 if (responseGameStatus.gameAnimations.Count > 0)
                 {
-                    ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateAnimations(responseGameStatus.gameAnimations);
+                    getGameLogic().updateAnimations(responseGameStatus.gameAnimations);
                 }
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfMinions(responseGameStatus.minions);
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateListOfHeroes(responseGameStatus.heroes);
-            }
-            else if (responseType == "CREATE_USER")
-            {
-                ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
-                Debug.Log("User created with this id to store on device: " + responseCreateUser.user_id);
-                userId = responseCreateUser.user_id;
-                PlayerPrefs.SetString("USER_ID", userId);
-                SceneManager.LoadScene("Lobby");
-            }
-            else if (responseType == "LOGIN_USER")
-            {
-                ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
-                Debug.Log("User logged in with this id to store on device: " + responseCreateUser.user_id);
-                userId = responseCreateUser.user_id;
-                PlayerPrefs.SetString("USER_ID", userId);
-                SceneManager.LoadScene("Lobby");
-                Debug.Log("Getting heroes for user");
-                getHeroes();
-            }
-            else if (responseType == "WORLD")
-            {
+                getGameLogic().updateListOfMinions(responseGameStatus.minions);
+                getGameLogic().updateListOfHeroes(responseGameStatus.heroes);
+            } else if (responseType == "WORLD") {
                 ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
-                Debug.Log("Creating world: ");
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).createWorld(responseWorld);
-            }
-            else if (responseType == "CLEAR_WORLD")
-            {
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).clearWorld();
-            }
-            else if (responseType == "TELEPORT_HEROES")
-            {
+                Debug.Log("Creating world");
+                getGameLogic().createWorld(responseWorld);
+            } else if (responseType == "CLEAR_WORLD")  {
+                getGameLogic().clearWorld();
+            }  else if (responseType == "TELEPORT_HEROES") {
                 ResponseTeleportHeroes responseTeleportHeroes = JsonMapper.ToObject<ResponseTeleportHeroes>(json);
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).teleportHeroes(responseTeleportHeroes.heroes);
-            }
-            else if (responseType == "COOLDOWN")
-            {
+                getGameLogic().teleportHeroes(responseTeleportHeroes.heroes);
+            }  else if (responseType == "COOLDOWN") {
                 ResponseCooldown responseCooldown = JsonMapper.ToObject<ResponseCooldown>(json);
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).updateCooldown(responseCooldown.ability);
-            }
-            else if (responseType == "ABILITIES")
-            {
+                getGameLogic().updateCooldown(responseCooldown.ability);
+            }  else if (responseType == "ABILITIES") {
                 ResponseAbilities responseAbilities = JsonMapper.ToObject<ResponseAbilities>(json);
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setAbilities(responseAbilities.abilities);
-            }
-            else if (responseType == "STOP_HERO")
-            {
+                getGameLogic().setAbilities(responseAbilities.abilities);
+            }  else if (responseType == "STOP_HERO")  {
                 ResponseStopHero responseStopHero = JsonMapper.ToObject<ResponseStopHero>(json);
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).stopHero(responseStopHero.hero);
-            }
-            else if (responseType == "HERO_BUFF")
-            {
+                getGameLogic().stopHero(responseStopHero.hero);
+            }  else if (responseType == "HERO_BUFF")  {
                 ResponseHeroBuff responseHeroBuff = JsonMapper.ToObject<ResponseHeroBuff>(json);
                 //((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).stopHero(responseStopHero.hero);
+            } else {
+                Debug.Log("Have type but did not match any of the ones we have " + responseType);
             }
+        } else {
+            Debug.Log("Could not find correct method " + responseType);
         }
     }
 
@@ -337,96 +219,103 @@ public class ServerCommunication : MonoBehaviour {
 
 
 
-    public void sendRequest(Request request)
-    {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    void handleCommunication() {
+        // Handle communication sent from server to client (this can be a response of a request we have sent or status message etc.)
+        if (socketConnection != null)
+        {
+            String response = socketConnection.readSocket();
+            if (response != null && response != "")
+            {
+                // Parse response to from json to object
+                parseJson(response);
+            }
+        }
+    }
+
+    public void sendRequest(object request) {
         String reqJson = JsonMapper.ToJson(request);
         Debug.Log("Sending this request: " + reqJson);
-        writeSocket(reqJson);
+        socketConnection.writeSocket(reqJson);
     }
 
-    public void connectToServer()
+    public void writeSocket(string request)
     {
-        msg("Client Started");
-        setupSocket();
-    }
-    
-
-
-
-    private static String getTypeOfResponseFromJson(String json)
-    {
-        String responseTypeString = "\"response_type\":\"";
-        String newJson = json.Substring(json.IndexOf(responseTypeString) + responseTypeString.Length);
-        return newJson.Substring(0, newJson.IndexOf("\""));
+        Debug.Log("Sending this request: " + request);
+        socketConnection.writeSocket(request);
     }
 
-    void msg(string mesg)
-    {
-        Debug.Log("Debug: " + mesg);
+    public void connectToServer(String ip, int port, String gameId) {
+        Debug.Log("Client Started");
+        socketConnection = new SocketConnection(ip, port, getLobbyCommunication().local);
+        SceneManager.LoadScene("scene1");
+        joinGame(gameId);
+    }
+
+    public void closeCommunication() {
+        socketConnection.closeSocket();
+        socketConnection = null;
     }
 
 
-
-    public void setupSocket()
-    {
-        try
+    LobbyCommunication getLobbyCommunication() {
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
+        foreach (GameObject go in gos)
         {
-            if (local)
-            {
-                mySocket = new TcpClient("127.0.0.1", Port);
-            }
-            else
-            {
-                mySocket = new TcpClient(Host, Port);
-            }
-            
-            theStream = mySocket.GetStream();
-            theWriter = new StreamWriter(theStream);
-            theReader = new StreamReader(theStream);
-            isConnected = true;
-            msg("SocketReady : " + isConnected);
+            return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
         }
-        catch (Exception e)
-        {
-            Debug.Log("Socket error: " + e);
-        }
+        return null;
     }
 
-
-    public void writeSocket(string theLine)
-    {
-        if (!isConnected)
-            return;
-        String foo = theLine + "\r\n";
-        theWriter.Write(foo);
-        theWriter.Flush();
-    }
-
-    public String readSocket()
-    {
-        if (!isConnected)
-        {
-            return "";
-        }
-        if (theStream != null && theStream.DataAvailable)
-        {
-            return theReader.ReadLine();
-        }
-        return "";
-    }
-
-    public void closeSocket()
-    {
-        if (!isConnected)
-            return;
-        theWriter.Close();
-        theReader.Close();
-        mySocket.Close();
-        isConnected = false;
-    }
-
-    public string getHeroId()
-    {
-        return heroId;
+    GameLogic getGameLogic() {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
 }

@@ -60,15 +60,12 @@ namespace Assets.scripts.vo
             return null;
         }
 
-        public void setHp(int newHp)
-        {
+        public void setHp(int newHp) {
             hp = newHp;
 
-
-            String heroid = getCommunication().getHeroId();
+            int heroid = getLobbyCommunication().heroId;
             bool ownHero = true;
-            if (id != Int32.Parse(heroid))
-            {
+            if (id != heroid) {
                 ownHero = false;
             }
             updateHealthBar(ownHero);
@@ -96,13 +93,11 @@ namespace Assets.scripts.vo
             return autoAttacking;
         }
 
-        public void setAutoAttacking(bool value)
-        {
+        public void setAutoAttacking(bool value) {
             autoAttacking = value;
         }
 
-        ServerCommunication getCommunication()
-        {
+        ServerCommunication getCommunication() {
             GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
             foreach (GameObject go in gos)
             {
@@ -111,8 +106,17 @@ namespace Assets.scripts.vo
             return null;
         }
 
-        CharacterAnimations getAnimation()
-        {
+        LobbyCommunication getLobbyCommunication() {
+            GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+            //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
+            foreach (GameObject go in gos)
+            {
+                return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
+            }
+            return null;
+        }
+
+        CharacterAnimations getAnimation(){
             return (CharacterAnimations) trans.GetComponent(typeof(CharacterAnimations));
         }
     }

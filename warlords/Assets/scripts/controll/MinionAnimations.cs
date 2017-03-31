@@ -16,7 +16,6 @@ public class MinionAnimations : MonoBehaviour {
     #region private variables
     private Animator anim;
     bool isMoving;
-    private Rigidbody rbody;
     #endregion
 
 
@@ -24,7 +23,6 @@ public class MinionAnimations : MonoBehaviour {
     // Use this for initialization
     void Start () {
         anim = character.GetComponent<Animator>();
-        rbody = character.GetComponent<Rigidbody>();
         targetPosition = character.transform.position;
 	}
 	

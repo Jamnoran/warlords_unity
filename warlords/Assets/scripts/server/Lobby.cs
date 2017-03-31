@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class Lobby : MonoBehaviour {
     // Create games buttons
-    public Button changeHero = null;
+	public Button changeHero = null;
+	public Button customGame = null;
     public Button quickGame = null;
     // Your heroes
     public Button topLeftButton = null;
@@ -43,6 +44,7 @@ public class Lobby : MonoBehaviour {
         createHeroLayout.SetActive(false);
         changeHero.onClick.AddListener(() => { showheroDialog(); });
         quickGame.onClick.AddListener(() => { startQuickGame(); });
+		customGame.onClick.AddListener(() => { startCustomGame(); });
         topLeftButton.onClick.AddListener(() => { heroButtonPressed(0); });
         topRightButton.onClick.AddListener(() => { heroButtonPressed(1); });
         botLeftButton.onClick.AddListener(() => { heroButtonPressed(2); });
@@ -52,6 +54,9 @@ public class Lobby : MonoBehaviour {
         createWarlock.onClick.AddListener(() => { createHeroButtonPressed(2); });
         createRougue.onClick.AddListener(() => { createHeroButtonPressed(3); });
 
+        if (getLobbyCommunication() == null || getLobbyCommunication().userId == 0) {
+            SceneManager.LoadScene("Connect");
+        }
     }
 
     public void updateHeroes(List<Hero> newListOfHeroes)
@@ -60,7 +65,8 @@ public class Lobby : MonoBehaviour {
         if (currentHero == null && heroes.Count > 0)
         {
             currentHero = heroes[0];
-            getCommunication().heroId = "" + currentHero.id;
+			getLobbyCommunication().heroId = currentHero.id;
+            Debug.Log("Setting hero id : " + currentHero.id);
         }
     }
 
@@ -100,12 +106,19 @@ public class Lobby : MonoBehaviour {
         mainChat.SetActive(false);
     }
 
+	void startCustomGame()
+	{
+		Debug.Log("Starting a custom game");
+		getLobbyCommunication ().findCustomGame ();
+	}
+
     void startQuickGame()
     {
-        Debug.Log("Starting a quick game");
-        ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication))).gameId = 0;
-        SceneManager.LoadScene("scene1");
+		Debug.Log("Starting a quick game");
+		getLobbyCommunication ().findQuickGame ();
     }
+
+
     void heroButtonPressed(int button)
     {
         Debug.Log("Button pressed: " + button);
@@ -117,17 +130,14 @@ public class Lobby : MonoBehaviour {
             {
                 currentHero = hero;
                 foundHero = true;
-                getCommunication().heroId = "" + currentHero.id;
+				getLobbyCommunication().heroId = currentHero.id;
             }
             position = position + 1;
         }
         heroesLayout.SetActive(false);
-        if (foundHero)
-        {
+        if (foundHero) {
             mainChat.SetActive(true);
-        }
-        else
-        {
+        } else {
             // Show create hero screen
             createHeroLayout.SetActive(true);
         }
@@ -137,23 +147,16 @@ public class Lobby : MonoBehaviour {
     {
         Debug.Log("Creating hero pressed: " + button);
         string classType = "";
-        if (button == 0)
-        {
+        if (button == 0) {
             classType = "WARRIOR";
-        }
-        else if(button == 1)
-        {
+        } else if(button == 1) {
             classType = "PRIEST";
+        } else if (button == 2) {
+            classType = "WARLOCK";
+        } else if (button == 3) {
+            classType = "ROGUE";
         }
-        else if (button == 2)
-        {
-            classType = "PRIEST";
-        }
-        else if (button == 3)
-        {
-            classType = "PRIEST";
-        }
-        getCommunication().createHero(classType);
+        getLobbyCommunication().createHero(classType);
         
         heroesLayout.SetActive(true);
         createHeroLayout.SetActive(false);
@@ -175,4 +178,15 @@ public class Lobby : MonoBehaviour {
         }
         return null;
     }
+
+	LobbyCommunication getLobbyCommunication()
+	{
+		GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+		//Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
+		foreach (GameObject go in gos)
+		{
+			return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
+		}
+		return null;
+	}
 }

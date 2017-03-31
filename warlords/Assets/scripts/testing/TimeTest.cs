@@ -4,7 +4,6 @@ using System;
 
 public class TimeTest : MonoBehaviour {
 
-    private long timeLast = 0;
 	// Use this for initialization
 	void Start () {
         Debug.Log("Started");

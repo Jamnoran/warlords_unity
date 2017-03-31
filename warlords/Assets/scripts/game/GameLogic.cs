@@ -42,14 +42,9 @@ public class GameLogic : MonoBehaviour
     void Start()
     {
         Debug.Log("Game logic has started");
-        if ((GameObject.Find("Communication")) == null)
-        {
+        if ((GameObject.Find("Communication")) == null){
             Debug.Log("Go to connect screen.");
             SceneManager.LoadScene("Connect");
-        }
-        else
-        {
-            checkIfShouldJoinServer();
         }
     }
 
@@ -57,17 +52,8 @@ public class GameLogic : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         Debug.Log("Waited a second for server connection to start up");
-        checkIfShouldJoinServer();
     }
-
-    public void checkIfShouldJoinServer()
-    {
-        if (getCommunication().gameId == 0)
-        {   
-            getCommunication().joinServer();
-        }
-
-    }
+    
 
     // Update is called once per frame
     void Update()
@@ -183,24 +169,19 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    public void updateListOfHeroes(List<Hero> newHeroes)
-    {
-        String heroid = getCommunication().getHeroId();
-       
-        foreach (var newHero in newHeroes)
-        {
+    public void updateListOfHeroes(List<Hero> newHeroes) {
+        int heroid = getLobbyCommunication().heroId;
+        foreach (var newHero in newHeroes) {
             bool found = false;
-            foreach (var hero in heroes)
-            {
-                if (newHero.id == hero.id)
-                {
+            foreach (var hero in heroes) {
+                if (newHero.id == hero.id) {
                     found = true;
                     hero.setHp(newHero.hp);
                     hero.xp = newHero.xp;
                     hero.level = newHero.level;
                     hero.resource = newHero.resource;
                     // Dont change desired position for own hero
-                    if (hero.id != Int32.Parse(heroid)) {
+                    if (hero.id != heroid) {
                         Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
                         hero.desiredPositionX = newHero.desiredPositionX;
                         hero.desiredPositionZ = newHero.desiredPositionZ;
@@ -213,8 +194,7 @@ public class GameLogic : MonoBehaviour
 
                 }
             }
-            if (!found)
-            {
+            if (!found) {
                 // Initiate hero here
                 Debug.Log("Initiate Hero");
                 Transform prefabToUse = warrior;
@@ -224,8 +204,7 @@ public class GameLogic : MonoBehaviour
                 Transform heroTransform = (Transform) Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ), Quaternion.identity);
                 heroTransform.name = prefabToUse.name;
                 newHero.setTrans(heroTransform);
-                if (newHero.id == Int32.Parse(heroid))
-                {
+                if (newHero.id == heroid) {
                     Debug.Log("Setting hero id: " + newHero.id + " To my own hero");
                     ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
                     newHero.updateHealthBar(true);
@@ -442,25 +421,23 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
-    public void autoAttack()
-    {
+    public void autoAttack() {
         // Here we will need to check the id of the minion focused to send up to server.
         // This is a basic attack
         int minionId = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().targetEnemy;
         getCommunication().sendAutoAttack(minionId);
     }
 
-    public Hero getMyHero()
-    {
-        foreach (var hero in heroes)
-        {
-            String heroid = getCommunication().getHeroId();
-            int hId = Int32.Parse(heroid);
-            if (hId == hero.id)
-            {
-                return hero;
+    public Hero getMyHero() {
+        if (getLobbyCommunication() != null) {
+            int hId = getLobbyCommunication().heroId;
+            foreach (var hero in heroes) {
+                if (hId == hero.id) {
+                    return hero;
+                }
             }
         }
+      
         return null;
     }
 
@@ -544,8 +521,7 @@ public class GameLogic : MonoBehaviour
     }
 
 
-    ServerCommunication getCommunication()
-    {
+    ServerCommunication getCommunication() {
         GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
         foreach (GameObject go in gos)
         {
@@ -554,5 +530,14 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
+    LobbyCommunication getLobbyCommunication()  {
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
+        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
+        foreach (GameObject go in gos)
+        {
+            return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
+        }
+        return null;
+    }
 
 }
