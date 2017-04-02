@@ -24,7 +24,7 @@ public class clickToMove : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (getGameLogic().isMyHeroAlive())
+        if (getGameLogic() != null && getGameLogic().isMyHeroAlive())
         {
             if (isMyHero && Input.GetMouseButton(right_mouse_button))
             {                 //look to see if the player is clicking right mouse button

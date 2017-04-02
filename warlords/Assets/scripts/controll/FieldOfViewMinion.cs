@@ -96,8 +96,7 @@ public class FieldOfViewMinion : MonoBehaviour
         }
     }
 
-    GameLogic getGameLogic()
-    {
+    GameLogic getGameLogic() {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
 

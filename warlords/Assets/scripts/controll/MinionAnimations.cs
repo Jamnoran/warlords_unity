@@ -28,7 +28,6 @@ public class MinionAnimations : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
         // First check if minion has a target to attack, in that case that takes priority over desiredlocation.
         if (heroTargetId > 0 ) {
             //Debug.Log("We got target to move to");
@@ -75,12 +74,11 @@ public class MinionAnimations : MonoBehaviour {
             lookAndMove();
         }
 
-        if (!isMoving && !idleAnimationRunning)
-        {
-            idleAnimationRunning = true;
-            //Debug.Log("Starting idle animation again");
-            anim.Play("zombie_idle", -1, 0f);
-        }
+        //if (!isMoving && !idleAnimationRunning) {
+        //    idleAnimationRunning = true;
+        //    Debug.Log("Starting idle animation again");
+        //    anim.Play("zombie_idle", -1, 0f);
+        //}
 
     }
 
@@ -120,8 +118,7 @@ public class MinionAnimations : MonoBehaviour {
 
     public void sendAttackInRange(int heroId)
     {
-        if (heroTargetId != 0)
-        {
+        if (heroTargetId != 0) {
             Debug.Log("Sending that minion is in attack range");
             Minion minion = getGameLogic().getClosestMinionByPosition(character.transform.position);
             getCommunication().sendMinionHasTargetInRange(minion.id, heroId);
@@ -130,43 +127,23 @@ public class MinionAnimations : MonoBehaviour {
 
 
 
-    public void attackAnimation()
-    {
+    public void attackAnimation()  {
         Debug.Log("Showing attack animation");
         anim.Play("Attack", -1, 0f);
     }
 
-    public void setDesiredLocation(Vector3 position)
-    {
-        targetPosition = position;
-        isMoving = true;
-        idleAnimationRunning = false;
-        if (anim != null)
-        {
-            anim.Play("mutant_run_inPlace", -1, 0f);
+    public void setDesiredLocation(Vector3 position) {
+        if (anim != null && (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))) {
+            Debug.Log("Dont move to another position we are attacking or we are already running");
+        } else {
+            Debug.Log("Setting new targetPostion and mutantRunInPlace");
+            targetPosition = position;
+            isMoving = true;
+            idleAnimationRunning = false;
+            if (anim != null && !anim.GetCurrentAnimatorStateInfo(0).IsName("mutant_run_inPlace")) {
+                anim.Play("mutant_run_inPlace", -1, 0f);
+            }
         }
-        else
-        {
-            //Debug.Log("Could not find anim object on minion");
-        }
-        
-    }
-
-    void SetTargetPosition()
-    {
-
-        Plane plane = new Plane(Vector3.up, transform.position);             //create a plane for the player to move on
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);         //cast a ray at where the player is clicking
-        float point = 0f;
-
-        if (plane.Raycast(ray, out point))
-        {
-            targetPosition = ray.GetPoint(point);
-        }
-        //anim.SetBool("walking", true);
-        isMoving = true;
-        idleAnimationRunning = false;
-        anim.Play("mutant_run_inPlace", -1, 0f);
     }
 
 }

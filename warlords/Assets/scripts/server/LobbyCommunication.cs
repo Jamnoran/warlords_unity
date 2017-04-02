@@ -12,12 +12,12 @@ using System.Net.Configuration;
 
 public class LobbyCommunication : MonoBehaviour {
 	private SocketConnection socketConnection;
-	public string webserviceUrl = "http://localhost:8888/warlords_webservice/lobbys.json";
+	public string webserviceUrl = "http://www.warlord.ga/warlords_webservice/lobbys.json";
 
 	public int userId = 1;
 	public int heroId = 1;
 
-    public Boolean local = true;
+    public Boolean local = false;
 
 	private ResponseLobbys responseLobbys;
 
@@ -182,7 +182,7 @@ public class LobbyCommunication : MonoBehaviour {
 		String ip = null;
 		int port = 0;
 		foreach(Server server in responseLobbys.getLobbys()){
-			Debug.Log("Server : " + server.getIp());
+			Debug.Log("Server : " + server.getIp() + ":" + server.getPort());
 			ip = server.getIp ();
 			port = server.getIntPort ();
 		}

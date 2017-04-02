@@ -129,6 +129,7 @@ public class GameLogic : MonoBehaviour
 
     public void updateListOfMinions(List<Minion> newMinions)
     {
+        Debug.Log("NewMinions : " + newMinions.Count + " Minions : " + minions.Count);
         foreach (var newMinion in newMinions)
         {
             bool found = false;
@@ -137,25 +138,28 @@ public class GameLogic : MonoBehaviour
                 if (newMinion.id == minion.id)
                 {
                     found = true;
-                    // Need too update all new information that comes from the server
-                    if (minion.hp != newMinion.hp)
-                    {
+                    // Need to update all new information that comes from the server
+                    if (minion.hp != newMinion.hp) {
                         //update minion hp
                         minion.setHp(newMinion.hp);
                         Debug.Log("Minions new hp = " + minion.hp);
                     }
-                    minion.desiredPositionX = newMinion.desiredPositionX;
-                    minion.desiredPositionZ = newMinion.desiredPositionZ;
-
                     MinionAnimations minionAnimations = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
-                    minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
+
+                    if (minion.desiredPositionX != newMinion.desiredPositionX || minion.desiredPositionZ != newMinion.desiredPositionZ) {
+                        Debug.Log("Minions desired position changed, update minion " + minion.desiredPositionX + " != " + newMinion.desiredPositionX);
+                        minion.desiredPositionX = newMinion.desiredPositionX;
+                        minion.desiredPositionZ = newMinion.desiredPositionZ;
+
+                        minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
+                    }
+
                     if (newMinion.heroTarget > 0) {
                         minionAnimations.heroTargetId = newMinion.heroTarget;
                     }
                 }
             }
-            if (!found)
-            {
+            if (!found) {
                 // Initiate minion here
                 Debug.Log("Initiate minion");
                 Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ), Quaternion.identity);
@@ -268,15 +272,12 @@ public class GameLogic : MonoBehaviour
             }
             if (gameAnimation.animation_type == "MINION_ATTACK")
             {
-                Debug.Log("Minion attack anination");
-                Minion minion = getMinion(gameAnimation.target_id);
-                //Hero target = getHero(gameAnimation.source_id);
-                if (minion != null && minion.minionTransform != null)
-                {
+                Debug.Log("Minion attack animation");
+                Minion minion = getMinion(gameAnimation.source_id);
+                if (minion != null && minion.minionTransform != null) {
                     MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
                     anim.attackAnimation();
                 }
-                
             }
         }
     }
@@ -328,8 +329,10 @@ public class GameLogic : MonoBehaviour
     public void setHeroTargetEnemy(int minion_id)
     {
         Hero myHero = getMyHero();
-        myHero.targetFriendly = 0;
-        myHero.targetEnemy = minion_id;
+        if (myHero != null) {
+            myHero.targetFriendly = 0;
+            myHero.targetEnemy = minion_id;
+        }
     }
     public void setHeroTargetFriendly(int hero_id)
     {

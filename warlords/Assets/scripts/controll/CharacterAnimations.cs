@@ -42,10 +42,12 @@ public class CharacterAnimations : MonoBehaviour {
                 isMoving = false;
             }
 
-            Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
-            if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
-                sentStopAnimation = true;
-                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+            if (getGameLogic() != null) {
+                Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
+                if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
+                    sentStopAnimation = true;
+                    getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+                }
             }
         //}else { 
             // Play dead animation

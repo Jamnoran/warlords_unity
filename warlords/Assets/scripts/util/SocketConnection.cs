@@ -14,15 +14,11 @@ public class SocketConnection
 	public String Host = "127.0.0.1";
 	public Int32 Port = 2055;
 
-	public SocketConnection (string ip, Int32 p, bool local)
-	{
+	public SocketConnection (string ip, Int32 p, bool local) {
 		Host = ip;
 		Port = p;
-
-		setupSocket(local);
-	
+        setupSocket(local);
 	}
-
 
 	public void setupSocket(bool local) {
 		try{
