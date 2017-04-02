@@ -142,16 +142,16 @@ public class move : MonoBehaviour {
     }
 
 
-    ServerCommunication getCommunication()
-    {
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
-        foreach (GameObject go in gos)
-        {
-            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
-        }
-        return null;
+
+
+    ServerCommunication getCommunication() {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
+
+    LobbyCommunication getLobbyCommunication() {
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
+    }
+
 
     CharacterAnimations getAnimation()
     {

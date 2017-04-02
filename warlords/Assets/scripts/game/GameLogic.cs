@@ -127,16 +127,11 @@ public class GameLogic : MonoBehaviour
 
     
 
-    public void updateListOfMinions(List<Minion> newMinions)
-    {
-        Debug.Log("NewMinions : " + newMinions.Count + " Minions : " + minions.Count);
-        foreach (var newMinion in newMinions)
-        {
+    public void updateListOfMinions(List<Minion> newMinions) {
+        foreach (var newMinion in newMinions) {
             bool found = false;
-            foreach (var minion in minions)
-            {
-                if (newMinion.id == minion.id)
-                {
+            foreach (var minion in minions) {
+                if (newMinion.id == minion.id) {
                     found = true;
                     // Need to update all new information that comes from the server
                     if (minion.hp != newMinion.hp) {
@@ -147,7 +142,7 @@ public class GameLogic : MonoBehaviour
                     MinionAnimations minionAnimations = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
 
                     if (minion.desiredPositionX != newMinion.desiredPositionX || minion.desiredPositionZ != newMinion.desiredPositionZ) {
-                        Debug.Log("Minions desired position changed, update minion " + minion.desiredPositionX + " != " + newMinion.desiredPositionX);
+                        //Debug.Log("Minions desired position changed, update minion " + minion.desiredPositionX + " != " + newMinion.desiredPositionX);
                         minion.desiredPositionX = newMinion.desiredPositionX;
                         minion.desiredPositionZ = newMinion.desiredPositionZ;
 
@@ -162,7 +157,7 @@ public class GameLogic : MonoBehaviour
             if (!found) {
                 // Initiate minion here
                 Debug.Log("Initiate minion");
-                Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ), Quaternion.identity);
+                Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, 1.0f, newMinion.desiredPositionZ), Quaternion.identity);
                 newMinion.setTransform(minionTransform);
                 newMinion.initBars();
                 MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
@@ -241,15 +236,13 @@ public class GameLogic : MonoBehaviour
                     }
                 }
             }
-            if (gameAnimation.animation_type == "HEAL")
-            {
-                Debug.Log("Heal anination");
+            if (gameAnimation.animation_type == "HEAL") {
+                Debug.Log("Heal animnation");
                 Hero target = getHero(gameAnimation.target_id);
                 Instantiate(healAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
             }
-            if (gameAnimation.animation_type == "ATTACK")
-            {
-                Debug.Log("Attack animation");
+            if (gameAnimation.animation_type == "ATTACK") {
+                //Debug.Log("Attack animation");
                 //Minion minion = getMinion(gameAnimation.target_id);
                 Hero target = getHero(gameAnimation.source_id);
                 CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
@@ -263,20 +256,26 @@ public class GameLogic : MonoBehaviour
                 CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
                 anim.runAnimation();
             }
-            if (gameAnimation.animation_type == "HERO_IDLE")
-            {
+            if (gameAnimation.animation_type == "HERO_IDLE") {
                 Debug.Log("Idle animation");
                 Hero target = getHero(gameAnimation.source_id);
                 CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
                 anim.idleAnimation();
             }
-            if (gameAnimation.animation_type == "MINION_ATTACK")
-            {
-                Debug.Log("Minion attack animation");
+            if (gameAnimation.animation_type == "MINION_ATTACK") {
+                //Debug.Log("Minion attack animation");
                 Minion minion = getMinion(gameAnimation.source_id);
                 if (minion != null && minion.minionTransform != null) {
                     MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
                     anim.attackAnimation();
+                }
+            }
+            if (gameAnimation.animation_type == "MINION_RUN") {
+                Debug.Log("Minion run animation");
+                Minion minion = getMinion(gameAnimation.source_id);
+                if (minion != null && minion.minionTransform != null) {
+                    MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
+                    anim.runAnimation();
                 }
             }
         }
@@ -522,25 +521,13 @@ public class GameLogic : MonoBehaviour
         heroes = new List<Hero>();
         Debug.Log("Game ended");
     }
-
-
+    
     ServerCommunication getCommunication() {
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        foreach (GameObject go in gos)
-        {
-            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
-        }
-        return null;
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
-    LobbyCommunication getLobbyCommunication()  {
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
-        foreach (GameObject go in gos)
-        {
-            return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
-        }
-        return null;
+    LobbyCommunication getLobbyCommunication() {
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
     }
 
 }

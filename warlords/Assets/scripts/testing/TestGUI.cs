@@ -93,6 +93,7 @@ public class TestGUI : MonoBehaviour {
 
         Debug.Log("Exit to lobby screen");
         SceneManager.LoadScene("Lobby");
+        getLobbyCommunication().getHeroes();
     }
 
 
@@ -112,5 +113,9 @@ public class TestGUI : MonoBehaviour {
         } else {
             return null;
         }
+    }
+
+    LobbyCommunication getLobbyCommunication() {
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
     }
 }

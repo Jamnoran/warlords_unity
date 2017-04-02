@@ -97,25 +97,14 @@ namespace Assets.scripts.vo
             autoAttacking = value;
         }
 
+
         ServerCommunication getCommunication() {
-            GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-            foreach (GameObject go in gos)
-            {
-                return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
-            }
-            return null;
+            return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
         }
 
         LobbyCommunication getLobbyCommunication() {
-            GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-            //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
-            foreach (GameObject go in gos)
-            {
-                return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
-            }
-            return null;
+            return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
         }
-
         CharacterAnimations getAnimation(){
             return (CharacterAnimations) trans.GetComponent(typeof(CharacterAnimations));
         }

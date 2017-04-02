@@ -13,6 +13,7 @@ public class Connect : MonoBehaviour {
     public Button resetButton;
     public bool autoLogin = true;
     
+    
 
     // Use this for initialization
     void Start () {
@@ -33,8 +34,7 @@ public class Connect : MonoBehaviour {
             emailInput.text = email;
         }
 
-        if (autoLogin && userId > 0)
-        {   
+        if (autoLogin && userId > 0) {   
             Debug.Log("Auto login, user id : " + userId);
             Debug.Log("Email: " + PlayerPrefs.GetString("EMAIL"));
             Debug.Log("Password: " + PlayerPrefs.GetString("PASSWORD"));
@@ -47,8 +47,9 @@ public class Connect : MonoBehaviour {
 	void Update () {
         
 	}
+    
 
-    void reset()
+        void reset()
     {
         PlayerPrefs.SetString("EMAIL", null);
         PlayerPrefs.SetString("USER_ID", null);
@@ -58,7 +59,7 @@ public class Connect : MonoBehaviour {
 
     void login()
     {
-        sendLogin(usernameInput.text, emailInput.text, passwordInput.text);
+        sendLogin("", emailInput.text, passwordInput.text);
     }
 
     void register()
@@ -85,9 +86,13 @@ public class Connect : MonoBehaviour {
         //{
             PlayerPrefs.SetString("EMAIL", email);
             PlayerPrefs.SetString("PASSWORD", password);
-            PlayerPrefs.SetString("USERNAME", username);
+            //PlayerPrefs.SetString("USERNAME", username);
             Debug.Log("Login");
-			getLobbyCommunication().loginUser(email, password);
+            if (getLobbyCommunication() != null) {
+                getLobbyCommunication().loginUser(email, password);
+            } else {
+                Debug.Log("No lobby communication object");
+            }
         //}else
         //{
         //    Debug.Log("You need to register first");
@@ -97,19 +102,11 @@ public class Connect : MonoBehaviour {
 
 
 
-    ServerCommunication getCommunication()
-    {
+    ServerCommunication getCommunication() {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
-	LobbyCommunication getLobbyCommunication()
-	{
-		GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-		//Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
-		foreach (GameObject go in gos)
-		{
-			return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
-		}
-		return null;
+	LobbyCommunication getLobbyCommunication() {
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
 	}
 }

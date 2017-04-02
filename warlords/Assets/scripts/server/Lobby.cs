@@ -37,8 +37,7 @@ public class Lobby : MonoBehaviour {
     public GameObject createHeroLayout;
 
     // Use this for initialization
-    void Start ()
-    {
+    void Start () {
         mainChat.SetActive(true);
         heroesLayout.SetActive(false);
         createHeroLayout.SetActive(false);
@@ -59,8 +58,7 @@ public class Lobby : MonoBehaviour {
         }
     }
 
-    public void updateHeroes(List<Hero> newListOfHeroes)
-    {
+    public void updateHeroes(List<Hero> newListOfHeroes) {
         heroes = newListOfHeroes;
         if (currentHero == null && heroes.Count > 0)
         {
@@ -71,8 +69,7 @@ public class Lobby : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         if(currentHero != null)
         {
             heroChooserText.text = currentHero.class_type + " \n Level " + currentHero.level;
@@ -168,25 +165,11 @@ public class Lobby : MonoBehaviour {
 
 
 
-    ServerCommunication getCommunication()
-    {
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
-        foreach (GameObject go in gos)
-        {
-            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
-        }
-        return null;
+    ServerCommunication getCommunication() {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
-	LobbyCommunication getLobbyCommunication()
-	{
-		GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-		//Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
-		foreach (GameObject go in gos)
-		{
-			return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
-		}
-		return null;
-	}
+    LobbyCommunication getLobbyCommunication() {
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
+    }
 }

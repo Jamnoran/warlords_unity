@@ -306,13 +306,7 @@ public class ServerCommunication : MonoBehaviour {
 
 
     LobbyCommunication getLobbyCommunication() {
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
-        foreach (GameObject go in gos)
-        {
-            return (LobbyCommunication)go.GetComponent(typeof(LobbyCommunication));
-        }
-        return null;
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
     }
 
     GameLogic getGameLogic() {

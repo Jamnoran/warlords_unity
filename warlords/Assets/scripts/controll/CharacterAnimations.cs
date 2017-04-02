@@ -70,7 +70,7 @@ public class CharacterAnimations : MonoBehaviour {
     }
 
     public void idleAnimation() {
-        Debug.Log("Starting idle animation again");
+        //Debug.Log("Starting idle animation again");
         anim.Play("idle", -1, 0f);
     }
 
@@ -88,12 +88,12 @@ public class CharacterAnimations : MonoBehaviour {
 
 
 
-    ServerCommunication getCommunication()  {
-        if (GameObject.Find("Communication") != null) {
-            return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
-        } else {
-            return null;
-        }
+    ServerCommunication getCommunication() {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
+
+    LobbyCommunication getLobbyCommunication() {
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
     }
 
 
