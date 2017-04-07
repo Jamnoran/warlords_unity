@@ -3,8 +3,9 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
+public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHandler, IBeginDragHandler
 {
+    private GameObject spellBook;
     public GameObject spell;
     private GameObject spellSlot1;
     private GameObject spellSlot2;
@@ -13,10 +14,6 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     private GameObject spellSlot5;
     private GameObject spellSlot6;
     private GameObject spellSlot7;
-    private GameObject spellSlot8;
-    private GameObject spellSlot9;
-    private GameObject spellSlot10;
-    private GameObject spellSlot11;
     //in this list we keep information about all the slots in the players action bar so we can calculate where to drop spells etc
     private List<GameObject> listOfSpellSlots = new List<GameObject>();
     //keep track of slots that allready have an ability in the players action bar so we can swap it with the one currently selected
@@ -26,10 +23,14 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
     private Vector3 originalPosition;
     private Vector3 currentPosition;
     private Transform currentParent;
+    private Transform tempParent;
+
 
     // Initialize spellbookslots and other crap
     public void Start()
     {
+
+        spellBook = GameObject.FindWithTag("slotpanel");
         spell = GameObject.Find(this.transform.name);
         spellSlot1 = GameObject.FindWithTag("spell1");
         spellSlot2 = GameObject.FindWithTag("spell2");
@@ -38,10 +39,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         spellSlot5 = GameObject.FindWithTag("spell5");
         spellSlot6 = GameObject.FindWithTag("spell6");
         spellSlot7 = GameObject.FindWithTag("spell7");
-        spellSlot8 = GameObject.FindWithTag("spell8");
-        spellSlot9 = GameObject.FindWithTag("spell9");
-        spellSlot10 = GameObject.FindWithTag("spell10");
-        spellSlot11 = GameObject.FindWithTag("spell11");
+
         //add all spellSlots to the list
         listOfSpellSlots.Add(spellSlot1);
         listOfSpellSlots.Add(spellSlot2);
@@ -50,10 +48,11 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
         listOfSpellSlots.Add(spellSlot5);
         listOfSpellSlots.Add(spellSlot6);
         listOfSpellSlots.Add(spellSlot7);
-        listOfSpellSlots.Add(spellSlot8);
-        listOfSpellSlots.Add(spellSlot9);
-        listOfSpellSlots.Add(spellSlot10);
-        listOfSpellSlots.Add(spellSlot11);
+
+        //Initilize size of spell icon
+        ChangeScaleOnIcon(0.8f, 0.8f, 0.8f);
+
+
         
         originalPosition = this.transform.position;
         originalParent = this.transform.parent.gameObject;
@@ -63,7 +62,9 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnDrag(PointerEventData data)
     {
+      
         this.gameObject.transform.position = Input.mousePosition;
+        spell.transform.SetParent(spellBook.transform);
     }
 
     public void OnDrop(PointerEventData data)
@@ -71,13 +72,21 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
      
     }
 
+
+    public void OnBeginDrag(PointerEventData data)
+    {
+        tempParent = this.transform.parent;
+        var name = tempParent.name;
+        var foo = "";
+    }
+
     public void OnEndDrag(PointerEventData data)
     {
-     
-            this.transform.position = snapToActiveSpell(this.transform.position.x, this.transform.position.y, listOfSpellSlots);
-            currentPosition = spell.transform.position;
+        
+        this.transform.position = snapToActiveSpell(this.transform.position.x, this.transform.position.y, listOfSpellSlots);
+        currentPosition = spell.transform.position;
         currentParent = spell.transform.parent;
-        Debug.Log("Current parent is: " + currentParent);
+        Debug.Log("Current parent is: " + currentParent.name);
         
     }
 
@@ -101,39 +110,53 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler
                 //if slot is free
                 if (!getSlotTracker().isSlotTaken(spellSlots[i].name))
                 {
-                    Debug.Log("Slot is free, adding spell " + spell.transform.name);
+                    if (spell.transform.parent.name != "Slot(Clone)")
+                    {
+                        getSlotTracker().removeFromList(spell.transform.parent.name);
+                    }
+                    getSlotTracker().removeFromList(tempParent.name);
                     spell.transform.SetParent(spellSlots[i].transform);
-                    getSlotTracker().addToList(spellSlots[i].name, spell.name);
                     
+                    getSlotTracker().addToList(spellSlots[i].name, spell.name);
+                    ChangeScaleOnIcon(31f, 3f, 0.5f);
+                    //todo: if previous was a spellbar slot, free it
+                   
                     return spellSlots[i].transform.position;
                 }
 
                 //if slot is taken
                 else if (getSlotTracker().isSlotTaken(spellSlots[i].name) && spellSlots[i].transform.childCount > 0)
                 {
-                    var curPar = spell.transform.parent;
-                    Debug.Log("spell: " + spell);
-                    Debug.Log("Slot is occupied by spell " + spellSlots[i].transform.GetChild(0));
+                    var curPar = tempParent;
+
                     //push current spell to where new spell was
                     spellSlots[i].transform.GetChild(0).position = curPar.transform.position;
                     spellSlots[i].transform.GetChild(0).SetParent(curPar);
                     //push new spell to new parent
                     spell.transform.parent = spellSlots[i].transform;
+                    getSlotTracker().addToList(spellSlots[i].name, spell.name);
+                   
+
                     return spellSlots[i].transform.position;
                 }
             }
         }
-        getSlotTracker().removeFromList(spell.transform.parent.transform.name);
+        getSlotTracker().removeFromList(this.transform.parent.name);
         spell.transform.SetParent(originalParent.transform);
-         
-        return originalPosition;
+        ChangeScaleOnIcon(0.8f, 0.8f, 0.8f);
+        return this.transform.parent.transform.position;
     }
 
 
-  
+  private void ChangeScaleOnIcon(float xValue, float yValue, float zValue)
+    {
+        spell.transform.localScale = new Vector3(xValue, yValue, zValue);
+    }
 
     SpellSlotBusyOrNot getSlotTracker()
     {
         return ((SpellSlotBusyOrNot)GameObject.Find("SpellSlotBusyOrNot").GetComponent(typeof(SpellSlotBusyOrNot)));
     }
+
+
 }
