@@ -22,6 +22,7 @@ namespace Assets.scripts.vo
         public int baseCD;
         public String timeWhenOffCooldown = "0";
         public bool waitingForCdResponse = false;
+        public int position = 0;
 
         public bool isReady()
         {

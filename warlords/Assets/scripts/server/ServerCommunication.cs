@@ -115,6 +115,10 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"GET_ABILITIES\", \"user_id\":" + getHeroId() + "}");
     }
 
+    public void updateAbilityPosition(int abilityId, int position) {
+        sendRequest(new RequestAbilityPosition(getHeroId(), abilityId, position));
+    }
+
 
 
     private long getMillis() {

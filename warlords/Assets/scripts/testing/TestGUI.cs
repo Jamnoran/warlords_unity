@@ -32,9 +32,10 @@ public class TestGUI : MonoBehaviour {
                 bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
                 Debug.Log("Hero is now attacking : " + !autoAttacking);
                 getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
-            }else if (Input.GetKeyUp("s"))
-            {
+            }else if (Input.GetKeyUp("s")) {
                 getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+            } else if (Input.GetKeyUp("v")) {
+                getCommunication().updateAbilityPosition(8,2);
             }
         }
         if (Input.GetKeyDown("escape"))

@@ -22,6 +22,7 @@ public class GameLogic : MonoBehaviour
 
     // Animation Effects
     public Transform healAnimation;
+    public Transform tauntAnimation;
 
     private List<Ability> abilities = null;
 
@@ -216,12 +217,9 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    public void updateAnimations(List<GameAnimation> gameAnimations)
-    {
-        foreach (var gameAnimation in gameAnimations)
-        {
-            if (gameAnimation.animation_type == "MINION_DIED")
-            {
+    public void updateAnimations(List<GameAnimation> gameAnimations) {
+        foreach (var gameAnimation in gameAnimations) {
+            if (gameAnimation.animation_type == "MINION_DIED") {
                 Debug.Log("Minion died");
                 Minion minion = getMinion(gameAnimation.target_id);
                 Destroy(minion.minionTransform.gameObject);
@@ -235,11 +233,6 @@ public class GameLogic : MonoBehaviour
                         hero.setAutoAttacking(false);
                     }
                 }
-            }
-            if (gameAnimation.animation_type == "HEAL") {
-                Debug.Log("Heal animnation");
-                Hero target = getHero(gameAnimation.target_id);
-                Instantiate(healAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
             }
             if (gameAnimation.animation_type == "ATTACK") {
                 //Debug.Log("Attack animation");
@@ -271,12 +264,26 @@ public class GameLogic : MonoBehaviour
                 }
             }
             if (gameAnimation.animation_type == "MINION_RUN") {
-                Debug.Log("Minion run animation");
+                //Debug.Log("Minion run animation");
                 Minion minion = getMinion(gameAnimation.source_id);
                 if (minion != null && minion.minionTransform != null) {
                     MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
                     anim.runAnimation();
                 }
+            }
+
+
+            // SPELLS
+            if (gameAnimation.animation_type == "HEAL") {
+                Debug.Log("Heal animnation");
+                Hero target = getHero(gameAnimation.target_id);
+                Instantiate(healAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
+            }
+
+            if (gameAnimation.animation_type == "TAUNT") {
+                Debug.Log("Taunt animnation");
+                Hero source = getHero(gameAnimation.source_id);
+                Instantiate(tauntAnimation, new Vector3(source.positionX, 0.3f, source.positionZ), Quaternion.identity);
             }
         }
     }
@@ -543,7 +550,12 @@ public class GameLogic : MonoBehaviour
     }
 
     LobbyCommunication getLobbyCommunication() {
-        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
+        if (GameObject.Find("Communication") != null) {
+            return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
+        } else {
+            return null;
+        }
+        
     }
 
 }
