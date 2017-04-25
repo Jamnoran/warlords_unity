@@ -16,8 +16,7 @@ public class Target : MonoBehaviour {
     public float MinTargetDistance = 3.0f;
     #endregion
 
-    void Start()
-    {
+    void Start() {
         listOfHeroes = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHeroes();
     }
 

@@ -26,8 +26,7 @@ public class move : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // Constantly check the heroes desired location and update it
-        if(heroId > 0 && ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId) != null)
-        {
+        if(heroId > 0 && ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId) != null) {
             //desiredPosition = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId).getDesiredPosition();
         }
 
@@ -35,13 +34,11 @@ public class move : MonoBehaviour {
         //if(transform != null)
         //{
             // Handle mouse input
-            if (isMyHero && Input.GetMouseButtonUp(leftMouseButton))
-            {
+            if (isMyHero && Input.GetMouseButtonUp(leftMouseButton)) {
                 getTargetPosition();
                 leftClick();
             }
-            if (isMyHero && Input.GetMouseButtonUp(rightMouseButton))
-            {
+            if (isMyHero && Input.GetMouseButtonUp(rightMouseButton)) {
                 getTargetPosition();
                 rightClick();
             }

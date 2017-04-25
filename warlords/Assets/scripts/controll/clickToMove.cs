@@ -24,38 +24,32 @@ public class clickToMove : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (getGameLogic() != null && getGameLogic().isMyHeroAlive())
-        {
-            if (isMyHero && Input.GetMouseButton(right_mouse_button))
-            {                 //look to see if the player is clicking right mouse button
-                getPosition();                                       //where did the player click?
-                MovePlayer();
+        if (getGameLogic() != null && getGameLogic().isMyHeroAlive()) {
+            if (isMyHero && Input.GetMouseButton(right_mouse_button)) {                 
+                //look to see if the player is clicking right mouse button
+                getPosition();
+                //where did the player click?
+                movePlayer();
             }
 
             // Check if hero wants to auto attack
-            if (isMyHero)
-            {
-                if (getGameLogic() != null)
-                {
+            if (isMyHero) {
+                if (getGameLogic() != null) {
                     Hero hero = getGameLogic().getMyHero();
                     //Debug.Log("Hero.getAutoAttacking " + hero.getAutoAttacking() + " auto attack ready : " + getGameLogic().getAbility(0).isReady());
-                    if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0)
-                    {
+                    if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0) {
                         // Check if user is in range of auto attack otherwise set its location as targetPostion
                         FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
                         List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, hero.attackRange, false);
-                        if (enemiesInRange != null && enemiesInRange.Contains(hero.targetEnemy))
-                        {
+                        if (enemiesInRange != null && enemiesInRange.Contains(hero.targetEnemy)) {
                             // Is in range
                             getAnimation().stopMove();
                             getAnimation().rotateToTarget(getGameLogic().getMinion(hero.targetEnemy).getTransformPosition());
                             getGameLogic().getAbility(0).waitingForCdResponse = true;
                             getGameLogic().autoAttack();
-                        }
-                        else
-                        {
+                        } else {
                             targetPosition = getGameLogic().getMinion(hero.targetEnemy).getTransformPosition();
-                            MovePlayer();
+                            movePlayer();
                         }
 
                     }
@@ -78,54 +72,43 @@ public class clickToMove : MonoBehaviour {
         }
     }
     
-    void MovePlayer()
-    {
+    void movePlayer() {
         //Debug.Log("Sending moveplayer to : " + targetPosition);
         getAnimation().setDesiredLocation(targetPosition);
 
         // Check that we moved enough from last position to send update to server that we moved more
         float dist = Vector3.Distance(lastSentPosition, transform.position);
-        if (dist > 0.5f)
-        {
+        if (dist > 0.5f) {
             //print("Sending move request to server: " + dist);
             sendMove();
         }
     }
     
-    void sendMove()
-    {
+    void sendMove() {
         lastSentPosition = transform.position;
-        if (getCommunication() != null)
-        {
+        if (getCommunication() != null) {
             getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
         }
     }
 
 
-    ServerCommunication getCommunication()
-    {
-        if (GameObject.Find("Communication") != null)
-        {
+    ServerCommunication getCommunication() {
+        if (GameObject.Find("Communication") != null) {
             return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
 
-    GameLogic getGameLogic()
-    {
+    GameLogic getGameLogic() {
         if (GameObject.Find("GameLogicObject") != null) { 
             return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
-        }else
-        {
+        } else {
             return null;
         }
     }
 
-    CharacterAnimations getAnimation()
-    {
+    CharacterAnimations getAnimation() {
         return (CharacterAnimations)GetComponent(typeof(CharacterAnimations));
     }
 }

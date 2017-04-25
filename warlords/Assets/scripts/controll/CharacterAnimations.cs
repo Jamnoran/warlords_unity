@@ -37,8 +37,7 @@ public class CharacterAnimations : MonoBehaviour {
 
 
             //if we are at the desired position we must stop moving
-            if (Vector3.Distance(character.transform.position, targetPosition) < 0.2f)
-            {
+            if (Vector3.Distance(character.transform.position, targetPosition) < 0.2f) {
                 isMoving = false;
             }
 
@@ -46,6 +45,8 @@ public class CharacterAnimations : MonoBehaviour {
                 Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
                 if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
                     sentStopAnimation = true;
+
+                    getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
                     getCommunication().sendStopHero(getGameLogic().getMyHero().id);
                 }
             }
@@ -81,6 +82,7 @@ public class CharacterAnimations : MonoBehaviour {
     }
 
     public void stopMove() {
+        //Debug.Log("Setting target position to current position : " + character.transform.position.x + " x " + character.transform.position.z);
         targetPosition = character.transform.position;
     }
 

@@ -13,12 +13,9 @@ public class DestroyPointer : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (time < liveTime)
-        {
+        if (time < liveTime) {
             time = time + 1;
-        }
-        else
-        {
+        } else {
             Destroy(pointer.gameObject);
         }
 	}

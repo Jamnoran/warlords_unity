@@ -171,7 +171,7 @@ public class ServerCommunication : MonoBehaviour {
         }
 
         // Handle different type of request_names
-        if (responseType != null) {
+        if (responseType != null && !responseType.Equals("")) {
             if (responseType.Equals("GAME_STATUS")) {
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
                 if (responseGameStatus.gameAnimations.Count > 0)
@@ -186,26 +186,28 @@ public class ServerCommunication : MonoBehaviour {
                 getGameLogic().createWorld(responseWorld);
             } else if (responseType == "CLEAR_WORLD")  {
                 getGameLogic().clearWorld();
-            }  else if (responseType == "TELEPORT_HEROES") {
+            } else if (responseType == "TELEPORT_HEROES") {
                 ResponseTeleportHeroes responseTeleportHeroes = JsonMapper.ToObject<ResponseTeleportHeroes>(json);
                 getGameLogic().teleportHeroes(responseTeleportHeroes.heroes);
-            }  else if (responseType == "COOLDOWN") {
+            } else if (responseType == "COOLDOWN") {
                 ResponseCooldown responseCooldown = JsonMapper.ToObject<ResponseCooldown>(json);
                 getGameLogic().updateCooldown(responseCooldown.ability);
-            }  else if (responseType == "ABILITIES") {
+            } else if (responseType == "ABILITIES") {
                 ResponseAbilities responseAbilities = JsonMapper.ToObject<ResponseAbilities>(json);
                 getGameLogic().setAbilities(responseAbilities.abilities);
-            }  else if (responseType == "STOP_HERO")  {
+            } else if (responseType == "STOP_HERO")  {
                 ResponseStopHero responseStopHero = JsonMapper.ToObject<ResponseStopHero>(json);
                 getGameLogic().stopHero(responseStopHero.hero);
-            }  else if (responseType == "HERO_BUFF")  {
+            } else if (responseType == "HERO_BUFF")  {
+                Debug.Log("Data [" + json + "]");
                 ResponseHeroBuff responseHeroBuff = JsonMapper.ToObject<ResponseHeroBuff>(json);
-                //((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).stopHero(responseStopHero.hero);
+                Debug.Log("We got heroBuff : " + responseHeroBuff.ToString());
+                getGameLogic().handleHeroBuff(responseHeroBuff);
             } else {
-                Debug.Log("Have type but did not match any of the ones we have " + responseType);
+                Debug.Log("Have type but did not match any of the ones we have [" + responseType + "]");
             }
         } else {
-            Debug.Log("Could not find correct method " + responseType);
+            Debug.Log("Could not find correct method for this json [" + json + "]");
         }
     }
 

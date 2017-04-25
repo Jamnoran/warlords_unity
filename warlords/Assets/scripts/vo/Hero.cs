@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.scripts.util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,29 +29,41 @@ namespace Assets.scripts.vo
         public Transform trans;
         private bool autoAttacking = false;
         public float attackRange = 3.0f;
+        public float baseMoveSpeed = 2.0f;
+        public List<ResponseHeroBuff> buffs = new List<ResponseHeroBuff>();
 
-    
-        public void setTrans(Transform transf)
-        {
+
+        public void update() {
+            if (buffs != null && buffs.Count > 0) {
+                foreach (var buff in buffs) {
+                    if ((buff.millisBuffStarted + buff.durationMillis) < DeviceUtil.getMillis()) {
+                        int type = buff.type;
+                        buffs.Remove(buff);
+                        if (type == Buff.SPEED) {
+                            calculateSpeed();
+                        }
+                    }
+                }
+            }
+        }
+
+        public void setTrans(Transform transf) {
             trans = transf;
         }
 
-        public Vector3 getTargetPosition()
-        {
-            return new Vector3(desiredPositionX, 0, desiredPositionZ);
-        }
-        public Vector3 getDesiredPosition()
-        {
+        public Vector3 getTargetPosition() {
             return new Vector3(desiredPositionX, 0, desiredPositionZ);
         }
 
-        public Vector3 getTransformPosition()
-        {
+        public Vector3 getDesiredPosition() {
+            return new Vector3(desiredPositionX, 0, desiredPositionZ);
+        }
+
+        public Vector3 getTransformPosition() {
             return new Vector3(trans.position.x, trans.position.y, trans.position.z);
         }
 
-        public String getModelName()
-        {
+        public String getModelName() {
             if (class_type == "WARRIOR") {
                 return "Nordstrom";
             } else if (class_type == "PRIEST")
@@ -71,22 +84,31 @@ namespace Assets.scripts.vo
             updateHealthBar(ownHero);
         }
 
-        public void updateHealthBar(bool ownHero)
-        {
-            if (trans != null)
-            {
-                if (ownHero)
-                {
+        public void updateHealthBar(bool ownHero) {
+            if (trans != null) {
+                if (ownHero) {
                     ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
                 }
             }
         }
 
-        public void initBars()
-        {
+        public void initBars() {
             ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
             setHp(maxHp);
         }
+
+        public void calculateSpeed() {
+            float newCalculatedMoveSpeed = baseMoveSpeed;
+            if (buffs != null && buffs.Count > 0) {
+                foreach (var buff in buffs) {
+                    if (buff.type == Buff.SPEED) {
+                        newCalculatedMoveSpeed = newCalculatedMoveSpeed + buff.value;
+                    }
+                }
+            }
+            ((CharacterAnimations) trans.GetComponent(typeof(CharacterAnimations))).moveSpeed = newCalculatedMoveSpeed;
+        }
+
 
         public bool getAutoAttacking()
         {

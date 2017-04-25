@@ -4,6 +4,7 @@ using Assets.scripts.vo;
 using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
+using Assets.scripts.util;
 
 public class GameLogic : MonoBehaviour
 {
@@ -57,19 +58,19 @@ public class GameLogic : MonoBehaviour
     
 
     // Update is called once per frame
-    void Update()
-    {
-        
+    void Update() {
+        if (heroes != null && heroes.Count > 0) {
+            foreach (var hero in heroes) {
+                hero.update();
+            }
+        }
     }
 
    
 
-    internal Hero getHero(int heroId)
-    {
-        foreach (var hero in heroes)
-        {
-            if (heroId == hero.id)
-            {
+    internal Hero getHero(int heroId) {
+        foreach (var hero in heroes) {
+            if (heroId == hero.id) {
                 return hero;
             }
         }
@@ -182,7 +183,7 @@ public class GameLogic : MonoBehaviour
                     hero.resource = newHero.resource;
                     // Dont change desired position for own hero
                     if (hero.id != heroid) {
-                        Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
+                        //Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
                         hero.desiredPositionX = newHero.desiredPositionX;
                         hero.desiredPositionZ = newHero.desiredPositionZ;
                         Vector3 target = new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ);
@@ -216,7 +217,6 @@ public class GameLogic : MonoBehaviour
             }
         }
     }
-
     public void updateAnimations(List<GameAnimation> gameAnimations) {
         foreach (var gameAnimation in gameAnimations) {
             if (gameAnimation.animation_type == "MINION_DIED") {
@@ -250,7 +250,7 @@ public class GameLogic : MonoBehaviour
                 anim.runAnimation();
             }
             if (gameAnimation.animation_type == "HERO_IDLE") {
-                Debug.Log("Idle animation");
+                //Debug.Log("Idle animation");
                 Hero target = getHero(gameAnimation.source_id);
                 CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));
                 anim.idleAnimation();
@@ -288,32 +288,48 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    public void stopHero(int heroId)
-    {
+
+
+    public void handleHeroBuff(ResponseHeroBuff responseHeroBuff) {
+        Hero hero;
+        Minion minion;
+
+        hero = getHero(responseHeroBuff.heroId);
+        responseHeroBuff.millisBuffStarted = DeviceUtil.getMillis();
+        hero.buffs.Add(responseHeroBuff);
+
+        if (responseHeroBuff.minionId > 0 ) {
+            minion = getMinion(responseHeroBuff.minionId);
+        }
+        if (responseHeroBuff.type == Buff.SPEED) {
+            hero.calculateSpeed();
+            if (!hero.getAutoAttacking()) {
+                hero.setAutoAttacking(true);
+            }
+        }
+    }
+
+
+    public void stopHero(int heroId) {
         Debug.Log("Stopping hero.");
         Hero hero = getHero(heroId);
-        hero.desiredPositionX = hero.positionX;
-        hero.desiredPositionZ = hero.positionZ;
+        hero.desiredPositionX = hero.trans.position.x;
+        hero.desiredPositionZ = hero.trans.position.z;
 
         CharacterAnimations heroAnimation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
         heroAnimation.stopMove();
         hero.setAutoAttacking(false);
     }
 
-    public void clearWorld()
-    {
-        foreach (var minion in minions)
-        {
+    public void clearWorld() {
+        foreach (var minion in minions) {
             Destroy(minion.minionTransform.gameObject);
         }
         minions = new List<Minion>();
-        foreach (var obstacles in world.obstacles)
-        {
-            if (obstacles.transform != null && obstacles.transform.gameObject != null)
-            {
+        foreach (var obstacles in world.obstacles) {
+            if (obstacles.transform != null && obstacles.transform.gameObject != null) {
                 Destroy(obstacles.transform.gameObject);
-            }
-            else {
+            }  else {
                 //Debug.Log("This obstacle has no gameobject : " + obstacles.type);
             }
             
