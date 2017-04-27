@@ -63,8 +63,9 @@ public class Generator : MonoBehaviour
         infoText.AppendLine("Press 'C' to switch between camera modes");
     }
 
-    public void GenerateRandom()
-    {
+    public void GenerateRandom() {
+
+        DungeonGenerator.Generator.Seed = 123;
         DungeonGenerator.Generate();
     }
 
