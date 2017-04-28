@@ -43,19 +43,21 @@ public class ServerCommunication : MonoBehaviour {
         sendRequest(new RequestJoinGame(getHeroId(), gameId));
     }
 
-    public void endGame()
-    {
+    public void endGame() {
         print("End game request was sent: " + getHeroId());
         writeSocket("{\"request_type\": \"END_GAME\", hero_id:\"" + getHeroId() + "\"}");
         ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).endGame();
-
     }
 
     // Send request to dungeon to get status of minions/heroes
-    public void getStatus()
-    {
-        print("w key was pressed getting server status (what is happening with minions/other heroes)");
+    public void getStatus() {
+        print("Getting server status (what is happening with minions/other heroes)");
         writeSocket("{\"request_type\": \"GET_STATUS\", hero_id:\"" + getHeroId() + "\"}");
+    }
+
+    public void sendSpawnPoints(List<Point> points) {
+        print("Sending spawn locations");
+        sendRequest(new RequestSpawnPoints(getHeroId(), points));
     }
 
     public void sendAutoAttack(int minionId) {
@@ -77,8 +79,8 @@ public class ServerCommunication : MonoBehaviour {
     public void sendMinionHasTargetInRange(int minionId, int heroTargetId)  {
         if (heroTargetId != 0) {
             print("Minion has hero in range " + minionId);
+            writeSocket("{\"request_type\": \"MINION_TARGET_IN_RANGE\", hero_id:\"" + getHeroId() + "\", minion_id: \"" + minionId + "\", hero_id: \"" + heroTargetId + "\"}");
         }
-        writeSocket("{\"request_type\": \"MINION_TARGET_IN_RANGE\", hero_id:\"" + getHeroId() + "\", minion_id: \"" + minionId + "\", hero_id: \"" + heroTargetId + "\"}");
     }
 
     public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)  {
@@ -182,7 +184,7 @@ public class ServerCommunication : MonoBehaviour {
                 getGameLogic().updateListOfHeroes(responseGameStatus.heroes);
             } else if (responseType == "WORLD") {
                 ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
-                Debug.Log("Creating world");
+                Debug.Log("Creating world with seed " + responseWorld.world.seed);
                 getGameLogic().createWorld(responseWorld);
             } else if (responseType == "CLEAR_WORLD")  {
                 getGameLogic().clearWorld();

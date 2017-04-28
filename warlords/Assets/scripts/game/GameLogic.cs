@@ -326,14 +326,13 @@ public class GameLogic : MonoBehaviour
             Destroy(minion.minionTransform.gameObject);
         }
         minions = new List<Minion>();
-        foreach (var obstacles in world.obstacles) {
-            if (obstacles.transform != null && obstacles.transform.gameObject != null) {
-                Destroy(obstacles.transform.gameObject);
-            }  else {
-                //Debug.Log("This obstacle has no gameobject : " + obstacles.type);
-            }
-            
-        }
+        //foreach (var obstacles in world.obstacles) {
+        //    if (obstacles.transform != null && obstacles.transform.gameObject != null) {
+        //        Destroy(obstacles.transform.gameObject);
+        //    }  else {
+        //        //Debug.Log("This obstacle has no gameobject : " + obstacles.type);
+        //    }
+        //}
         world = null;
         Debug.Log("World is cleared");
     }
@@ -513,28 +512,31 @@ public class GameLogic : MonoBehaviour
     {
         Debug.Log("Server sent to create world");
         world = responseWorld.world;
-        foreach (var obstacle in world.obstacles)
-        {
-            if (obstacle.type == 1) // Wall
-            {
-                obstacle.transform = (Transform) Instantiate(wall, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-            }else if (obstacle.type == 3) // Start
-            {
-                obstacle.transform = (Transform) Instantiate(start, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-            }
-            else if (obstacle.type == 4) // Stairs down
-            {
-                obstacle.transform = (Transform) Instantiate(stairs, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-            }
-            else if (obstacle.type == 5) // Light
-            {
-                obstacle.transform = (Transform)Instantiate(light, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-            }
-            else if (obstacle.type == 6) // Floor
-            {
-                obstacle.transform = (Transform)Instantiate(floor, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-            }
-        }
+
+        getGenerator().GenerateRandom(world.seed);
+
+        //foreach (var obstacle in world.obstacles)
+        //{
+        //    if (obstacle.type == 1) // Wall
+        //    {
+        //        obstacle.transform = (Transform) Instantiate(wall, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+        //    }else if (obstacle.type == 3) // Start
+        //   {
+        //        obstacle.transform = (Transform) Instantiate(start, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+        //    }
+        //    else if (obstacle.type == 4) // Stairs down
+        //    {
+        //        obstacle.transform = (Transform) Instantiate(stairs, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+        //    }
+        //    else if (obstacle.type == 5) // Light
+        //    {
+        //        obstacle.transform = (Transform)Instantiate(light, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+        //    }
+        //    else if (obstacle.type == 6) // Floor
+        //    {
+        //        obstacle.transform = (Transform)Instantiate(floor, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
+        //    }
+        //}
     }
 
     public void endGame()
@@ -547,14 +549,13 @@ public class GameLogic : MonoBehaviour
         {
             Destroy(minion.minionTransform.gameObject);
         }
-        foreach (var obstacle in world.obstacles)
-        {
-            if(obstacle.transform != null)
-            {
-                Destroy(obstacle.transform.gameObject);
-            }
-            
-        }
+        //foreach (var obstacle in world.obstacles)
+        //{
+        //    if(obstacle.transform != null)
+        //    {
+        //        Destroy(obstacle.transform.gameObject);
+        //    }
+        //}
         world = null;
         minions = new List<Minion>();
         heroes = new List<Hero>();
@@ -571,7 +572,9 @@ public class GameLogic : MonoBehaviour
         } else {
             return null;
         }
-        
     }
 
+    Generator getGenerator() {
+        return ((Generator)GameObject.Find("Generator").GetComponent(typeof(Generator)));
+    }
 }
