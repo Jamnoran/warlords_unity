@@ -41,8 +41,7 @@ public class GameLogic : MonoBehaviour
 
 
     // Use this for initialization
-    void Start()
-    {
+    void Start() {
         Debug.Log("Game logic has started");
         if ((GameObject.Find("Communication")) == null){
             Debug.Log("Go to connect screen.");

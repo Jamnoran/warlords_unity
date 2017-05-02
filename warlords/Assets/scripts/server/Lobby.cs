@@ -103,14 +103,12 @@ public class Lobby : MonoBehaviour {
         mainChat.SetActive(false);
     }
 
-	void startCustomGame()
-	{
+	void startCustomGame() {
 		Debug.Log("Starting a custom game");
 		getLobbyCommunication ().findCustomGame ();
 	}
 
-    void startQuickGame()
-    {
+    void startQuickGame() {
 		Debug.Log("Starting a quick game");
 		getLobbyCommunication ().findQuickGame ();
     }

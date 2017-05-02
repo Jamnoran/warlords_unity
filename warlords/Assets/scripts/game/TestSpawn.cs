@@ -10,7 +10,7 @@ public class TestSpawn : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        Debug.Log("TestSpawn object started");
 	}
 	
 	// Update is called once per frame
@@ -24,17 +24,24 @@ public class TestSpawn : MonoBehaviour {
             logic.start = true;
             Debug.Log("Send to server we got spawn point");
             List<Point> spawnPoints = new List<Point>();
-            spawnPoints.Add(new Point(new Vector3(logic.point1.transform.position.x, logic.point1.transform.position.z), Point.SPAWN_POINT));
-            spawnPoints.Add(new Point(new Vector3(logic.point2.transform.position.x, logic.point2.transform.position.z), Point.SPAWN_POINT));
-            spawnPoints.Add(new Point(new Vector3(logic.point3.transform.position.x, logic.point3.transform.position.z), Point.SPAWN_POINT));
-            spawnPoints.Add(new Point(new Vector3(logic.point4.transform.position.x, logic.point4.transform.position.z), Point.SPAWN_POINT));
-            getCommunication().sendSpawnPoints(spawnPoints);
+            spawnPoints.Add(new Point(new Vector3(logic.point1.transform.position.x, 0.0f, logic.point1.transform.position.z), Point.SPAWN_POINT));
+            spawnPoints.Add(new Point(new Vector3(logic.point2.transform.position.x, 0.0f, logic.point2.transform.position.z), Point.SPAWN_POINT));
+            spawnPoints.Add(new Point(new Vector3(logic.point3.transform.position.x, 0.0f, logic.point3.transform.position.z), Point.SPAWN_POINT));
+            spawnPoints.Add(new Point(new Vector3(logic.point4.transform.position.x, 0.0f, logic.point4.transform.position.z), Point.SPAWN_POINT));
+            if (getCommunication() != null) {
+                getCommunication().sendSpawnPoints(spawnPoints);
+            }
         }
         spawns.Add(spawnPoint);
 
     }
 
     ServerCommunication getCommunication() {
-        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+        if (GameObject.Find("Communication") != null) {
+            return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+        }else {
+            return null;
+        }
+        
     }
 }
