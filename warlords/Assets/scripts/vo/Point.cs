@@ -6,6 +6,7 @@ namespace Assets.scripts.vo {
     public class Point {
         public static int SPAWN_POINT = 1;
         public static int ENEMY_POINT = 2;
+        public static int END_POINT = 3;
 
         private Vector3 location;
         public float posX;

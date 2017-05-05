@@ -82,7 +82,7 @@ public class FieldOfView : MonoBehaviour
     {
         foreach (var target in visibleTargets)
         {
-            if (target.name.Contains("StairsDown"))
+            if (target.name.Contains("EndPoint"))
             {
                 Debug.Log("User had portal in range");
                 return true;

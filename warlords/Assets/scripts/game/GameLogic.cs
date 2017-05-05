@@ -157,7 +157,7 @@ public class GameLogic : MonoBehaviour
             }
             if (!found) {
                 // Initiate minion here
-                Debug.Log("Initiate minion");
+                Debug.Log("Initiate minion at pos " + newMinion.desiredPositionX + "x" + newMinion.desiredPositionZ);
                 Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, 1.0f, newMinion.desiredPositionZ), Quaternion.identity);
                 newMinion.setTransform(minionTransform);
                 newMinion.initBars();
@@ -573,7 +573,7 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    Generator getGenerator() {
-        return ((Generator)GameObject.Find("Generator").GetComponent(typeof(Generator)));
+    DunGenerator getGenerator() {
+        return ((DunGenerator)GameObject.Find("Generator").GetComponent(typeof(DunGenerator)));
     }
 }

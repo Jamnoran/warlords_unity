@@ -22,7 +22,7 @@ public class Generator : MonoBehaviour
         DungeonGenerator = GetComponentInChildren<RuntimeDungeon>();
         DungeonGenerator.Generator.OnGenerationStatusChanged += OnGenerationStatusChanged;
 
-        //GenerateRandom();
+        GenerateRandom();
     }
 
     private void OnGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status)
@@ -65,49 +65,46 @@ public class Generator : MonoBehaviour
         }
     }
 
-    public void GenerateRandom(int seed) {
-        DungeonGenerator.Generator.Seed = seed;
+    public void GenerateRandom() {
         DungeonGenerator.Generate();
     }
 
     private void Update()
     {
-        if (false) { 
-            timeSinceLastPress += Time.deltaTime;
+        timeSinceLastPress += Time.deltaTime;
 
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                timeSinceLastPress = 0;
-                isKeyDown = true;
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            timeSinceLastPress = 0;
+            isKeyDown = true;
 
-                //GenerateRandom();
-            }
+            GenerateRandom();
+        }
 
-            if (Input.GetKeyUp(KeyCode.R))
-            {
-                isKeyDown = false;
-                allowHold = false;
-            }
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            isKeyDown = false;
+            allowHold = false;
+        }
 
-            if (!allowHold && isKeyDown && timeSinceLastPress >= keypressDelay)
-            {
-                allowHold = true;
-                timeSinceLastPress = 0;
-            }
+        if (!allowHold && isKeyDown && timeSinceLastPress >= keypressDelay)
+        {
+            allowHold = true;
+            timeSinceLastPress = 0;
+        }
         
 
-            if (allowHold && Input.GetKey(KeyCode.R))
+        if (allowHold && Input.GetKey(KeyCode.R))
+        {
+            if (timeSinceLastPress >= keypressDelay)
             {
-                if (timeSinceLastPress >= keypressDelay)
-                {
-                    //GenerateRandom();
-                    timeSinceLastPress = 0;
-                }
+                GenerateRandom();
+                timeSinceLastPress = 0;
             }
-
-            if (Input.GetKeyDown(KeyCode.F1))
-                showStats = !showStats;
         }
+
+        if (Input.GetKeyDown(KeyCode.F1))
+            showStats = !showStats;
     }
 
     private void OnGUI()
