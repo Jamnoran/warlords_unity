@@ -103,16 +103,16 @@ public class Target : MonoBehaviour {
     /// who have clicked it and handle logic accordingly
     /// </summary>
     private void findStairs() {
-        Debug.Log("Checking if stairs is focused : " + typeOftarget.transform.root.name);
-        if (typeOftarget.transform.root.name.Contains("EndPoint")) {
-            Hero hero = getGameLogic().getMyHero();
-            Debug.Log("Model name : " + hero.getModelName());
-            FieldOfView field = ((FieldOfView) hero.trans.Find(hero.getModelName()).GetComponent(typeof(FieldOfView)));
-            if (field.isPortalInRange()) {
-                Debug.Log("Stair was in range");
-            }
-            getCommunication().heroHasClickedPortal(hero.id);
-        }
+        //Debug.Log("Checking if stairs is focused : " + typeOftarget.transform.root.name);
+        //if (typeOftarget.transform.root.name.Contains("EndPoint")) {
+        //    Hero hero = getGameLogic().getMyHero();
+        //    Debug.Log("Model name : " + hero.getModelName());
+        //    FieldOfView field = ((FieldOfView) hero.trans.Find(hero.getModelName()).GetComponent(typeof(FieldOfView)));
+        //    if (field.isPortalInRange()) {
+        //        Debug.Log("Stair was in range");
+        //    }
+        //    getCommunication().heroHasClickedPortal(hero.id);
+        //}
     }
 
 

@@ -22,8 +22,10 @@ namespace Assets.scripts.vo
         public string class_type;
         public float positionX;
         public float positionZ;
+        public float positionY;
         public float desiredPositionX;
         public float desiredPositionZ;
+        public float desiredPositionY;
         public int targetEnemy = 0;
         public int targetFriendly = 0;
         public Transform trans;
@@ -52,11 +54,11 @@ namespace Assets.scripts.vo
         }
 
         public Vector3 getTargetPosition() {
-            return new Vector3(desiredPositionX, 0, desiredPositionZ);
+            return new Vector3(desiredPositionX, desiredPositionY, desiredPositionZ);
         }
 
         public Vector3 getDesiredPosition() {
-            return new Vector3(desiredPositionX, 0, desiredPositionZ);
+            return new Vector3(desiredPositionX, desiredPositionY, desiredPositionZ);
         }
 
         public Vector3 getTransformPosition() {

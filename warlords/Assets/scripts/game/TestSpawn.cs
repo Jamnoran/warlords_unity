@@ -11,7 +11,7 @@ public class TestSpawn : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Debug.Log("TestSpawn object started");
-        StartCoroutine("sendSpawnPoints");
+        //StartCoroutine("sendSpawnPoints");
     }
 
     // Update is called once per frame
@@ -21,8 +21,13 @@ public class TestSpawn : MonoBehaviour {
         }
     }
 
+    public void startJobForSpawnPoints() {
+        StartCoroutine("sendSpawnPoints");
+    }
+
     IEnumerator sendSpawnPoints() {
-        yield return new WaitForSeconds(1.0f);
+        //yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.5f);
         Debug.Log("Trying to find all spawn points");
         GameObject[] points = GameObject.FindGameObjectsWithTag("Point");
         int countSpawn = 0;

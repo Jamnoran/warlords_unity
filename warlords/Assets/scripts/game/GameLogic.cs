@@ -49,13 +49,6 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    IEnumerator Example()
-    {
-        yield return new WaitForSeconds(1);
-        Debug.Log("Waited a second for server connection to start up");
-    }
-    
-
     // Update is called once per frame
     void Update() {
         if (heroes != null && heroes.Count > 0) {
@@ -76,12 +69,10 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
-    public Hero getClosestHeroByPosition(Vector3 position)
-    {
+    public Hero getClosestHeroByPosition(Vector3 position) {
         Hero closestHero = null;
         float closesDistance = 100.0f;
-        foreach (var hero in heroes)
-        {
+        foreach (var hero in heroes) {
             float distance = Vector3.Distance(hero.getTransformPosition(), position);
             if (distance < closesDistance) {
                 closesDistance = distance;
@@ -106,21 +97,17 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
-    public Minion getClosestMinionByPosition(Vector3 position)
-    {
+    public Minion getClosestMinionByPosition(Vector3 position) {
         Minion closestMinion = null;
         float closesDistance = 100.0f;
-        foreach (var minion in minions)
-        {
+        foreach (var minion in minions) {
             float distance = Vector3.Distance(minion.getTransformPosition(), position);
-            if (distance < closesDistance)
-            {
+            if (distance < closesDistance) {
                 closesDistance = distance;
                 closestMinion = minion;
             }
         }
-        if (closestMinion != null)
-        {
+        if (closestMinion != null) {
             return closestMinion;
         }
         return null;
@@ -325,13 +312,7 @@ public class GameLogic : MonoBehaviour
             Destroy(minion.minionTransform.gameObject);
         }
         minions = new List<Minion>();
-        //foreach (var obstacles in world.obstacles) {
-        //    if (obstacles.transform != null && obstacles.transform.gameObject != null) {
-        //        Destroy(obstacles.transform.gameObject);
-        //    }  else {
-        //        //Debug.Log("This obstacle has no gameobject : " + obstacles.type);
-        //    }
-        //}
+
         world = null;
         Debug.Log("World is cleared");
     }
@@ -416,12 +397,9 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    public Ability getAbility(int id)
-    {
-        foreach (var ability in abilities)
-        {
-            if (ability.id == id)
-            {
+    public Ability getAbility(int id) {
+        foreach (var ability in abilities) {
+            if (ability.id == id) {
                 return ability;
             }
         }
@@ -492,16 +470,20 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    public void teleportHeroes(List<Hero> teleportHeroes)
-    {
-        foreach (var heroInList in teleportHeroes)
-        {
+    public void teleportHeroes(List<Hero> teleportHeroes) {
+        foreach (var heroInList in teleportHeroes) {
             Hero hero = getHero(heroInList.id);
             hero.desiredPositionX = heroInList.desiredPositionX;
             hero.desiredPositionZ = heroInList.desiredPositionZ;
-            hero.positionX = heroInList.positionX;
-            hero.positionZ = heroInList.positionZ;
+            hero.desiredPositionY = heroInList.desiredPositionY;
+            hero.positionX = heroInList.desiredPositionX;
+            hero.positionZ = heroInList.desiredPositionZ;
+            hero.positionY = heroInList.desiredPositionY;
             Vector3 newPosition = new Vector3(hero.positionX, 1.0f, hero.positionZ);
+            if (hero.id == getMyHero().id) {
+                CharacterAnimations heroAnimation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
+                heroAnimation.targetPosition = new Vector3(heroInList.desiredPositionX, heroInList.desiredPositionY, heroInList.desiredPositionZ);
+            }
             hero.trans.position = newPosition;
             Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
         }
@@ -513,6 +495,8 @@ public class GameLogic : MonoBehaviour
         world = responseWorld.world;
 
         getGenerator().GenerateRandom(world.seed);
+
+        getTestSpawn().startJobForSpawnPoints();
 
         //foreach (var obstacle in world.obstacles)
         //{
@@ -576,4 +560,9 @@ public class GameLogic : MonoBehaviour
     DunGenerator getGenerator() {
         return ((DunGenerator)GameObject.Find("Generator").GetComponent(typeof(DunGenerator)));
     }
+
+    TestSpawn getTestSpawn() {
+        return ((TestSpawn)GameObject.Find("TestObject").GetComponent(typeof(TestSpawn)));
+    }
+    
 }

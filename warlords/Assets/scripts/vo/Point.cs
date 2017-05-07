@@ -10,6 +10,7 @@ namespace Assets.scripts.vo {
 
         private Vector3 location;
         public float posX;
+        public float posY;
         public float posZ;
         public int pointType;
         public bool used = false;
@@ -20,6 +21,7 @@ namespace Assets.scripts.vo {
         public Point(Vector3 loc, int type) {
             posX = loc.x;
             posZ = loc.z;
+            posY = loc.y;
             location = loc;
             pointType = type;
         }
@@ -32,6 +34,10 @@ namespace Assets.scripts.vo {
             return posZ;
         }
 
+        public float getPosY() {
+            return posY;
+        }
+        
         public Vector3 getLocation() {
             return location;
         }

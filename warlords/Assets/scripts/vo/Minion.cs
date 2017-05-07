@@ -14,10 +14,11 @@ namespace Assets.scripts.vo
         public int maxHp;
         public float positionX;
         public float positionZ;
+        public float positionY;
         public float desiredPositionX;
         public float desiredPositionZ;
+        public float desiredPositionY;
         public Transform minionTransform;
-        public float hightOfTerrain = 2;
         public int heroTarget = 0;
         
         internal void setTransform(Transform minTransform)
@@ -28,7 +29,7 @@ namespace Assets.scripts.vo
         public Vector3 getDesiredPosition()
         {
             //Debug.Log("Returning new position : " + desiredPositionX + " x " + desiredPositionZ);
-            return new Vector3(desiredPositionX, hightOfTerrain, desiredPositionZ);
+            return new Vector3(desiredPositionX, desiredPositionY, desiredPositionZ);
         }
 
         public Vector3 getTransformPosition()
