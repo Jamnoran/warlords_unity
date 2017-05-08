@@ -133,8 +133,9 @@ public class GameLogic : MonoBehaviour
                         //Debug.Log("Minions desired position changed, update minion " + minion.desiredPositionX + " != " + newMinion.desiredPositionX);
                         minion.desiredPositionX = newMinion.desiredPositionX;
                         minion.desiredPositionZ = newMinion.desiredPositionZ;
+                        minion.desiredPositionY = newMinion.desiredPositionY;
 
-                        minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 0f, newMinion.desiredPositionZ));
+                        minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ));
                     }
 
                     if (newMinion.heroTarget > 0) {
@@ -144,12 +145,12 @@ public class GameLogic : MonoBehaviour
             }
             if (!found) {
                 // Initiate minion here
-                Debug.Log("Initiate minion at pos " + newMinion.desiredPositionX + "x" + newMinion.desiredPositionZ);
-                Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, 1.0f, newMinion.desiredPositionZ), Quaternion.identity);
+                Debug.Log("Initiate minion at pos " + newMinion.desiredPositionX + "x" + newMinion.desiredPositionZ + " y: " + newMinion.desiredPositionY);
+                Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ), Quaternion.identity);
                 newMinion.setTransform(minionTransform);
                 newMinion.initBars();
                 MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
-                minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 1.0f, newMinion.desiredPositionZ));
+                minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ));
                 FieldOfView fieldOfView = ((FieldOfView) minionTransform.Find("mob1").GetComponent(typeof(FieldOfView)));
                 minions.Add(newMinion);
             }
@@ -172,7 +173,7 @@ public class GameLogic : MonoBehaviour
                         //Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
                         hero.desiredPositionX = newHero.desiredPositionX;
                         hero.desiredPositionZ = newHero.desiredPositionZ;
-                        Vector3 target = new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ);
+                        Vector3 target = new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ);
                         CharacterAnimations animation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
                         animation.setDesiredLocation(target);
                     }
@@ -188,7 +189,7 @@ public class GameLogic : MonoBehaviour
                 if (newHero.class_type == "PRIEST") {
                     prefabToUse = priest;
                 }
-                Transform heroTransform = (Transform) Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, 1.0f, newHero.desiredPositionZ), Quaternion.identity);
+                Transform heroTransform = (Transform) Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ), Quaternion.identity);
                 heroTransform.name = prefabToUse.name;
                 newHero.setTrans(heroTransform);
                 if (newHero.id == heroid) {

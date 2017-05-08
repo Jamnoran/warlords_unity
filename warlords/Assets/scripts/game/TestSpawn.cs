@@ -37,7 +37,7 @@ public class TestSpawn : MonoBehaviour {
         List<Point> spawnPoints = new List<Point>();
         foreach (GameObject point in points) {
             SpawnPoint spawnPoint = (SpawnPoint)point.GetComponent(typeof(SpawnPoint));
-            spawnPoints.Add(new Point(new Vector3(point.transform.position.x, 0.0f, point.transform.position.z), spawnPoint.getType()));
+            spawnPoints.Add(new Point(new Vector3(point.transform.position.x, point.transform.position.y, point.transform.position.z), spawnPoint.getType()));
             if (spawnPoint.getType() == Point.SPAWN_POINT) {
                 countSpawn++;
             }else if (spawnPoint.getType() == Point.ENEMY_POINT) {
@@ -59,16 +59,16 @@ public class TestSpawn : MonoBehaviour {
                 Debug.Log("Send to server we got spawn point");
                 List<Point> spawnPoints = new List<Point>();
                 if (logic.point1 != null) {
-                    spawnPoints.Add(new Point(new Vector3(logic.point1.transform.position.x, 0.0f, logic.point1.transform.position.z), type));
+                    spawnPoints.Add(new Point(new Vector3(logic.point1.transform.position.x, logic.point1.transform.position.y, logic.point1.transform.position.z), type));
                 }
                 if (logic.point2 != null) {
-                    spawnPoints.Add(new Point(new Vector3(logic.point2.transform.position.x, 0.0f, logic.point2.transform.position.z), type));
+                    spawnPoints.Add(new Point(new Vector3(logic.point2.transform.position.x, logic.point2.transform.position.y, logic.point2.transform.position.z), type));
                 }
                 if (logic.point3 != null) {
-                    spawnPoints.Add(new Point(new Vector3(logic.point3.transform.position.x, 0.0f, logic.point3.transform.position.z), type));
+                    spawnPoints.Add(new Point(new Vector3(logic.point3.transform.position.x, logic.point3.transform.position.y, logic.point3.transform.position.z), type));
                 }
                 if (logic.point4 != null) {
-                    spawnPoints.Add(new Point(new Vector3(logic.point4.transform.position.x, 0.0f, logic.point4.transform.position.z), type));
+                    spawnPoints.Add(new Point(new Vector3(logic.point4.transform.position.x, logic.point4.transform.position.y, logic.point4.transform.position.z), type));
                 }
                 if (getCommunication() != null) {
                     getCommunication().sendSpawnPoints(spawnPoints);
