@@ -22,8 +22,10 @@ namespace Assets.scripts.vo
         public string class_type;
         public float positionX;
         public float positionZ;
+        public float positionY;
         public float desiredPositionX;
         public float desiredPositionZ;
+        public float desiredPositionY;
         public int targetEnemy = 0;
         public int targetFriendly = 0;
         public Transform trans;
