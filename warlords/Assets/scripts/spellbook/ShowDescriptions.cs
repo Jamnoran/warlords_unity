@@ -24,7 +24,6 @@ public class ShowDescriptions : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         descriptionPanel.transform.position = descriptionHidePosition;
         desc.text = "";
-        Debug.Log("draging item");
 
     }
 

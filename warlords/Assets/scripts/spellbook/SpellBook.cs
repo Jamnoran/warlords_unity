@@ -12,7 +12,6 @@ public class SpellBook : MonoBehaviour {
     private Vector3 spellBookOriginalPosition;
     private Vector3 spellBookHidePosition = new Vector3(1000000, 1000000, 0);
 
-    ItemDatabase itemDatabase;
     GameObject spellbookPanel;
     GameObject slotPanel;
     public GameObject spellbookSlot;

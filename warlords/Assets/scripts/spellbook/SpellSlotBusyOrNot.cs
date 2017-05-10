@@ -8,17 +8,25 @@ public class SpellSlotBusyOrNot : MonoBehaviour {
 
     public void Update()
     {
-      
+   
     }
+
+
 
     public void addToList(string slotNameToSetToBusy, string spellToAdd)
     {
-        listOfBusySlots.Add(slotNameToSetToBusy, spellToAdd);
+        if (!(listOfBusySlots.ContainsKey(slotNameToSetToBusy)))
+        {
+            PlayerPrefs.SetString(slotNameToSetToBusy, spellToAdd);
+            var foo = PlayerPrefs.GetString(slotNameToSetToBusy);
+            listOfBusySlots.Add(slotNameToSetToBusy, spellToAdd);
+        }
+        
     }
 
     public void removeFromList(string slotNameToRemoveFromList)
-    {   
-        Debug.Log("Removed: " + slotNameToRemoveFromList);
+    {
+        PlayerPrefs.DeleteKey(slotNameToRemoveFromList);
         listOfBusySlots.Remove(slotNameToRemoveFromList);
 
     }

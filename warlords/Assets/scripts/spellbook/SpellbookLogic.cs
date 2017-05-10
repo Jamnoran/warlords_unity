@@ -58,6 +58,14 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler, IDro
         originalParent = this.transform.parent.gameObject;
         currentParent = spell.transform.parent;
         currentPosition = spell.transform.position;
+        if (PlayerPrefs.HasKey(this.transform.name))
+        {
+            var prefString = PlayerPrefs.GetString(this.transform.name);
+            spell.transform.position = GameObject.FindWithTag(prefString).transform.position;
+            spell.transform.SetParent(GameObject.FindWithTag(prefString).transform);
+            getSlotTracker().addToList(prefString, this.transform.name);
+        }
+        
     }
 
     public void OnDrag(PointerEventData data)
@@ -85,7 +93,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler, IDro
         this.transform.position = snapToActiveSpell(this.transform.position.x, this.transform.position.y, listOfSpellSlots);
         currentPosition = spell.transform.position;
         currentParent = spell.transform.parent;
-        Debug.Log("Current parent is: " + currentParent.name);
+
         
     }
 
@@ -118,7 +126,11 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler, IDro
                     
                     getSlotTracker().addToList(spellSlots[i].name, spell.name);
                     ChangeScaleOnIcon(31f, 3f, 0.5f);
-                    //todo: if previous was a spellbar slot, free it
+                    Debug.Log("spell put in actionbar, was empty");
+
+                    //set spell at spellbookslot
+                    PlayerPrefs.SetString(transform.name, spellSlots[i].transform.name);
+                    var foo = PlayerPrefs.GetInt(transform.name);
                    
                     return spellSlots[i].transform.position;
                 }
@@ -126,21 +138,33 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler, IDro
                 //if slot is taken
                 else if (getSlotTracker().isSlotTaken(spellSlots[i].name) && spellSlots[i].transform.childCount > 0)
                 {
-                    var curPar = tempParent;
 
+                    var newPos = spellSlots[i].transform.GetChild(0).name;
+                    //var oldPos = tempParent.transform.GetChild(0).name;
                     //push current spell to where new spell was
-                    spellSlots[i].transform.GetChild(0).position = curPar.transform.position;
-                    spellSlots[i].transform.GetChild(0).SetParent(curPar);
+                    //remove old key and add new
+                    PlayerPrefs.DeleteKey(newPos);
+                    PlayerPrefs.SetString(transform.name, tempParent.transform.name);
+                    PlayerPrefs.SetString(newPos, spellSlots[i].name);
+                    var item1 = PlayerPrefs.GetString(transform.name);
+                    var item2 = PlayerPrefs.GetString(newPos);
+                    spellSlots[i].transform.GetChild(0).position = tempParent.transform.position;
+                    spellSlots[i].transform.GetChild(0).SetParent(tempParent);
                     //push new spell to new parent
                     spell.transform.parent = spellSlots[i].transform;
                     getSlotTracker().addToList(spellSlots[i].name, spell.name);
+
                    
 
+
+
                     return spellSlots[i].transform.position;
+                   
                 }
             }
         }
         getSlotTracker().removeFromList(tempParent.name);
+        Debug.Log("spell removed from actionbar");
         spell.transform.SetParent(originalParent.transform);
         ChangeScaleOnIcon(0.8f, 0.8f, 0.8f);
         return this.transform.parent.transform.position;
