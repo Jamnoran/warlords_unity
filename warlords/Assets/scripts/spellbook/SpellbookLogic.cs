@@ -77,7 +77,6 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler, IDro
     {
         tempParent = this.transform.parent;
         var name = tempParent.name;
-        var foo = "";
     }
 
     public void OnEndDrag(PointerEventData data)
@@ -141,7 +140,7 @@ public class SpellbookLogic : MonoBehaviour, IDragHandler, IEndDragHandler, IDro
                 }
             }
         }
-        getSlotTracker().removeFromList(this.transform.parent.name);
+        getSlotTracker().removeFromList(tempParent.name);
         spell.transform.SetParent(originalParent.transform);
         ChangeScaleOnIcon(0.8f, 0.8f, 0.8f);
         return this.transform.parent.transform.position;
