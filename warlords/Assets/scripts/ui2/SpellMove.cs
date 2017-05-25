@@ -125,7 +125,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
         for (int i = 0; i < actionBarSlots.Count; i++)
         {
 
-            if ((xPos <= actionBarSlots[i].transform.position.x + 10) && (xPos >= actionBarSlots[i].transform.position.x - 10) && (yPos <= actionBarSlots[i].transform.position.y + 10) && (yPos >= actionBarSlots[i].transform.position.y - 10))
+            if ((xPos <= actionBarSlots[i].transform.position.x + 50) && (xPos >= actionBarSlots[i].transform.position.x - 50) && (yPos <= actionBarSlots[i].transform.position.y + 50) && (yPos >= actionBarSlots[i].transform.position.y - 50))
             {
 
                 if (actionBarSlots[i].transform.childCount > 0 && fromSpellBook)
