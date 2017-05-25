@@ -26,64 +26,64 @@ public class TestGUI : MonoBehaviour {
 	void Update () {
 
 
-        // Handle auto attack, this sets a flag on the hero
-        if (getGameLogic().isMyHeroAlive() && !getChat().inputVisible) {
-            if (Input.GetKeyUp("a")) {
-                bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
-                Debug.Log("Hero is now attacking : " + !autoAttacking);
-                getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
-            }else if (Input.GetKeyUp("s")) {
-                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
-            } else if (Input.GetKeyUp("v")) {
-                getCommunication().updateAbilityPosition(8,2);
-            }else if (Input.GetKeyDown("t")) {
-                getTalentScript().refresh();
-                talents.SetActive(true);
-            }
+        //// Handle auto attack, this sets a flag on the hero
+        //if (getGameLogic().isMyHeroAlive() && !getChat().inputVisible) {
+        //    if (Input.GetKeyUp("a")) {
+        //        bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
+        //        Debug.Log("Hero is now attacking : " + !autoAttacking);
+        //        getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
+        //    }else if (Input.GetKeyUp("s")) {
+        //        getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+        //    } else if (Input.GetKeyUp("v")) {
+        //        getCommunication().updateAbilityPosition(8,2);
+        //    }else if (Input.GetKeyDown("t")) {
+        //        getTalentScript().refresh();
+        //        talents.SetActive(true);
+        //    }
 
 
-        }
-        if (Input.GetKeyDown("escape")) {
-            isShowing = !isShowing;
-        }
+        //}
+        //if (Input.GetKeyDown("escape")) {
+        //    isShowing = !isShowing;
+        //}
     }
 
     void OnGUI() {
-        GUILayout.Label("Minions left: " + ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMinions().Count);
+        //GUILayout.Label("Minions left: " + ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMinions().Count);
 
-        //Hero hero = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero();
+        ////Hero hero = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero();
 
-        Minion enemy = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroEnemyTarget();
-        if(enemy != null) {
-            GUILayout.Label("Enemy target: " + enemy.hp + "/" + enemy.maxHp);
-        }
+        //Minion enemy = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroEnemyTarget();
+        //if(enemy != null) {
+        //    GUILayout.Label("Enemy target: " + enemy.hp + "/" + enemy.maxHp);
+        //}
 
-        Hero friendlyTarget = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroFriendlyTarget();
-        if (friendlyTarget != null) {
-            GUILayout.Label("Friendly: " + friendlyTarget.hp + "/" + friendlyTarget.maxHp + " Class " + friendlyTarget.class_type);
-        }
+        //Hero friendlyTarget = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroFriendlyTarget();
+        //if (friendlyTarget != null) {
+        //    GUILayout.Label("Friendly: " + friendlyTarget.hp + "/" + friendlyTarget.maxHp + " Class " + friendlyTarget.class_type);
+        //}
 
-        if (getGameLogic().getMyHero() != null) {
-            GUILayout.Label("Auto attacking : " + getGameLogic().getMyHero().getAutoAttacking());
-        }
+        //if (getGameLogic().getMyHero() != null) {
+        //    GUILayout.Label("Auto attacking : " + getGameLogic().getMyHero().getAutoAttacking());
+        //}
 
-        bool allDead = true;
-        foreach(Hero heroHp in getGameLogic().getHeroes()) {
-            if (heroHp.hp > 0) {
-                allDead = false;
-            }
-        }
-        if (getGameLogic().getHeroes() == null || getGameLogic().getHeroes().Count == 0) {
-            // If we have yet recieved the heroes dont show menu
-            allDead = false;
-        }
-        if (allDead) {
-            menu.SetActive(true);
-        }else if(!allDead && isShowing) {
-            menu.SetActive(true);
-        }else {
-            menu.SetActive(false);
-        }
+        //bool allDead = true;
+        //foreach(Hero heroHp in getGameLogic().getHeroes()) {
+        //    if (heroHp.hp > 0) {
+        //        allDead = false;
+        //    }
+        //}
+        //if (getGameLogic().getHeroes() == null || getGameLogic().getHeroes().Count == 0) {
+        //    // If we have yet recieved the heroes dont show menu
+        //    allDead = false;
+        //}
+        //if (allDead) {
+        //    menu.SetActive(true);
+        //}else if(!allDead && isShowing) {
+        //    menu.SetActive(true);
+        //}else {
+        //    menu.SetActive(false);
+        //}
        
     }
 
