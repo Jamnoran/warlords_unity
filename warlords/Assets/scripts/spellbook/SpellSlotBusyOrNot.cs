@@ -4,29 +4,24 @@ using System.Collections.Generic;
 
 public class SpellSlotBusyOrNot : MonoBehaviour {
 
-    private Dictionary<string, string> listOfBusySlots = new Dictionary<string, string>();
+    private List<int> listOfBusySlots = new List<int>();
 
-    public void Update()
+    public void addToList(int slotNameToSetToBusy)
     {
-      
+        listOfBusySlots.Add(slotNameToSetToBusy);
     }
 
-    public void addToList(string slotNameToSetToBusy, string spellToAdd)
-    {
-        listOfBusySlots.Add(slotNameToSetToBusy, spellToAdd);
-    }
-
-    public void removeFromList(string slotNameToRemoveFromList)
+    public void removeFromList(int slotNameToRemoveFromList)
     {   
         Debug.Log("Removed: " + slotNameToRemoveFromList);
         listOfBusySlots.Remove(slotNameToRemoveFromList);
 
     }
 
-    public bool isSlotTaken(string slotToCheck)
+    public bool isSlotTaken(int slotToCheck)
     {
 
-        if (listOfBusySlots.ContainsKey(slotToCheck))
+        if (listOfBusySlots.Contains(slotToCheck))
         {
             return true;
         }
