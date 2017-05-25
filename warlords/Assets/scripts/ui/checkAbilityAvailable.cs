@@ -3,6 +3,7 @@ using System.Collections;
 
 public class checkAbilityAvailable : MonoBehaviour {
 
+
 	// Use this for initialization
 	void Start () {
        
@@ -11,6 +12,5 @@ public class checkAbilityAvailable : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-      
     }
 }

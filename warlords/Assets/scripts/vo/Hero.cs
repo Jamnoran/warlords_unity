@@ -31,9 +31,10 @@ namespace Assets.scripts.vo
         public Transform trans;
         private bool autoAttacking = false;
         public float attackRange = 3.0f;
-        public float baseMoveSpeed = 2.0f;
+        public float baseMoveSpeed = 3.0f;
         public List<ResponseHeroBuff> buffs = new List<ResponseHeroBuff>();
-
+        public List<Talent> talents;
+        private int totalTalentPoints = 0;
 
         public void update() {
             if (buffs != null && buffs.Count > 0) {
@@ -47,6 +48,14 @@ namespace Assets.scripts.vo
                     }
                 }
             }
+        }
+
+        public void setTotalTalentPoints(int points) {
+            totalTalentPoints = points;
+        }
+
+        public int getTotalTalentPoints() {
+            return totalTalentPoints;
         }
 
         public void setTrans(Transform transf) {
@@ -132,5 +141,6 @@ namespace Assets.scripts.vo
         CharacterAnimations getAnimation(){
             return (CharacterAnimations) trans.GetComponent(typeof(CharacterAnimations));
         }
+
     }
 }

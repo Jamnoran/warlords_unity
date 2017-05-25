@@ -60,8 +60,7 @@ public class Lobby : MonoBehaviour {
 
     public void updateHeroes(List<Hero> newListOfHeroes) {
         heroes = newListOfHeroes;
-        if (currentHero == null && heroes.Count > 0)
-        {
+        if (currentHero == null && heroes.Count > 0) {
             currentHero = heroes[0];
 			getLobbyCommunication().heroId = currentHero.id;
             Debug.Log("Setting hero id : " + currentHero.id);
@@ -114,8 +113,7 @@ public class Lobby : MonoBehaviour {
     }
 
 
-    void heroButtonPressed(int button)
-    {
+    void heroButtonPressed(int button) {
         Debug.Log("Button pressed: " + button);
         int position = 0;
         bool foundHero = false;

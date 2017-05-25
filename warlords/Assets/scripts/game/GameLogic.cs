@@ -204,6 +204,12 @@ public class GameLogic : MonoBehaviour
             }
         }
     }
+
+    internal void setTalents(ResponseTalents response) {
+        getMyHero().talents = response.talents;
+        getMyHero().setTotalTalentPoints(response.totalTalentPoints);
+    }
+
     public void updateAnimations(List<GameAnimation> gameAnimations) {
         foreach (var gameAnimation in gameAnimations) {
             if (gameAnimation.animation_type == "MINION_DIED") {
@@ -328,23 +334,21 @@ public class GameLogic : MonoBehaviour
         return heroes;
     }
 
-    public void setHeroTargetEnemy(int minion_id)
-    {
+    public void setHeroTargetEnemy(int minion_id) {
         Hero myHero = getMyHero();
         if (myHero != null) {
             myHero.targetFriendly = 0;
             myHero.targetEnemy = minion_id;
         }
     }
-    public void setHeroTargetFriendly(int hero_id)
-    {
+
+    public void setHeroTargetFriendly(int hero_id) {
         Hero myHero = getMyHero();
         myHero.targetEnemy = 0;
         myHero.targetFriendly = hero_id;
     }
 
-    public Minion getMyHeroEnemyTarget()
-    {
+    public Minion getMyHeroEnemyTarget() {
         Hero myHero = getMyHero();
         if (myHero != null && myHero.targetEnemy > 0)
         {
@@ -353,8 +357,7 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
-    public Hero getMyHeroFriendlyTarget()
-    {
+    public Hero getMyHeroFriendlyTarget() {
         Hero myHero = getMyHero();
         if (myHero != null && myHero.targetFriendly > 0)
         {
@@ -363,24 +366,20 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
-    public void sendSpell(int spellId, List<int> enemies, List<int> friendly)
-    {
+    public void sendSpell(int spellId, List<int> enemies, List<int> friendly) {
         Debug.Log("Send spell " + spellId);
         getCommunication().sendSpell(spellId, enemies, friendly, getMyHero().getTargetPosition());
     }
 
-    public List<Ability> getAbilities()
-    {
+    public List<Ability> getAbilities() {
         return abilities;
     }
 
-    private void updateAbilities()
-    {
+    private void updateAbilities() {
         getCommunication().getAbilities();
     }
 
-    public void setAbilities(List<Ability> updatedAbilities)
-    {
+    public void setAbilities(List<Ability> updatedAbilities) {
         abilities = updatedAbilities;
         foreach (var ability in abilities)
         {
@@ -388,8 +387,7 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    public void updateCooldown(Ability ability)
-    {
+    public void updateCooldown(Ability ability) {
         if (getAbility(ability.id) != null)
         {
             getAbility(ability.id).timeWhenOffCooldown = ability.timeWhenOffCooldown;
@@ -565,5 +563,5 @@ public class GameLogic : MonoBehaviour
     TestSpawn getTestSpawn() {
         return ((TestSpawn)GameObject.Find("TestObject").GetComponent(typeof(TestSpawn)));
     }
-    
+
 }
