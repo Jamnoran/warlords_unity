@@ -12,22 +12,7 @@ public class Menu : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyUp("q"))
-        {
-            List<int> enemies = new List<int>();
-            enemies.Add(getGameLogic().getMyHero().targetEnemy);
-            List<int> friends = new List<int>();
-            friends.Add(getGameLogic().getMyHero().targetFriendly);
-            getGameLogic().sendSpell(1, enemies, friends);
-        }
-        if (Input.GetKeyUp("w"))
-        {
-            List<int> enemies = new List<int>();
-            enemies.Add(getGameLogic().getMyHero().targetEnemy);
-            List<int> friends = new List<int>();
-            friends.Add(getGameLogic().getMyHero().targetFriendly);
-            getGameLogic().sendSpell(2, enemies, friends);
-        }
+        
     }
 
 

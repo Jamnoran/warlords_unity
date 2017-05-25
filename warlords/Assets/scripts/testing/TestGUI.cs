@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 public class TestGUI : MonoBehaviour {
 
     public GameObject menu;
+    public GameObject talents;
+    public GameObject chat;
     public Button exit;
     public Button restart;
     private bool isShowing = false;
@@ -25,10 +27,8 @@ public class TestGUI : MonoBehaviour {
 
 
         // Handle auto attack, this sets a flag on the hero
-        if (getGameLogic().isMyHeroAlive())
-        {
-            if (Input.GetKeyUp("a"))
-            {
+        if (getGameLogic().isMyHeroAlive() && !getChat().inputVisible) {
+            if (Input.GetKeyUp("a")) {
                 bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
                 Debug.Log("Hero is now attacking : " + !autoAttacking);
                 getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
@@ -36,10 +36,14 @@ public class TestGUI : MonoBehaviour {
                 getCommunication().sendStopHero(getGameLogic().getMyHero().id);
             } else if (Input.GetKeyUp("v")) {
                 getCommunication().updateAbilityPosition(8,2);
+            }else if (Input.GetKeyDown("t")) {
+                getTalentScript().refresh();
+                talents.SetActive(true);
             }
+
+
         }
-        if (Input.GetKeyDown("escape"))
-        {
+        if (Input.GetKeyDown("escape")) {
             isShowing = !isShowing;
         }
     }
@@ -107,6 +111,13 @@ public class TestGUI : MonoBehaviour {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
 
+    Talents getTalentScript() {
+        return ((Talents) talents.GetComponent(typeof(Talents)));
+    }
+
+    Chat getChat() {
+        return ((Chat)chat.GetComponent(typeof(Chat)));
+    }
 
     ServerCommunication getCommunication() {
         if (GameObject.Find("Communication") != null) {

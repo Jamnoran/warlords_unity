@@ -117,6 +117,11 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"GET_ABILITIES\", \"user_id\":" + getHeroId() + "}");
     }
 
+    public void sendMessage(Message message) {
+        Debug.Log("Sending message to team");
+        sendRequest(new RequestSendMessage(message));
+    }
+
     public void updateAbilityPosition(int abilityId, int position) {
         sendRequest(new RequestAbilityPosition(getHeroId(), abilityId, position));
     }
@@ -201,10 +206,15 @@ public class ServerCommunication : MonoBehaviour {
                 ResponseStopHero responseStopHero = JsonMapper.ToObject<ResponseStopHero>(json);
                 getGameLogic().stopHero(responseStopHero.hero);
             } else if (responseType == "HERO_BUFF")  {
-                Debug.Log("Data [" + json + "]");
                 ResponseHeroBuff responseHeroBuff = JsonMapper.ToObject<ResponseHeroBuff>(json);
-                Debug.Log("We got heroBuff : " + responseHeroBuff.ToString());
                 getGameLogic().handleHeroBuff(responseHeroBuff);
+            } else if (responseType == "TALENTS") {
+                ResponseTalents response = JsonMapper.ToObject<ResponseTalents>(json);
+                getGameLogic().setTalents(response);
+            } else if (responseType == "MESSAGE") {
+                ResponseMessage response = JsonMapper.ToObject<ResponseMessage>(json);
+                Debug.Log("Someone wrote: " + response.message.message);
+                getChat().addMessage(response.message);
             } else {
                 Debug.Log("Have type but did not match any of the ones we have [" + responseType + "]");
             }
@@ -321,4 +331,10 @@ public class ServerCommunication : MonoBehaviour {
     GameLogic getGameLogic() {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
+
+
+    Chat getChat() {
+        return ((Chat)GameObject.Find("Chat").GetComponent(typeof(Chat)));
+    }
+
 }
