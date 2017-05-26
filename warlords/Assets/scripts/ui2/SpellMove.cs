@@ -34,6 +34,8 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
     private List<GameObject> actionBarSlots = new List<GameObject>();
     private bool fromSpellBook;
 
+    private GameObject currentParent;
+
     void Start () {
        TheCanvas = GameObject.FindWithTag("Canvas");
         actionBarSlot1 = GameObject.FindWithTag("spell1");
@@ -93,6 +95,19 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
             fromSpellBook = true;
         }
 
+        if (currentParent != this.transform.parent.gameObject)
+        {
+            for (int i = 1; i < 7; i++)
+            {
+                if (this.transform.parent.name == "Spell" + i.ToString())
+                {
+                    currentParent = this.transform.parent.gameObject;
+                    Debug.Log("swapped parent to: " + this.transform.parent.transform.name);
+                }
+            }
+        }
+       
+
     }
 
     public void OnDrag(PointerEventData data)
@@ -125,7 +140,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
         for (int i = 0; i < actionBarSlots.Count; i++)
         {
 
-            if ((xPos <= actionBarSlots[i].transform.position.x + 50) && (xPos >= actionBarSlots[i].transform.position.x - 50) && (yPos <= actionBarSlots[i].transform.position.y + 50) && (yPos >= actionBarSlots[i].transform.position.y - 50))
+            if ((xPos <= actionBarSlots[i].transform.position.x + 20) && (xPos >= actionBarSlots[i].transform.position.x - 20) && (yPos <= actionBarSlots[i].transform.position.y + 20) && (yPos >= actionBarSlots[i].transform.position.y - 20))
             {
 
                 if (actionBarSlots[i].transform.childCount > 0 && fromSpellBook)
@@ -184,11 +199,28 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
 
                 }
 
+                else if (actionBarSlots[i].transform.childCount > 0 && !fromSpellBook)
+                {
+                    Debug.Log("Moving " + this.transform.name + " to " + actionBarSlots[i].transform.name);
 
-                this.transform.SetParent(actionBarSlots[i].transform);
-                this.transform.localScale = this.transform.parent.localScale;
-                fromSpellBook = false;
-                return actionBarSlots[i].transform.position;
+                    actionBarSlots[i].transform.GetChild(0).transform.position = currentParent.transform.position;
+                    actionBarSlots[i].transform.GetChild(0).transform.SetParent(currentParent.transform);
+                    this.transform.SetParent(actionBarSlots[i].transform);
+                    this.transform.localScale = this.transform.parent.localScale;
+                    fromSpellBook = false;
+                    return actionBarSlots[i].transform.position;
+                }
+
+                else
+                {
+                    this.transform.SetParent(actionBarSlots[i].transform);
+                    this.transform.localScale = this.transform.parent.localScale;
+                    currentParent = this.transform.parent.gameObject    ;
+                    Debug.Log("Added to empty slot, current parent is: " + currentParent.transform.name);
+                    fromSpellBook = false;
+                    return actionBarSlots[i].transform.position;
+                }
+               
 
                 //if we come from spellbook and replace a spell in actionbar, replay the current spell to its original position
 
