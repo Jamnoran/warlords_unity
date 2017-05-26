@@ -130,117 +130,56 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
 
                 if (actionBarSlots[i].transform.childCount > 0 && fromSpellBook)
                 {
-
-                    //todo: bunch this monster into a method to call for each case DRY
                     //todo: swap spells between actionbar slots
                     //todo: save spells position from database
+
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell0Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot1.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot1.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot1);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell1Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot2.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot2.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot2);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell2Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot3.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot3.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot3);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell3Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot4.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot4.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot4);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell4Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot5.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot5.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot5);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell5Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot6.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot6.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot6);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell6Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot7.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot7.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot7);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell7Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot8.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot8.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot8);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell8Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot9.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot9.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot9);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell9Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot10.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot10.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot10);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell10Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot11.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot11.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot11);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell11Image")
                     {
-                        this.transform.SetParent(actionBarSlots[i].transform);
-                        this.transform.localScale = this.transform.parent.localScale;
-                        actionBarSlots[i].transform.GetChild(0).SetParent(spellBookSlot12.transform, false);
-                        actionBarSlots[i].transform.GetChild(0).transform.position = spellBookSlot12.transform.Find("original").transform.position;
-                        fromSpellBook = false;
-                        return actionBarSlots[i].transform.position;    
+                        return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot12);
                     }
 
                 }
@@ -262,6 +201,15 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
 
     }
 
+    private Vector3 calcPos(GameObject setParentToThis, Transform child, GameObject spellBookSlot )
+    {
+        this.transform.SetParent(setParentToThis.transform);
+        this.transform.localScale = this.transform.parent.localScale;
+        child.SetParent(spellBookSlot.transform, false);
+        child.transform.position = spellBookSlot.transform.Find("original").transform.position;
+        fromSpellBook = false;
+        return setParentToThis.transform.position;
+    }
 
     GameLogic getGameLogic()
     {
