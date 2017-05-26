@@ -84,11 +84,19 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
                 {
                     Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/" + abilities[i].image);
                     this.GetComponent<Image>().sprite = abilitySprite;
+                    
                 }
-            }
-           
 
+             
+            }
+
+            if (this.transform.name == "spell0Image")
+            {
+                this.transform.SetParent(actionBarSlot4.transform);
+                this.transform.position = actionBarSlot4.transform.position;
+            }
         }
+
 
         if (this.gameObject.transform.parent.gameObject == OriginalParent)
         {
@@ -106,7 +114,9 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
                 }
             }
         }
-       
+
+
+
 
     }
 
@@ -114,6 +124,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
     {
         this.transform.SetParent(TheCanvas.transform, false);
         this.transform.position = Input.mousePosition;
+      
     }
 
     public void OnDrop(PointerEventData data)
