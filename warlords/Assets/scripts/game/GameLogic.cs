@@ -409,7 +409,7 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     /// <param name="name">The name of the ability you wish to fetch ID for</param>
     /// <returns>int - The corresponding ID for the ability name</returns>
-    public int? getAbilityIdByAbilityName(string name)
+    public int getAbilityIdByAbilityName(string name)
     {
         foreach (var ability in abilities)
         {
@@ -418,7 +418,7 @@ public class GameLogic : MonoBehaviour
                 return ability.id;
             }
         }
-        return null;
+        return 9999;
     }
     
     /// <summary>
