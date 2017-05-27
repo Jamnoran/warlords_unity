@@ -295,7 +295,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
         this.transform.SetParent(setParentToThis.transform);
         this.transform.localScale = this.transform.parent.localScale;
         child.SetParent(spellBookSlot.transform, false);
-        child.transform.position = spellBookSlot.transform.Find("original").transform.position;
+        child.transform.position = spellBookSlot.transform.Find("original" + spell).transform.position;
         fromSpellBook = false;
         return setParentToThis.transform.position;
     }
