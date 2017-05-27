@@ -179,10 +179,11 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
 
     public Vector3 SnapToActionBar(float xPos, float yPos)
     {
+        var margin = 20;
         for (int i = 0; i < actionBarSlots.Count; i++)
         {
 
-            if ((xPos <= actionBarSlots[i].transform.position.x + 20) && (xPos >= actionBarSlots[i].transform.position.x - 20) && (yPos <= actionBarSlots[i].transform.position.y + 20) && (yPos >= actionBarSlots[i].transform.position.y - 20))
+            if ((xPos <= actionBarSlots[i].transform.position.x + margin) && (xPos >= actionBarSlots[i].transform.position.x - margin) && (yPos <= actionBarSlots[i].transform.position.y + margin) && (yPos >= actionBarSlots[i].transform.position.y - margin))
             {
 
                 if (actionBarSlots[i].transform.childCount > 0 && fromSpellBook)
@@ -270,7 +271,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
                 {
                     this.transform.SetParent(actionBarSlots[i].transform);
                     this.transform.localScale = this.transform.parent.localScale;
-                    currentParent = this.transform.parent.gameObject    ;
+                    currentParent = this.transform.parent.gameObject;
                     Debug.Log("Added to empty slot, current parent is: " + currentParent.transform.name);
                     fromSpellBook = false;
                     savePositionToDb(i);
@@ -294,8 +295,17 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
     {
         this.transform.SetParent(setParentToThis.transform);
         this.transform.localScale = this.transform.parent.localScale;
+        currentParent = this.transform.parent.gameObject;
         child.SetParent(spellBookSlot.transform, false);
-        child.transform.position = spellBookSlot.transform.Find("original" + spell).transform.position;
+ 
+        for (int i = 0; i < 12; i++)
+        {
+            if (spellBookSlot.transform.Find("original" + i.ToString()) != null)
+            {
+                child.transform.position = spellBookSlot.transform.Find("original" + i.ToString()).transform.position;
+            }
+        }
+        
         fromSpellBook = false;
         return setParentToThis.transform.position;
     }
