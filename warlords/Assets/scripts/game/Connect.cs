@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class Connect : MonoBehaviour {
 
@@ -12,6 +13,8 @@ public class Connect : MonoBehaviour {
     public Button loginButton;
     public Button resetButton;
     public bool autoLogin = true;
+
+    public int inputFieldFocused = 0;
     
     
 
@@ -29,9 +32,15 @@ public class Connect : MonoBehaviour {
         }
 
         string email = PlayerPrefs.GetString("EMAIL");
-        if (email != null && !email.Equals(""))
-        {
+        if (email != null && !email.Equals("")) {
             emailInput.text = email;
+            EventSystem.current.SetSelectedGameObject(passwordInput.gameObject, null);
+            passwordInput.OnPointerClick(new PointerEventData(EventSystem.current));
+            inputFieldFocused = 2;
+        } else {
+            EventSystem.current.SetSelectedGameObject(emailInput.gameObject, null);
+            emailInput.OnPointerClick(new PointerEventData(EventSystem.current));
+            inputFieldFocused = 1;
         }
 
         if (autoLogin && userId > 0) {   
@@ -39,36 +48,50 @@ public class Connect : MonoBehaviour {
             Debug.Log("Email: " + PlayerPrefs.GetString("EMAIL"));
             Debug.Log("Password: " + PlayerPrefs.GetString("PASSWORD"));
 			getLobbyCommunication().userId = userId;
-            SceneManager.LoadScene("Lobby");
+            SceneManager.LoadScene("LobbyTemp");
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-        
-	}
+
+    // Update is called once per frame
+    void Update() {
+
+        if (Input.GetKeyDown(KeyCode.Tab)) {
+            Debug.Log("Tab pressed");
+            if (inputFieldFocused == 0) {
+                EventSystem.current.SetSelectedGameObject(emailInput.gameObject, null);
+                emailInput.OnPointerClick(new PointerEventData(EventSystem.current));
+            } else if(inputFieldFocused == 1) {
+                EventSystem.current.SetSelectedGameObject(passwordInput.gameObject, null);
+                passwordInput.OnPointerClick(new PointerEventData(EventSystem.current));
+            } else if (inputFieldFocused == 2) {
+                EventSystem.current.SetSelectedGameObject(emailInput.gameObject, null);
+                emailInput.OnPointerClick(new PointerEventData(EventSystem.current));
+                inputFieldFocused = 0;
+            }
+            inputFieldFocused++;
+        } else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+            Debug.Log("Enter pressed");
+            login();
+        }
+    }
     
 
-        void reset()
-    {
+    void reset() {
         PlayerPrefs.SetString("EMAIL", null);
         PlayerPrefs.SetString("USER_ID", null);
         PlayerPrefs.SetString("PASSWORD", null);
         PlayerPrefs.SetString("USERNAME", null);
     }
 
-    void login()
-    {
+    void login() {
         sendLogin("", emailInput.text, passwordInput.text);
     }
 
-    void register()
-    {
+    void register() {
         sendRegister(usernameInput.text, emailInput.text, passwordInput.text);
     }
 
-    void sendRegister(string username, string email, string password)
-    {
+    void sendRegister(string username, string email, string password) {
         Debug.Log("Register with email : " + email);
         PlayerPrefs.SetString("EMAIL", email);
         PlayerPrefs.SetString("PASSWORD", password);
@@ -78,8 +101,7 @@ public class Connect : MonoBehaviour {
 
     }
 
-    void sendLogin(string username, string email, string password)
-    {
+    void sendLogin(string username, string email, string password)     {
         Debug.Log("Login with email : " + email);
         //string userId = PlayerPrefs.GetString("USER_ID");
         //if (userId != null && !userId.Equals(""))

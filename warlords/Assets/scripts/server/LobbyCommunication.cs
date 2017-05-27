@@ -34,9 +34,6 @@ public class LobbyCommunication : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         handleCommunication();
-		if (Input.GetKeyUp ("m")) {
-			socketConnection.closeSocket();
-		}
     }
 
 
@@ -122,14 +119,15 @@ public class LobbyCommunication : MonoBehaviour {
 				Debug.Log("User logged in with this id to store on device: " + responseCreateUser.user_id);
 				userId = int.Parse (responseCreateUser.user_id);
 				PlayerPrefs.SetInt("USER_ID", userId);
-				SceneManager.LoadScene("Lobby");
+				SceneManager.LoadScene("LobbyTemp");
 				Debug.Log("Getting heroes for user");
 				getHeroes();
 			} else if (responseType == "HEROES") {
 				ResponseGetHeroes responseGetHeroes = JsonMapper.ToObject<ResponseGetHeroes>(json);
 				Debug.Log("Got these many heroes: " + responseGetHeroes.heroes.Count);
-				((Lobby)GameObject.Find("LobbyLogic").GetComponent(typeof(Lobby))).updateHeroes(responseGetHeroes.heroes);
-			} else if (responseType == "GAME_FOUND_RESPONSE"){
+				//((Lobby)GameObject.Find("LobbyLogic").GetComponent(typeof(Lobby))).updateHeroes(responseGetHeroes.heroes);
+                ((LobbyLogic)GameObject.Find("LobbyLogic").GetComponent(typeof(LobbyLogic))).updateHeroes(responseGetHeroes.heroes);
+            } else if (responseType == "GAME_FOUND_RESPONSE"){
 				ResponseGameFound responseGameFound = JsonMapper.ToObject<ResponseGameFound> (json);
 				Debug.Log ("Response game found: " + responseGameFound.toString ());
                 getCommunication().connectToServer(responseGameFound.server_ip, responseGameFound.server_port, responseGameFound.game_id);
