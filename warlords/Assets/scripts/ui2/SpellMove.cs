@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHandler, IBeginDragHandler
 {
+    public int spell;
     private bool flag = true;
     private List<Ability> abilities;
     private GameObject TheCanvas;
@@ -90,10 +91,33 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
              
             }
 
-            if (this.transform.name == "spell0Image")
+            if (abilities[spell].position == 1)
             {
-                this.transform.SetParent(actionBarSlot4.transform);
-                this.transform.position = actionBarSlot4.transform.position;
+                setAbilityFromDb(actionBarSlot1.transform);
+            }
+            if (abilities[spell].position == 2)
+            {
+                setAbilityFromDb(actionBarSlot2.transform);
+            }
+            if (abilities[spell].position == 3)
+            {
+                setAbilityFromDb(actionBarSlot3.transform);
+            }
+            if (abilities[spell].position == 4)
+            {
+                setAbilityFromDb(actionBarSlot4.transform);
+            }
+            if (abilities[spell].position == 5)
+            {
+                setAbilityFromDb(actionBarSlot5.transform);
+            }
+            if (abilities[spell].position == 6)
+            {
+                setAbilityFromDb(actionBarSlot6.transform);
+            }
+            if (abilities[spell].position == 7)
+            {
+                setAbilityFromDb(actionBarSlot7.transform);
             }
         }
 
@@ -109,16 +133,21 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
             {
                 if (this.transform.parent.name == "Spell" + i.ToString())
                 {
+                    savePositionToDb(i-1);
                     currentParent = this.transform.parent.gameObject;
-                    Debug.Log("swapped parent to: " + this.transform.parent.transform.name);
+                    
                 }
             }
+
+      
         }
 
 
 
 
     }
+
+  
 
     public void OnDrag(PointerEventData data)
     {
@@ -161,50 +190,62 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
 
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell0Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot1);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell1Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot2);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell2Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot3);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell3Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot4);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell4Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot5);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell5Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot6);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell6Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot7);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell7Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot8);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell8Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot9);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell9Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot10);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell10Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot11);
                     }
                     if (actionBarSlots[i].transform.GetChild(0).transform.name == "spell11Image")
                     {
+                        savePositionToDb(i);
                         return calcPos(actionBarSlots[i], actionBarSlots[i].transform.GetChild(0), spellBookSlot12);
                     }
 
@@ -219,6 +260,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
                     this.transform.SetParent(actionBarSlots[i].transform);
                     this.transform.localScale = this.transform.parent.localScale;
                     fromSpellBook = false;
+                    savePositionToDb(i);
                     return actionBarSlots[i].transform.position;
                 }
 
@@ -229,6 +271,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
                     currentParent = this.transform.parent.gameObject    ;
                     Debug.Log("Added to empty slot, current parent is: " + currentParent.transform.name);
                     fromSpellBook = false;
+                    savePositionToDb(i);
                     return actionBarSlots[i].transform.position;
                 }
                
@@ -240,6 +283,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
         }
         this.transform.SetParent(OriginalParent.transform);
         this.transform.localScale = this.transform.parent.localScale;
+        savePositionToDb(0);
         return BackDropImage.transform.position;
 
     }
@@ -254,11 +298,39 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
         return setParentToThis.transform.position;
     }
 
+    private void setAbilityFromDb(Transform actionBarSlot)
+    {
+        this.transform.SetParent(actionBarSlot.transform);
+        this.transform.position = actionBarSlot.transform.position;
+        this.transform.localScale = this.transform.parent.localScale;
+        currentParent = this.transform.parent.gameObject;
+        fromSpellBook = false;
+    }
+
+    private void savePositionToDb(int position)
+    {
+        getCommunication().updateAbilityPosition(abilities[spell].id, position+1);
+    }
+
+
+
     GameLogic getGameLogic()
     {
         if (GameObject.Find("GameLogicObject") != null)
         {
             return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    ServerCommunication getCommunication()
+    {
+        if (GameObject.Find("Communication") != null)
+        {
+            return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
         }
         else
         {
