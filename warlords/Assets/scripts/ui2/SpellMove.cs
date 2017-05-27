@@ -122,9 +122,11 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
         }
 
 
-        if (this.gameObject.transform.parent.gameObject == OriginalParent)
+        if (this.gameObject.transform.parent.gameObject == OriginalParent && !fromSpellBook)
         {
+            savePositionToDb();
             fromSpellBook = true;
+ 
         }
 
         if (currentParent != this.transform.parent.gameObject)
@@ -283,7 +285,7 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
         }
         this.transform.SetParent(OriginalParent.transform);
         this.transform.localScale = this.transform.parent.localScale;
-        savePositionToDb(0);
+        savePositionToDb();
         return BackDropImage.transform.position;
 
     }
@@ -307,10 +309,18 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
         fromSpellBook = false;
     }
 
+
+    //use overloaded method to save spell to spellbook
+    private void savePositionToDb()
+    {
+        getCommunication().updateAbilityPosition(abilities[spell].id, 0);
+    }
+
     private void savePositionToDb(int position)
     {
         getCommunication().updateAbilityPosition(abilities[spell].id, position+1);
     }
+
 
 
 
