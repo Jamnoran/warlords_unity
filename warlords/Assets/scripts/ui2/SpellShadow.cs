@@ -26,7 +26,7 @@ public class SpellShadow : MonoBehaviour
         if (abilities != null && flag)
         {
             flag = false;
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < 12; i++)
             {
                 var foo = this.transform.name;
                 if (this.transform.name == "original" + i.ToString())
