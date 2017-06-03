@@ -3,12 +3,12 @@ using System.Collections;
 using System;
 using System.IO;
 using System.Net.Sockets;
-using LitJson;
 using Assets.scripts.vo;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Runtime.Serialization.Formatters;
 using System.Net.Configuration;
+using LitJson;
 
 public class LobbyCommunication : MonoBehaviour {
 	private SocketConnection socketConnection;
@@ -71,7 +71,6 @@ public class LobbyCommunication : MonoBehaviour {
 	public void createUser(string username, string email, string password)
 	{
 		print("Creaing the user (here we need to gather username + email + password)");
-		//writeSocket("{\"request_type\": \"CREATE_USER\", email:\"" + email + "\", username:\"" + username + "\", password: \"" + password + "\"}");
 		sendRequest (new RequestCreateUser(email, password, username));
 	}
 
@@ -79,18 +78,28 @@ public class LobbyCommunication : MonoBehaviour {
 	{
 		print("Login the user (here we need to gather email + password)");
 		print("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\", username:\"\"}");
-		//writeSocket("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\", username:\"\"}");
 		sendRequest (new RequestLogin(email, password));
-
 	}
 
+    public void sendStartGame(LFG lfg) {
+        RequestLFG requestLFG = new RequestLFG();
+        requestLFG.lfg = lfg;
+        requestLFG.request_type = "START_GAME";
+        sendRequest(requestLFG);
+    }
+
+    public void sendCancelGameSearch(LFG lfg) {
+        RequestLFG requestLFG = new RequestLFG();
+        requestLFG.lfg = lfg;
+        requestLFG.request_type = "CANCEL_SEARCH_GAME";
+        sendRequest(requestLFG);
+    }
 
 
+    // 			Response
 
-	// 			Response
-
-	// Code for parsing responses sent from server to client
-	void parseJson(string json) {
+    // Code for parsing responses sent from server to client
+    void parseJson(string json) {
 		Debug.Log("Trying to parse this string to json object: " + json);
 
 		// Do simple string split get response_type and go to next " and then parse the response to that format later.
@@ -103,19 +112,19 @@ public class LobbyCommunication : MonoBehaviour {
 		}
 
 		// Handle different type of request_names
-		if (responseType != null)
-		{
-			if (responseType == "CLIENT_TYPE") {
+		if (responseType != null) {
+#pragma warning disable CS0436 // Type conflicts with imported type
+            if (responseType == "CLIENT_TYPE") {
 				Debug.Log("Lobby needs to know what type of client connected");
 				sendRequest (new RequestClientType(3));
                 if (PlayerPrefs.GetInt("AUTO_LOGIN") == 1) {
                     getHeroes();
                 }
 			} else if (responseType == "SERVER_INFO") {
-				ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
-				Debug.Log("Server information: " + responseServerInfo.clients);
+                ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
+                Debug.Log("Server information: " + responseServerInfo.clients);
 			} else if (responseType == "LOGIN_USER") {
-				ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
+                ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
 				Debug.Log("User logged in with this id to store on device: " + responseCreateUser.user_id);
 				userId = int.Parse (responseCreateUser.user_id);
 				PlayerPrefs.SetInt("USER_ID", userId);
@@ -128,12 +137,19 @@ public class LobbyCommunication : MonoBehaviour {
 				//((Lobby)GameObject.Find("LobbyLogic").GetComponent(typeof(Lobby))).updateHeroes(responseGetHeroes.heroes);
                 ((LobbyLogic)GameObject.Find("LobbyLogic").GetComponent(typeof(LobbyLogic))).updateHeroes(responseGetHeroes.heroes);
             } else if (responseType == "GAME_FOUND_RESPONSE"){
-				ResponseGameFound responseGameFound = JsonMapper.ToObject<ResponseGameFound> (json);
+                getLobbyLogic().showLoadingText();
+
+                ResponseGameFound responseGameFound = JsonMapper.ToObject<ResponseGameFound> (json);
 				Debug.Log ("Response game found: " + responseGameFound.toString ());
                 getCommunication().connectToServer(responseGameFound.server_ip, responseGameFound.server_port, responseGameFound.game_id);
-			}
-		}
-	}
+            } else if (responseType == "LFG_RESPONSE") {
+                ResponseLFG responseLFG = JsonMapper.ToObject<ResponseLFG>(json);
+                Debug.Log("Response game found: " + responseLFG.ToString());
+                getLobbyLogic().setGroup(responseLFG.lfg);
+            }
+ #pragma warning restore CS0436 // Type conflicts with imported type
+        }
+    }
 
 
 
@@ -152,8 +168,7 @@ public class LobbyCommunication : MonoBehaviour {
 		}
 	}
 
-	public void sendRequest(object request)
-	{
+	public void sendRequest(object request) {
 		String reqJson = JsonMapper.ToJson(request);
 		Debug.Log("Sending this request: " + reqJson);
 		socketConnection.writeSocket(reqJson);
@@ -195,5 +210,9 @@ public class LobbyCommunication : MonoBehaviour {
 
     ServerCommunication getCommunication() {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
+
+    LobbyLogic getLobbyLogic() {
+        return ((LobbyLogic)GameObject.Find("LobbyLogic").GetComponent(typeof(LobbyLogic)));
     }
 }

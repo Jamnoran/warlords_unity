@@ -27,14 +27,6 @@ public class GameLogic : MonoBehaviour
 
     private List<Ability> abilities = null;
 
-    public Transform door;
-    public Transform door90;
-    public Transform wall;
-    public Transform start;
-    public Transform stairs;
-    public Transform light;
-    public Transform floor;
-
     public bool isInGame = false;
     public World world;
     public GameObject playerHealth;
@@ -285,14 +277,14 @@ public class GameLogic : MonoBehaviour
 
     public void handleHeroBuff(ResponseHeroBuff responseHeroBuff) {
         Hero hero;
-        Minion minion;
+       // Minion minion;
 
         hero = getHero(responseHeroBuff.heroId);
         responseHeroBuff.millisBuffStarted = DeviceUtil.getMillis();
         hero.buffs.Add(responseHeroBuff);
 
         if (responseHeroBuff.minionId > 0 ) {
-            minion = getMinion(responseHeroBuff.minionId);
+            //minion = getMinion(responseHeroBuff.minionId);
         }
         if (responseHeroBuff.type == Buff.SPEED) {
             hero.calculateSpeed();

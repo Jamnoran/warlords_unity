@@ -36,6 +36,15 @@ namespace Assets.scripts.vo
         public List<Talent> talents;
         private int totalTalentPoints = 0;
 
+        public Hero() {
+
+        }
+
+
+        public Hero(string classType) {
+            class_type = classType;
+        }
+
         public void update() {
             if (buffs != null && buffs.Count > 0) {
                 foreach (var buff in buffs) {
