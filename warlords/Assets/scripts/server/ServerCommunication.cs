@@ -311,10 +311,10 @@ public class ServerCommunication : MonoBehaviour {
     }
 
     public void connectToServer(String ip, int port, String gameId) {
-        Debug.Log("Client Started");
-        socketConnection = new SocketConnection(ip, port, getLobbyCommunication().local);
         Debug.Log("Changing to scene1");
         SceneManager.LoadScene("scene1");
+        Debug.Log("Client Started");
+        socketConnection = new SocketConnection(ip, port, getLobbyCommunication().local);
         joinGame(gameId);
     }
 
