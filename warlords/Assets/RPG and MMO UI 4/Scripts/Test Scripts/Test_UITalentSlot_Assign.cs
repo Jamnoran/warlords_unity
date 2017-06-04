@@ -8,6 +8,7 @@ namespace UnityEngine.UI
 		public UITalentSlot slot;
 		public int assignTalent = 0;
 		public int addPoints = 0;
+        public int talentId = 0;
 		
 		void Start()
 		{
@@ -24,8 +25,8 @@ namespace UnityEngine.UI
 			
 			if (info != null)
 			{
-				this.slot.Assign(info, UISpellDatabase.Instance.GetByID(info.spellEntry));
-				this.slot.AddPoints(this.addPoints);
+				//this.slot.Assign(info, UISpellDatabase.Instance.GetByID(info.spellEntry));
+				//this.slot.AddPoints(this.addPoints);
 			}
 			
 			this.Destruct();

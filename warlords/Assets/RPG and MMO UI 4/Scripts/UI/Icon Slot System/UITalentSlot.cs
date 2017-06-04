@@ -122,27 +122,36 @@ namespace UnityEngine.UI
 			
 			// Set the points string on the label
 			this.m_PointsText.text = "";
-			
-			// No points assigned
-			if (this.m_CurrentPoints == 0)
-			{
-				this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsMinColor) + ">" + this.m_CurrentPoints.ToString() + "</color>";
-				this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsMaxColor) + ">/" + this.m_TalentInfo.maxPoints.ToString() + "</color>";
-			}
-			// Assigned but not maxed
-			else if (this.m_CurrentPoints > 0 && this.m_CurrentPoints < this.m_TalentInfo.maxPoints)
-			{
-				this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsMinColor) + ">" + this.m_CurrentPoints.ToString() + "</color>";
-				this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsMaxColor) + ">/" + this.m_TalentInfo.maxPoints.ToString() + "</color>";
-			}
-			// Maxed
-			else
-			{
-				this.m_PointsText.text += 	"<color=#" + CommonColorBuffer.ColorToString(this.m_pointsActiveColor) + ">" + 
-											this.m_CurrentPoints.ToString() + "/" + 
-											this.m_TalentInfo.maxPoints.ToString() + "</color>";
-			}
-		}
+
+            if (this.m_TalentInfo.maxPoints == 0) {
+                this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsActiveColor) + ">" +
+                                            this.m_CurrentPoints.ToString() + "</color>";
+            } else { 
+                // No points assigned
+                if (this.m_CurrentPoints == 0)
+			    {
+				    this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsMinColor) + ">" + this.m_CurrentPoints.ToString() + "</color>";
+				    this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsMaxColor) + ">/" + this.m_TalentInfo.maxPoints.ToString() + "</color>";
+			    }
+			    // Assigned but not maxed
+			    else if (this.m_CurrentPoints > 0 && this.m_CurrentPoints < this.m_TalentInfo.maxPoints)
+			    {
+				    this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsMinColor) + ">" + this.m_CurrentPoints.ToString() + "</color>";
+				    this.m_PointsText.text += "<color=#" + CommonColorBuffer.ColorToString(this.m_pointsMaxColor) + ">/" + this.m_TalentInfo.maxPoints.ToString() + "</color>";
+			    }
+			    // Maxed
+			    else
+			    {
+				    this.m_PointsText.text += 	"<color=#" + CommonColorBuffer.ColorToString(this.m_pointsActiveColor) + ">" + 
+											    this.m_CurrentPoints.ToString() + "/" + 
+											    this.m_TalentInfo.maxPoints.ToString() + "</color>";
+			    }
+            }
+            Talents talents =  ((Talents)GameObject.Find("Talents").GetComponent(typeof(Talents)));
+            if (!talents.calculatePoints()) {
+                AddPoints(-1);
+            }
+        }
 		
 		/// <summary>
 		/// Unassign this slot.
@@ -176,7 +185,7 @@ namespace UnityEngine.UI
 			}
 				
 			// Check if the talent is maxed
-			if (this.m_CurrentPoints >= this.m_TalentInfo.maxPoints)
+			if (this.m_TalentInfo.maxPoints > 0 && this.m_CurrentPoints >= this.m_TalentInfo.maxPoints)
 				return;
 			
 			// Increase the points
@@ -218,13 +227,17 @@ namespace UnityEngine.UI
 			if (this.m_CurrentPoints < 0)
 				this.m_CurrentPoints = 0;
 			
-			if (this.m_CurrentPoints > this.m_TalentInfo.maxPoints)
+			if (this.m_TalentInfo.maxPoints > 0 && this.m_CurrentPoints > this.m_TalentInfo.maxPoints)
 				this.m_CurrentPoints = this.m_TalentInfo.maxPoints;
 			
 			// Update the label string
 			this.UpdatePointsLabel();
 		}
 		
+        public int getCurrentPoints() {
+            return m_CurrentPoints;
+        }
+
 		/// <summary>
 		/// Raises the tooltip event.
 		/// </summary>

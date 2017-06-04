@@ -13,71 +13,119 @@ public class Talents : MonoBehaviour {
     public Button saveButton;
     public GameObject talentsHolder;
     public GameObject talentsUiPrefab;
+
+    public GameObject generalContent;
+    public GameObject spell1Content;
+
+    public int totalPoints = 10;
+    public Text pointsLeft;
+
     private List<Talent> talents = new List<Talent>();
     private List<Ability> abilities = new List<Ability>();
-    public int totalPoints = 10;
     private int calculationOfPoints = 0;
-    public Text pointsLeft;
 
     // Use this for initialization
     void Start () {
-        generalButton.onClick.AddListener(generalButtonClick);
-        spell1Button.onClick.AddListener(spell1ButtonClick);
-        spell2Button.onClick.AddListener(spell2ButtonClick);
-        saveButton.onClick.AddListener(save);
-        
+        //generalButton.onClick.AddListener(generalButtonClick);
+        //spell1Button.onClick.AddListener(spell1ButtonClick);
+        //spell2Button.onClick.AddListener(spell2ButtonClick);
+        //saveButton.onClick.AddListener(save);
+        refresh();
+
     }
 
     // Update is called once per frame
     void Update () {
+        calculatePoints();
     }
 
 
     public void refresh() {
-        Hero hero = getGameLogic().getMyHero();
+        //Hero hero = getGameLogic().getMyHero();
+        Hero hero = null;
         if (hero != null) {
             abilities = getGameLogic().getAbilities();
             talents = hero.talents;
             totalPoints = hero.getTotalTalentPoints();
         }
+        totalPoints = 10;
+        talents = new List<Talent>();
+        Talent talent = new Talent();
+        talent.setId(2);
+        talent.setTalentId(2);
+        talent.setDescription("Increase hp");
+        talent.setSpellId(0);
+        talents.Add(talent);
+        Talent talent2 = new Talent();
+        talent2.setId(1);
+        talent2.setTalentId(1);
+        talent2.setDescription("Reduce cooldown");
+        talent2.setSpellId(1);
+        talents.Add(talent2);
 
-        setUpMenu();
-
+        abilities = new List<Ability>();
+        Ability general = new Ability();
+        general.id = 0;
+        general.image = null;
+        abilities.Add(general);
+        Ability ability = new Ability();
+        ability.id = 1;
+        ability.image = "cleave";
+        abilities.Add(ability);
+        
         showTalentTree(0);
+        showTalentTree(1);
 
-        calculatePoints();
-    }
-
-    private void setUpMenu() {
-        int i = 0;
-        foreach (var ability in abilities) {
-            Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/" + ability.image);
-            if (i == 0) {
-
-            }else if (i == 1) {
-                spell1Button.GetComponent<Image>().sprite = abilitySprite;
-            } else if (i == 2) {
-                spell2Button.GetComponent<Image>().sprite = abilitySprite;
-            }
-            i++;
-        }
     }
     
+
+    void showTalentTree(int spellId) {
+        foreach (var talent in talents) {
+            if (talent.spellId == spellId) {
+                Destroy(talent.getGameObject());
+            }
+        }
+        foreach (var talent in talents) {
+            if (talent.spellId == spellId) {
+                addTalent(talent);
+            }
+        }
+    }
+
     void addTalent(Talent talent) {
+        Debug.Log("Adding talent : " + talent.description + " id : " + talent.id + " for spell " + talent.spellId);
         var talentHolder = Instantiate(talentsUiPrefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
-        talent.setGameObject(talentHolder);
-        talentHolder.transform.SetParent(talentsHolder.transform, false);
+        
+        if (talent.spellId == 0) {
+            talentHolder.transform.SetParent(generalContent.transform, false);
+        } else if (talent.spellId == 1) {
+            talentHolder.transform.SetParent(spell1Content.transform, false);
+        }
+        
         updateTalent(talent);
+
         foreach (var textHolder in talentHolder.GetComponentsInChildren<Text>()) {
-            if (textHolder.name == "Description") {
+            if (textHolder.name == "Spell Name Text") {
                 textHolder.text = talent.description;
             } else if (textHolder.name == "Points") {
                 textHolder.text = "" + talent.pointAdded;
             }
         }
-        foreach (var buttonHolder in talentHolder.GetComponentsInChildren<Button>()) {
-            buttonHolder.onClick.AddListener(delegate { addPoint(talent.id); });
+
+        foreach (var buttonHolder in talentHolder.GetComponentsInChildren<Image>()) {
+            if (buttonHolder.name.Equals("Talent Slot")) {
+                UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
+                UISpellInfo spInfo = new UISpellInfo();
+                spInfo.ID = talent.spellId;
+                spInfo.Icon = Resources.Load<Sprite>("sprites/items/taunt");
+                UITalentInfo taInfo = new UITalentInfo();
+                taInfo.ID = talent.id;
+                taInfo.maxPoints = 10;
+                Debug.Log("Assigned : " + script.Assign(taInfo, spInfo));
+            }
         }
+
+        talent.setGameObject(talentHolder);
     }
 
     void updateTalent(Talent talent) {
@@ -103,44 +151,49 @@ public class Talents : MonoBehaviour {
         calculatePoints();
     }
 
-    private void calculatePoints() {
+    public bool calculatePoints() {
         calculationOfPoints = 0;
         foreach (var talent in talents) {
-            calculationOfPoints = calculationOfPoints + talent.pointAdded;
-        }
-        pointsLeft.text = "Points left: " + (totalPoints - calculationOfPoints);
-    }
-
-    void showTalentTree(int spellId) {
-        foreach (var talent in talents) {
-            Destroy(talent.getGameObject());
-        }
-        foreach (var talent in talents) {
-            if (talent.spellId == spellId) {
-                addTalent(talent);
+            if (talent.getGameObject() != null) {
+                foreach (var buttonHolder in talent.getGameObject().GetComponentsInChildren<Image>()) {
+                    if (buttonHolder.name.Equals("Talent Slot")) {
+                        UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
+                        //Debug.Log("We found UiTalentSlot : " + script.getCurrentPoints() + " For talent " + talent.id);
+                        talent.setPointAdded(script.getCurrentPoints());
+                        calculationOfPoints = calculationOfPoints + talent.pointAdded;
+                    }
+                }
             }
         }
-    }
-
-    void save() {
-        foreach (var talent in talents) {
-            Debug.Log("Saving this talent : " + talent.description + " points : " + talent.pointAdded);
+        if ((totalPoints - calculationOfPoints) >= 0) {
+            pointsLeft.text = "Points left: " + (totalPoints - calculationOfPoints);
+            return true;
+        } else {
+            return false;
         }
+    }
+    
+
+    public void saveTalents() {
+        Debug.Log("Saving talents");
+
+        foreach (var talent in talents) {
+            foreach (var buttonHolder in talent.getGameObject().GetComponentsInChildren<Image>()) {
+                if (buttonHolder.name.Equals("Talent Slot")) {
+                    UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
+                    Debug.Log("We found UiTalentSlot : " + script.getCurrentPoints() + " For talent " + talent.id);
+                    talent.setPointAdded(script.getCurrentPoints());
+                }
+            }
+        }
+
+
         gameObject.SetActive(false);
     }
 
-    void generalButtonClick() {
-        showTalentTree(0);
+    public void dismissWindow() {
+        gameObject.SetActive(false);
     }
-
-    void spell1ButtonClick() {
-        showTalentTree(abilities[1].id);
-    }
-
-    void spell2ButtonClick() {
-        showTalentTree(abilities[2].id);
-    }
-
 
 
 
