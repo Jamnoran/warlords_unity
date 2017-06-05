@@ -147,8 +147,11 @@ namespace UnityEngine.UI
 											    this.m_TalentInfo.maxPoints.ToString() + "</color>";
 			    }
             }
-            Talents talents =  ((Talents)GameObject.Find("Talents").GetComponent(typeof(Talents)));
-            if (!talents.calculatePoints()) {
+            Talents talents = null;
+            if (GameObject.Find("Talents") != null) {
+                talents = ((Talents)GameObject.Find("Talents").GetComponent(typeof(Talents)));
+            }
+            if (talents != null && !talents.calculatePoints()) {
                 AddPoints(-1);
             }
         }

@@ -30,7 +30,7 @@ public class Talents : MonoBehaviour {
         //spell1Button.onClick.AddListener(spell1ButtonClick);
         //spell2Button.onClick.AddListener(spell2ButtonClick);
         //saveButton.onClick.AddListener(save);
-        refresh();
+        //refresh();
 
     }
 
@@ -41,9 +41,21 @@ public class Talents : MonoBehaviour {
 
 
     public void refresh() {
+        Debug.Log("Refreshing the talents");
+        abilities = getGameLogic().getAbilities();
+        talents = getGameLogic().getMyHero().talents;
+        totalPoints = getGameLogic().getMyHero().getTotalTalentPoints();
+
+        showTalentTree(0);
+        showTalentTree(1);
+    }
+
+    void generateTempAbilities()
+    {
         //Hero hero = getGameLogic().getMyHero();
         Hero hero = null;
-        if (hero != null) {
+        if (hero != null)
+        {
             abilities = getGameLogic().getAbilities();
             talents = hero.talents;
             totalPoints = hero.getTotalTalentPoints();
@@ -72,12 +84,12 @@ public class Talents : MonoBehaviour {
         ability.id = 1;
         ability.image = "cleave";
         abilities.Add(ability);
-        
+
         showTalentTree(0);
         showTalentTree(1);
 
     }
-    
+
 
     void showTalentTree(int spellId) {
         foreach (var talent in talents) {
@@ -93,7 +105,7 @@ public class Talents : MonoBehaviour {
     }
 
     void addTalent(Talent talent) {
-        Debug.Log("Adding talent : " + talent.description + " id : " + talent.id + " for spell " + talent.spellId);
+        Debug.Log("Adding talent : " + talent.description + " id : " + talent.talentId + " for spell " + talent.spellId);
         var talentHolder = Instantiate(talentsUiPrefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
         
         if (talent.spellId == 0) {
@@ -119,7 +131,7 @@ public class Talents : MonoBehaviour {
                 spInfo.ID = talent.spellId;
                 spInfo.Icon = Resources.Load<Sprite>("sprites/items/taunt");
                 UITalentInfo taInfo = new UITalentInfo();
-                taInfo.ID = talent.id;
+                taInfo.ID = talent.talentId;
                 taInfo.maxPoints = 10;
                 Debug.Log("Assigned : " + script.Assign(taInfo, spInfo));
             }
@@ -140,17 +152,7 @@ public class Talents : MonoBehaviour {
             }
         }
     }
-
-    void addPoint(int talentId) {
-        foreach (var talent in talents) {
-            if (talent.id.Equals(talentId)) {
-                talent.pointAdded = talent.pointAdded + 1;
-                updateTalent(talent);
-            }
-        }
-        calculatePoints();
-    }
-
+    
     public bool calculatePoints() {
         calculationOfPoints = 0;
         foreach (var talent in talents) {
@@ -158,7 +160,7 @@ public class Talents : MonoBehaviour {
                 foreach (var buttonHolder in talent.getGameObject().GetComponentsInChildren<Image>()) {
                     if (buttonHolder.name.Equals("Talent Slot")) {
                         UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
-                        //Debug.Log("We found UiTalentSlot : " + script.getCurrentPoints() + " For talent " + talent.id);
+                        //Debug.Log("We found UiTalentSlot : " + script.getCurrentPoints() + " For talent " + talent.talentId);
                         talent.setPointAdded(script.getCurrentPoints());
                         calculationOfPoints = calculationOfPoints + talent.pointAdded;
                     }
@@ -178,15 +180,23 @@ public class Talents : MonoBehaviour {
         Debug.Log("Saving talents");
 
         foreach (var talent in talents) {
-            foreach (var buttonHolder in talent.getGameObject().GetComponentsInChildren<Image>()) {
-                if (buttonHolder.name.Equals("Talent Slot")) {
-                    UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
-                    Debug.Log("We found UiTalentSlot : " + script.getCurrentPoints() + " For talent " + talent.id);
-                    talent.setPointAdded(script.getCurrentPoints());
+            if (talent.getGameObject() != null)
+            {
+                foreach (var buttonHolder in talent.getGameObject().GetComponentsInChildren<Image>()) {
+                    if (buttonHolder.name.Equals("Talent Slot")) {
+                        UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
+                        Debug.Log("We found UiTalentSlot : " + script.getCurrentPoints() + " For talent " + talent.talentId);
+                        talent.setPointAdded(script.getCurrentPoints());
+                    }
                 }
+            }
+            else
+            {
+                Debug.Log("Talent had no gameObject, why? " + talent.description);
             }
         }
 
+        getCommunication().updateTalents(talents);
 
         gameObject.SetActive(false);
     }
@@ -198,6 +208,10 @@ public class Talents : MonoBehaviour {
 
 
 
+    ServerCommunication getCommunication()
+    {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
 
     GameLogic getGameLogic() {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));

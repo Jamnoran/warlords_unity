@@ -126,17 +126,10 @@ public class ServerCommunication : MonoBehaviour {
         sendRequest(new RequestAbilityPosition(getHeroId(), abilityId, position));
     }
 
-
-
-    private long getMillis() {
-        DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
+    public void updateTalents(List<Talent> updatedListOfTalents)
+    {
+        Debug.Log("Sending update talents to server");
     }
-
-
-
-
-
 
 
 
@@ -285,6 +278,14 @@ public class ServerCommunication : MonoBehaviour {
 
 
 
+
+    private long getMillis()
+    {
+        DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
+    }
+
+   
     void handleCommunication() {
         // Handle communication sent from server to client (this can be a response of a request we have sent or status message etc.)
         if (socketConnection != null)

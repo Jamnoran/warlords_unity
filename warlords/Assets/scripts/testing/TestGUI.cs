@@ -27,25 +27,28 @@ public class TestGUI : MonoBehaviour {
 
 
         //// Handle auto attack, this sets a flag on the hero
-        //if (getGameLogic().isMyHeroAlive() && !getChat().inputVisible) {
-        //    if (Input.GetKeyUp("a")) {
-        //        bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
-        //        Debug.Log("Hero is now attacking : " + !autoAttacking);
-        //        getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
-        //    }else if (Input.GetKeyUp("s")) {
-        //        getCommunication().sendStopHero(getGameLogic().getMyHero().id);
-        //    } else if (Input.GetKeyUp("v")) {
-        //        getCommunication().updateAbilityPosition(8,2);
-        //    }else if (Input.GetKeyDown("t")) {
-        //        getTalentScript().refresh();
-        //        talents.SetActive(true);
-        //    }
+        if (getGameLogic().isMyHeroAlive() && !isChatVisible()) {
+            if (Input.GetKeyUp("a")) {
+                bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
+                Debug.Log("Hero is now attacking : " + !autoAttacking);
+                getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
+            }else if (Input.GetKeyUp("s")) {
+                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+            }else if (Input.GetKeyDown("t")) {
+                Debug.Log("Showing talents");
+                getTalentScript().refresh();
+                talents.SetActive(true);
+            }
+        }
+        if (Input.GetKeyDown("escape")) {
+            isShowing = !isShowing;
+        }
+    }
 
-
-        //}
-        //if (Input.GetKeyDown("escape")) {
-        //    isShowing = !isShowing;
-        //}
+    bool isChatVisible()
+    {
+        // return !getChat().inputVisible;
+        return false;
     }
 
     void OnGUI() {
@@ -116,7 +119,10 @@ public class TestGUI : MonoBehaviour {
     }
 
     Chat getChat() {
-        return ((Chat)chat.GetComponent(typeof(Chat)));
+        if (chat != null && chat.GetComponent(typeof(Chat)) != null) {
+            return ((Chat)chat.GetComponent(typeof(Chat)));
+        }
+        return null;
     }
 
     ServerCommunication getCommunication() {
