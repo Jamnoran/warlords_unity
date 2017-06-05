@@ -36,8 +36,12 @@ public class TestGUI : MonoBehaviour {
                 getCommunication().sendStopHero(getGameLogic().getMyHero().id);
             }else if (Input.GetKeyDown("t")) {
                 Debug.Log("Showing talents");
-                getTalentScript().refresh();
-                talents.SetActive(true);
+                if (!talents.active) {
+                    getTalentScript().refresh();
+                    talents.SetActive(true);
+                } else {
+                    talents.SetActive(false);
+                }
             }
         }
         if (Input.GetKeyDown("escape")) {

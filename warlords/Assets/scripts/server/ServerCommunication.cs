@@ -129,6 +129,7 @@ public class ServerCommunication : MonoBehaviour {
     public void updateTalents(List<Talent> updatedListOfTalents)
     {
         Debug.Log("Sending update talents to server");
+        sendRequest(new RequestTalents(getHeroId(), updatedListOfTalents));
     }
 
 
