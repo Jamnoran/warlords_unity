@@ -24,7 +24,9 @@ namespace Assets.scripts.vo
         public String timeWhenOffCooldown = "0";
         public bool waitingForCdResponse = false;
         public int position = 0;
-        public long castTime;
+        public int castTime = 0;
+        public int calculatedCastTime = 0;
+        public bool isCasting = false;
 
         public bool isReady() {
             if (waitingForCdResponse || (timeWhenOffCooldown != null && !timeWhenOffCooldown.Equals("") && (long.Parse(timeWhenOffCooldown) >= getMillis()))) {
