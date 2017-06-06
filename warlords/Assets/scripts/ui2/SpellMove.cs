@@ -323,7 +323,10 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
     //use overloaded method to save spell to spellbook
     private void savePositionToDb()
     {
-        getCommunication().updateAbilityPosition(abilities[spell].id, 0);
+        if (getCommunication() != null)
+        {
+            getCommunication().updateAbilityPosition(abilities[spell].id, 0);
+        }
     }
 
     private void savePositionToDb(int position)

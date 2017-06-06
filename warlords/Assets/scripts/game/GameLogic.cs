@@ -24,6 +24,7 @@ public class GameLogic : MonoBehaviour
     // Animation Effects
     public Transform healAnimation;
     public Transform tauntAnimation;
+    public Transform shieldAnimation;
 
     private List<Ability> abilities = null;
 
@@ -269,6 +270,13 @@ public class GameLogic : MonoBehaviour
                 Debug.Log("Taunt animnation");
                 Hero source = getHero(gameAnimation.source_id);
                 Instantiate(tauntAnimation, new Vector3(source.positionX, 0.3f, source.positionZ), Quaternion.identity);
+            }
+
+            if (gameAnimation.animation_type == "SHIELD")
+            {
+                Debug.Log("Shielding hero " + gameAnimation.target_id);
+                Hero target = getHero(gameAnimation.target_id);
+                Instantiate(shieldAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
             }
         }
     }
