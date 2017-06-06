@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.scripts.vo;
 
 public class GenericCastbar : MonoBehaviour {
 
@@ -20,6 +21,14 @@ public class GenericCastbar : MonoBehaviour {
     private bool isCasting;
     private float castTime;
     private float timeLeft;
+
+    private Ability ability1;
+    private Ability ability2;
+    private Ability ability3;
+    private Ability ability4;
+    private Ability ability5;
+    private Ability ability6;
+    private Ability ability7;
 
     private void Start()
     {
@@ -109,13 +118,15 @@ public class GenericCastbar : MonoBehaviour {
             enemies.Add(getGameLogic().getMyHero().targetEnemy);
             List<int> friends = new List<int>();
             friends.Add(getGameLogic().getMyHero().targetFriendly);
-            getGameLogic().sendSpell((int)getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friends);
+            getGameLogic().sendSpell(getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friends);
         }
         else
         {
             Debug.Log("No spell assigned to ");
         }
     }
+
+    
 
     GameLogic getGameLogic()
     {
