@@ -132,6 +132,12 @@ public class ServerCommunication : MonoBehaviour {
         sendRequest(new RequestTalents(getHeroId(), updatedListOfTalents));
     }
 
+    
+    public void selfDamage()
+    {
+        print("Sending self damage");
+        writeSocket("{\"request_type\": \"SELF_DAMAGE\", hero_id:\"" + getHeroId() + "\"}");
+    }
 
 
 
@@ -199,9 +205,6 @@ public class ServerCommunication : MonoBehaviour {
             } else if (responseType == "STOP_HERO")  {
                 ResponseStopHero responseStopHero = JsonMapper.ToObject<ResponseStopHero>(json);
                 getGameLogic().stopHero(responseStopHero.hero);
-            } else if (responseType == "HERO_BUFF")  {
-                ResponseHeroBuff responseHeroBuff = JsonMapper.ToObject<ResponseHeroBuff>(json);
-                getGameLogic().handleHeroBuff(responseHeroBuff);
             } else if (responseType == "TALENTS") {
                 ResponseTalents response = JsonMapper.ToObject<ResponseTalents>(json);
                 getGameLogic().setTalents(response);

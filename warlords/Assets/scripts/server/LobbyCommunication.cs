@@ -18,6 +18,7 @@ public class LobbyCommunication : MonoBehaviour {
 	public int heroId = 1;
 
     public Boolean local = false;
+    public int portForLocal = 2080;
 
 	private ResponseLobbys responseLobbys;
 
@@ -141,7 +142,15 @@ public class LobbyCommunication : MonoBehaviour {
 
                 ResponseGameFound responseGameFound = JsonMapper.ToObject<ResponseGameFound> (json);
 				Debug.Log ("Response game found: " + responseGameFound.toString ());
-                getCommunication().connectToServer(responseGameFound.server_ip, responseGameFound.server_port, responseGameFound.game_id);
+                if (!local)
+                {
+                    getCommunication().connectToServer(responseGameFound.server_ip, responseGameFound.server_port, responseGameFound.game_id);
+                }
+                else
+                {
+                    getCommunication().connectToServer("127.0.0.1", portForLocal, "0");
+                }
+                
             } else if (responseType == "LFG_RESPONSE") {
                 ResponseLFG responseLFG = JsonMapper.ToObject<ResponseLFG>(json);
                 Debug.Log("Response game found: " + responseLFG.ToString());
@@ -204,7 +213,7 @@ public class LobbyCommunication : MonoBehaviour {
 
 	public void connectToServer(String ip, int port) {
 		Debug.Log("Client Started");
-		socketConnection = new SocketConnection (ip, port, local);
+		socketConnection = new SocketConnection (ip, port, false);
 	}
 
 

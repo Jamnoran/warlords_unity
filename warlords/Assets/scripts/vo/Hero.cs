@@ -47,13 +47,19 @@ namespace Assets.scripts.vo
 
         public void update() {
             if (buffs != null && buffs.Count > 0) {
-                foreach (var buff in buffs) {
-                    if ((buff.millisBuffStarted + buff.durationMillis) < DeviceUtil.getMillis()) {
+                for (int i = 0; i < buffs.Count; i++) {
+                    ResponseHeroBuff buff = buffs[i];
+                    if ((buff.millisBuffStarted + buff.duration) < DeviceUtil.getMillis()) {
                         int type = buff.type;
-                        buffs.Remove(buff);
                         if (type == Buff.SPEED) {
                             calculateSpeed();
+                        }else if (type == Buff.SHIELD)
+                        {
+                            Debug.Log("Removing shield for hero " + id);
+                            ShieldLogic shieldLogic = (ShieldLogic)trans.GetComponent(typeof(ShieldLogic));
+                            shieldLogic.setVisibility(false);
                         }
+                        buffs.Remove(buff);
                     }
                 }
             }

@@ -11,8 +11,9 @@ public class ResponseHeroBuff
     public int minionId;
     public int type;
     public float value;
-    public int durationMillis;
+    public int duration;
     public long millisBuffStarted;
+
 
     public ResponseHeroBuff() { }
     
@@ -21,9 +22,10 @@ public class ResponseHeroBuff
                 "response_type='" + response_type + '\'' +
                 ", heroId=" + heroId +
                 ", minionId=" + minionId +
+                ", millisBuffStarted=" + millisBuffStarted +
                 ", type=" + type +
                 ", value=" + value +
-                ", durationMillis=" + durationMillis +
+                ", duration=" + duration +
                 '}';
     }
 }

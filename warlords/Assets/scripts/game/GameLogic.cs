@@ -151,51 +151,102 @@ public class GameLogic : MonoBehaviour
     }
 
     public void updateListOfHeroes(List<Hero> newHeroes) {
-        int heroid = getLobbyCommunication().heroId;
         foreach (var newHero in newHeroes) {
-            bool found = false;
-            foreach (var hero in heroes) {
-                if (newHero.id == hero.id) {
-                    found = true;
-                    hero.setHp(newHero.hp);
-                    hero.xp = newHero.xp;
-                    hero.level = newHero.level;
-                    hero.resource = newHero.resource;
-                    // Dont change desired position for own hero
-                    if (hero.id != heroid) {
-                        //Debug.Log("Changing position for hero : " + hero.id + " To x[" + newHero.desiredPositionX + "] Z[" + newHero.desiredPositionZ + "]");
-                        hero.desiredPositionX = newHero.desiredPositionX;
-                        hero.desiredPositionZ = newHero.desiredPositionZ;
-                        Vector3 target = new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ);
-                        CharacterAnimations animation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
-                        animation.setDesiredLocation(target);
-                    }
-                    hero.positionX = newHero.positionX;
-                    hero.positionZ = newHero.positionZ;
+            updateHero(newHero);
+        }
+    }
 
+    void updateHero(Hero newHero)
+    {
+        int heroid = getLobbyCommunication().heroId;
+        bool found = false;
+        foreach (var hero in heroes)
+        {
+            if (newHero.id == hero.id)
+            {
+                found = true;
+                hero.setHp(newHero.hp);
+                hero.xp = newHero.xp;
+                hero.level = newHero.level;
+                hero.resource = newHero.resource;
+                // Dont change desired position for own hero
+                if (hero.id != heroid)
+                {
+                    hero.desiredPositionX = newHero.desiredPositionX;
+                    hero.desiredPositionZ = newHero.desiredPositionZ;
+                    Vector3 target = new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ);
+                    CharacterAnimations animation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
+                    animation.setDesiredLocation(target);
                 }
-            }
-            if (!found) {
-                // Initiate hero here
-                Debug.Log("Initiate Hero");
-                Transform prefabToUse = warrior;
-                if (newHero.class_type == "PRIEST") {
-                    prefabToUse = priest;
-                }
-                Transform heroTransform = (Transform) Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ), Quaternion.identity);
-                heroTransform.name = prefabToUse.name;
-                newHero.setTrans(heroTransform);
-                if (newHero.id == heroid) {
-                    Debug.Log("Setting hero id: " + newHero.id + " To my own hero");
-                    ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
-                    newHero.updateHealthBar(true);
-                }
-                ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
-                heroes.Add(newHero);
-                //set initial health for hero
-                newHero.initBars();
+                hero.positionX = newHero.positionX;
+                hero.positionZ = newHero.positionZ;
+
+                updateHeroBuffs(newHero, hero);
             }
         }
+        if (!found)
+        {
+            initiateHero(newHero);
+        }
+    }
+
+    void updateHeroBuffs(Hero newHero, Hero hero)
+    {
+        List<ResponseHeroBuff> oldBuffs = hero.buffs;
+        hero.buffs = newHero.buffs;
+        foreach (var buff in newHero.buffs)
+        {
+            foreach (var oldbuff in oldBuffs)
+            {
+                if (buff.type == oldbuff.type)
+                {
+                    buff.millisBuffStarted = oldbuff.millisBuffStarted;
+                }
+            }
+            if (buff.millisBuffStarted == 0)
+            {
+                buff.millisBuffStarted = DeviceUtil.getMillis();
+            }
+            if (buff.type == Buff.SHIELD)
+            {
+                ShieldLogic shieldLogic = (ShieldLogic)hero.trans.GetComponent(typeof(ShieldLogic));
+                if (!shieldLogic.shieldOn)
+                {
+                    Debug.Log("Shielding hero " + hero.id);
+                    shieldLogic.setVisibility(true);
+                }
+            }
+            if (buff.type == Buff.SPEED)
+            {
+                hero.calculateSpeed();
+                hero.setAutoAttacking(true);
+            }
+        }
+    }
+
+    void initiateHero(Hero newHero)
+    {
+        int heroid = getLobbyCommunication().heroId;
+        // Initiate hero here
+        Debug.Log("Initiate Hero");
+        Transform prefabToUse = warrior;
+        if (newHero.class_type == "PRIEST")
+        {
+            prefabToUse = priest;
+        }
+        Transform heroTransform = (Transform)Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ), Quaternion.identity);
+        heroTransform.name = prefabToUse.name;
+        newHero.setTrans(heroTransform);
+        if (newHero.id == heroid)
+        {
+            Debug.Log("Setting hero id: " + newHero.id + " To my own hero");
+            ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
+            newHero.updateHealthBar(true);
+        }
+        ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
+        heroes.Add(newHero);
+        //set initial health for hero
+        newHero.initBars();
     }
 
     internal void setTalents(ResponseTalents response) {
@@ -274,35 +325,12 @@ public class GameLogic : MonoBehaviour
 
             if (gameAnimation.animation_type == "SHIELD")
             {
-                Debug.Log("Shielding hero " + gameAnimation.target_id);
-                Hero target = getHero(gameAnimation.target_id);
-                Instantiate(shieldAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
+                // Do we need spell animation perhaps?
             }
         }
     }
 
-
-
-    public void handleHeroBuff(ResponseHeroBuff responseHeroBuff) {
-        Hero hero;
-       // Minion minion;
-
-        hero = getHero(responseHeroBuff.heroId);
-        responseHeroBuff.millisBuffStarted = DeviceUtil.getMillis();
-        hero.buffs.Add(responseHeroBuff);
-
-        if (responseHeroBuff.minionId > 0 ) {
-            //minion = getMinion(responseHeroBuff.minionId);
-        }
-        if (responseHeroBuff.type == Buff.SPEED) {
-            hero.calculateSpeed();
-            if (!hero.getAutoAttacking()) {
-                hero.setAutoAttacking(true);
-            }
-        }
-    }
-
-
+    
     public void stopHero(int heroId) {
         Debug.Log("Stopping hero.");
         Hero hero = getHero(heroId);

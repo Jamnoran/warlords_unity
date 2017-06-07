@@ -42,6 +42,9 @@ public class TestGUI : MonoBehaviour {
                 } else {
                     talents.SetActive(false);
                 }
+            }else if (Input.GetKeyUp("l")) // L
+            {
+                getCommunication().selfDamage();
             }
         }
         if (Input.GetKeyDown("escape")) {
