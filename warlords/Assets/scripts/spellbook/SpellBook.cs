@@ -30,7 +30,7 @@ public class SpellBook : MonoBehaviour {
         spellbookPanel = GameObject.Find("Spellbook Panel");
         spellBookOriginalPosition = spellbookPanel.transform.position;
         //Grab the slot panel that holds the slots for all abilities
-        slotPanel = spellbookPanel.transform.FindChild("Slot Panel").gameObject;
+        slotPanel = spellbookPanel.transform.Find("Slot Panel").gameObject;
 
       
         //Loop trough the ammount of slots we want and fill the list with spellbook slots
