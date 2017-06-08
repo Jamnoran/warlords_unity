@@ -218,6 +218,7 @@ public class GameLogic : MonoBehaviour
             }
             if (buff.type == Buff.SPEED)
             {
+                Debug.Log("Buff speed! Calculating new speed");
                 hero.calculateSpeed();
                 hero.setAutoAttacking(true);
             }
@@ -280,7 +281,7 @@ public class GameLogic : MonoBehaviour
             }
             if (gameAnimation.animation_type == "HERO_RUN")
             {
-                Debug.Log("Run animation");
+                //Debug.Log("Run animation");
                 //Minion minion = getMinion(gameAnimation.target_id);
                 Hero target = getHero(gameAnimation.source_id);
                 CharacterAnimations anim = (CharacterAnimations)target.trans.GetComponent(typeof(CharacterAnimations));

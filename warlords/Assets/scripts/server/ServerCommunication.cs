@@ -311,7 +311,10 @@ public class ServerCommunication : MonoBehaviour {
 
     public void writeSocket(string request)
     {
-        Debug.Log("Sending this request: " + request);
+        if (!request.Contains("\"request_type\": \"MOVE\""))
+        {
+            Debug.Log("Sending this request: " + request);
+        }
         socketConnection.writeSocket(request);
     }
 

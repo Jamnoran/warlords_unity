@@ -72,7 +72,7 @@ public class Target : MonoBehaviour {
             float dist = Vector3.Distance(minionPosition, targetPosition);
 
             if ((dist < closestDistanse) && dist <= MinTargetDistance) {
-                print("Minion is closest at a distance at: " + dist);
+                //print("Minion is closest at a distance at: " + dist);
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetEnemy(minion.id);
                 closestDistanse = dist;
             }
@@ -82,7 +82,7 @@ public class Target : MonoBehaviour {
             float dist = Vector3.Distance(heroPosition, targetPosition);
             //Debug.Log("Class: " + hero.class_type + " Distance from click [" + targetPosition.x + "x"  + targetPosition.z + "] is: " + dist);
             if ((dist < closestDistanse) && dist <= MinTargetDistance) {
-                print("Hero is closest at a distance at: " + dist);
+                //print("Hero is closest at a distance at: " + dist);
                 ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetFriendly(hero.id);
                 closestDistanse = dist;
             }

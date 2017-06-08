@@ -11,6 +11,11 @@ public class CharacterAnimations : MonoBehaviour {
     public float rotateSpeed = 3.0F;
     public bool sentStopAnimation = false;
 
+    int grounded = 0;
+    float slopefix = 8.0f;
+
+    public bool isGrounded = false;
+
 	// Use this for initialization
 	void Start () {
         anim = character.GetComponent<Animator>();
@@ -35,9 +40,16 @@ public class CharacterAnimations : MonoBehaviour {
             CharacterController controller = (CharacterController)GetComponent(typeof(CharacterController));
             controller.SimpleMove(velocity);
 
+   
 
-            //if we are at the desired position we must stop moving
-            if (Vector3.Distance(character.transform.position, targetPosition) < 0.2f) {
+
+
+
+
+
+
+        //if we are at the desired position we must stop moving
+        if (Vector3.Distance(character.transform.position, targetPosition) < 0.2f) {
                 isMoving = false;
             }
 

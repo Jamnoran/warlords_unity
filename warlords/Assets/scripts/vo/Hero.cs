@@ -46,22 +46,37 @@ namespace Assets.scripts.vo
         }
 
         public void update() {
-            if (buffs != null && buffs.Count > 0) {
-                for (int i = 0; i < buffs.Count; i++) {
+            ShieldLogic shieldLogic = (ShieldLogic)trans.GetComponent(typeof(ShieldLogic));
+            if (buffs != null && buffs.Count > 0) 
+            {
+                for (int i = 0; i < buffs.Count; i++) 
+                {
                     ResponseHeroBuff buff = buffs[i];
-                    if ((buff.millisBuffStarted + buff.duration) < DeviceUtil.getMillis()) {
+                    if ((buff.millisBuffStarted + buff.duration) < DeviceUtil.getMillis())
+                    {
+                        buffs.Remove(buff);
                         int type = buff.type;
-                        if (type == Buff.SPEED) {
+                        if (type == Buff.SPEED) 
+                        {
                             calculateSpeed();
                         }else if (type == Buff.SHIELD)
                         {
                             Debug.Log("Removing shield for hero " + id);
-                            ShieldLogic shieldLogic = (ShieldLogic)trans.GetComponent(typeof(ShieldLogic));
                             shieldLogic.setVisibility(false);
                         }
-                        buffs.Remove(buff);
                     }
                 }
+            } else 
+            {
+                // Remove all buffs if they are visible
+
+                // Handle shield
+                if (shieldLogic != null && shieldLogic.shieldOn) {
+                    shieldLogic.setVisibility(false);
+                }
+
+                // Handle speed buff
+                calculateSpeed();
             }
         }
 
