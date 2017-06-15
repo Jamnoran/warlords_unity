@@ -241,11 +241,17 @@ namespace UnityEngine.UI
             return m_CurrentPoints;
         }
 
-		/// <summary>
-		/// Raises the tooltip event.
-		/// </summary>
-		/// <param name="show">If set to <c>true</c> show.</param>
-		public override void OnTooltip(bool show)
+
+        public void setCurrentPoints(int points)
+        {
+            m_CurrentPoints = points;
+        }
+
+        /// <summary>
+        /// Raises the tooltip event.
+        /// </summary>
+        /// <param name="show">If set to <c>true</c> show.</param>
+        public override void OnTooltip(bool show)
 		{
 			// Make sure we have spell info, otherwise game might crash
 			if (this.m_SpellInfo == null)

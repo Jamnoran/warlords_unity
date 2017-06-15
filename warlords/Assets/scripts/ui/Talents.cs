@@ -105,7 +105,7 @@ public class Talents : MonoBehaviour {
     }
 
     void addTalent(Talent talent) {
-        Debug.Log("Adding talent : " + talent.description + " id : " + talent.talentId + " for spell " + talent.spellId);
+        Debug.Log("Adding talent : " + talent.description + " id : " + talent.talentId + " for spell " + talent.spellId + " Points added : " + talent.getPointAdded());
         var talentHolder = Instantiate(talentsUiPrefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
         
         if (talent.spellId == 0) {
@@ -123,6 +123,7 @@ public class Talents : MonoBehaviour {
                 textHolder.text = "" + talent.pointAdded;
             }
         }
+        
 
         foreach (var buttonHolder in talentHolder.GetComponentsInChildren<Image>()) {
             if (buttonHolder.name.Equals("Talent Slot")) {
@@ -132,7 +133,10 @@ public class Talents : MonoBehaviour {
                 spInfo.Icon = Resources.Load<Sprite>("sprites/items/taunt");
                 UITalentInfo taInfo = new UITalentInfo();
                 taInfo.ID = talent.talentId;
-                taInfo.maxPoints = 10;
+                taInfo.maxPoints = talent.getMaxPoints();
+
+                script.setCurrentPoints(talent.getPointAdded());
+
                 Debug.Log("Assigned : " + script.Assign(taInfo, spInfo));
             }
         }
@@ -178,7 +182,7 @@ public class Talents : MonoBehaviour {
 
     public void saveTalents() {
         Debug.Log("Saving talents");
-
+        List<Talent> talentsToSend = new List<Talent>();
         foreach (var talent in talents) {
             if (talent.getGameObject() != null)
             {
@@ -187,6 +191,10 @@ public class Talents : MonoBehaviour {
                         UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
                         Debug.Log("We found UiTalentSlot : " + script.getCurrentPoints() + " For talent " + talent.talentId);
                         talent.setPointAdded(script.getCurrentPoints());
+                        if (talent.getPointAdded() > 0)
+                        {
+                            talentsToSend.Add(talent);
+                        }
                     }
                 }
             }
@@ -196,7 +204,7 @@ public class Talents : MonoBehaviour {
             }
         }
 
-        getCommunication().updateTalents(talents);
+        getCommunication().updateTalents(talentsToSend);
 
         gameObject.SetActive(false);
     }

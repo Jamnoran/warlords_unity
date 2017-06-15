@@ -16,9 +16,6 @@ public class TestSpawn : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyUp("g")) {
-            sendSpawnPoints();
-        }
     }
 
     public void startJobForSpawnPoints() {

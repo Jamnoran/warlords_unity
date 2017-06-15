@@ -15,6 +15,7 @@ namespace Assets.scripts.vo {
         public float scaling;
         public int pointAdded;
         public int position;
+        public int maxPoints;
         private GameObject gameObject;
 
         public Talent() {
@@ -106,5 +107,14 @@ namespace Assets.scripts.vo {
             this.pointAdded = pointAdded;
         }
 
+        public int getMaxPoints()
+        {
+            return maxPoints;
+        }
+
+        public void setMaxPoints(int points)
+        {
+            maxPoints = points;
+        }
     }
 }
