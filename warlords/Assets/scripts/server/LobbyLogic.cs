@@ -77,8 +77,26 @@ public class LobbyLogic : MonoBehaviour {
 
     public void updateHeroes(List<Hero> newListOfHeroes) {
         heroes = newListOfHeroes;
-        if (currentHero == null && heroes.Count > 0) {
-            currentHero = heroes[0];
+        if (currentHero == null && heroes.Count > 0)
+        {
+            // Check what the last hero was that the user played
+            int lastHeroIdPlayed = PlayerPrefs.GetInt("HERO_ID_LAST_USED");
+            Debug.Log("Last hero id played : " + lastHeroIdPlayed);
+            if (lastHeroIdPlayed > 0)
+            {
+                foreach (Hero hero in heroes)
+                {
+                    if (hero.id == lastHeroIdPlayed)
+                    {
+                        currentHero = hero;
+                        Debug.Log("Found lasta hero played");
+                    }
+                }
+            }
+            else
+            {
+                currentHero = heroes[0];
+            }
             getLobbyCommunication().heroId = currentHero.id;
             Debug.Log("Setting hero id : " + currentHero.id);
         }
@@ -187,11 +205,13 @@ public class LobbyLogic : MonoBehaviour {
     public void startCustomGame() {
         Debug.Log("Starting a custom game");
         getLobbyCommunication().findCustomGame();
+        PlayerPrefs.SetInt("HERO_ID_LAST_USED", currentHero.id);
     }
 
     public void startQuickGame() {
         Debug.Log("Starting a quick game");
         getLobbyCommunication().findQuickGame();
+        PlayerPrefs.SetInt("HERO_ID_LAST_USED", currentHero.id);
     }
 
     public void sendStartGame() {
