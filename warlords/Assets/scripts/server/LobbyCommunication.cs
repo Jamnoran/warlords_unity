@@ -186,7 +186,7 @@ public class LobbyCommunication : MonoBehaviour {
 
 	// Handle connection 
 	IEnumerator getLobbyListFromWebservice(WWW www){
-		Debug.Log ("Getting lobbys: ");
+		Debug.Log ("Getting lobbys from url " + webserviceUrl);
 		yield return www;
 		if (www.error == null){
 			responseLobbys = JsonMapper.ToObject<ResponseLobbys>(www.text);

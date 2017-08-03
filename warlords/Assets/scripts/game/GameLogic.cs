@@ -522,32 +522,9 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Server sent to create world");
         world = responseWorld.world;
 
-        getGenerator().GenerateRandom(world.seed);
+        getGenerator().GenerateRandom(world.seed, world.worldType);
 
         getTestSpawn().startJobForSpawnPoints();
-
-        //foreach (var obstacle in world.obstacles)
-        //{
-        //    if (obstacle.type == 1) // Wall
-        //    {
-        //        obstacle.transform = (Transform) Instantiate(wall, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-        //    }else if (obstacle.type == 3) // Start
-        //   {
-        //        obstacle.transform = (Transform) Instantiate(start, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-        //    }
-        //    else if (obstacle.type == 4) // Stairs down
-        //    {
-        //        obstacle.transform = (Transform) Instantiate(stairs, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-        //    }
-        //    else if (obstacle.type == 5) // Light
-        //    {
-        //        obstacle.transform = (Transform)Instantiate(light, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-        //    }
-        //    else if (obstacle.type == 6) // Floor
-        //    {
-        //        obstacle.transform = (Transform)Instantiate(floor, new Vector3(obstacle.positionX, obstacle.positionY, obstacle.positionZ), Quaternion.identity);
-        //    }
-        //}
     }
 
     public void endGame()
