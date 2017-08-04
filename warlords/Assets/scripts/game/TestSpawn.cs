@@ -29,6 +29,7 @@ public class TestSpawn : MonoBehaviour {
         GameObject[] points = GameObject.FindGameObjectsWithTag("Point");
         int countSpawn = 0;
         int countEnemy = 0;
+        Debug.Log("Found this many points : " + points.Length);
 
 
         List<Point> spawnPoints = new List<Point>();
