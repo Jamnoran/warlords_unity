@@ -9,6 +9,7 @@ public class ResponseGameStatus {
     public List<Minion> minions;
     public List<Hero> heroes;
     public List<GameAnimation> gameAnimations;
+	public int totalMinionsLeft = 0;
 
     public ResponseGameStatus(){}
 

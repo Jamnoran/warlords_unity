@@ -150,6 +150,24 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+	public void sendMinionPostionsToServer(){
+		if (getMinions ().Count > 0) {
+			List<Minion> updatePositionMinions = new List<Minion> ();
+			foreach (Minion minion in getMinions()) {
+				Minion tempMin = new Minion ();
+				tempMin.id = minion.id;
+				Vector3 currPos = minion.getTransformPosition ();
+				tempMin.positionX = currPos.x;
+				tempMin.positionY = currPos.y;
+				tempMin.positionZ = currPos.z;
+				updatePositionMinions.Add (tempMin);
+			}
+			//Debug.Log ("Sending update of minions position of this many minions : " + updatePositionMinions.Count);
+			getCommunication ().sendUpdateMinionPosition (getMyHero ().id, updatePositionMinions);
+			updatePositionMinions = null; 
+		}
+	}
+
     public void updateListOfHeroes(List<Hero> newHeroes) {
         foreach (var newHero in newHeroes) {
             updateHero(newHero);
@@ -498,6 +516,13 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+	public bool isGameMode(int gameModeToCheck){
+		if(world.worldType == gameModeToCheck){
+			return true;
+		}
+		return false;
+	}
+
     public void teleportHeroes(List<Hero> teleportHeroes) {
         foreach (var heroInList in teleportHeroes) {
             Hero hero = getHero(heroInList.id);
@@ -525,7 +550,19 @@ public class GameLogic : MonoBehaviour
         getGenerator().GenerateRandom(world.seed, world.worldType);
 
         getTestSpawn().startJobForSpawnPoints();
+
+		if(isGameMode(World.HORDE_MODE)){
+			StartCoroutine("startCheckIfLevelIsComplete");
+		}
     }
+
+
+
+	IEnumerator startCheckIfLevelIsComplete() {
+		yield return new WaitForSeconds(5.0f);
+		getHordeMode ().currentMode = true;
+		Debug.Log ("Horde mode is on its way!");
+	}
 
     public void endGame()
     {
@@ -569,5 +606,9 @@ public class GameLogic : MonoBehaviour
     TestSpawn getTestSpawn() {
         return ((TestSpawn)GameObject.Find("TestObject").GetComponent(typeof(TestSpawn)));
     }
+
+	HordeMode getHordeMode() {
+		return ((HordeMode)GameObject.Find("GameLogicObject").GetComponent(typeof(HordeMode)));
+	}
 
 }

@@ -132,6 +132,10 @@ public class ServerCommunication : MonoBehaviour {
         sendRequest(new RequestTalents(getHeroId(), updatedListOfTalents));
     }
 
+	public void  sendUpdateMinionPosition(int heroId, List<Minion> updatedList){
+		sendRequest(new RequestUpdateMinionPosition(heroId, updatedList));
+	}
+
     
     public void selfDamage()
     {
@@ -173,7 +177,7 @@ public class ServerCommunication : MonoBehaviour {
             responseType = JsonUtil.getTypeOfRequestFromJson(json);
         }
 
-        if (responseType != null && !responseType.Equals("") && responseType != "GAME_STATUS") {
+		if (responseType != null && !responseType.Equals("") && responseType != "GAME_STATUS" && responseType != "UPDATE_MINION_POSITION") {
             Debug.Log("Type request: " + responseType);
         }
 
@@ -187,10 +191,17 @@ public class ServerCommunication : MonoBehaviour {
                 }
                 getGameLogic().updateListOfMinions(responseGameStatus.minions);
                 getGameLogic().updateListOfHeroes(responseGameStatus.heroes);
+				if (getGameLogic ().isGameMode (World.HORDE_MODE)) {
+					getHordeMode ().totalMinionsLeft = responseGameStatus.totalMinionsLeft;
+				}	
             } else if (responseType == "WORLD") {
                 ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
-                Debug.Log("Creating world with seed " + responseWorld.world.seed);
-                getGameLogic().createWorld(responseWorld);
+				if (responseWorld != null && responseWorld.world != null) {
+					Debug.Log ("Creating world with seed " + responseWorld.world.seed);
+					getGameLogic ().createWorld (responseWorld);
+				} else {
+					Debug.Log ("We did not recieve a world, or the seed, check this out why is this happening.");
+				}
             } else if (responseType == "CLEAR_WORLD")  {
                 getGameLogic().clearWorld();
             } else if (responseType == "TELEPORT_HEROES") {
@@ -208,6 +219,8 @@ public class ServerCommunication : MonoBehaviour {
             } else if (responseType == "TALENTS") {
                 ResponseTalents response = JsonMapper.ToObject<ResponseTalents>(json);
                 getGameLogic().setTalents(response);
+			} else if (responseType == "UPDATE_MINION_POSITION") {
+				getGameLogic().sendMinionPostionsToServer();
             } else if (responseType == "MESSAGE") {
                 ResponseMessage response = JsonMapper.ToObject<ResponseMessage>(json);
                 Debug.Log("Someone wrote: " + response.message.message);
@@ -344,5 +357,9 @@ public class ServerCommunication : MonoBehaviour {
     Chat getChat() {
         return ((Chat)GameObject.Find("Chat").GetComponent(typeof(Chat)));
     }
+
+	HordeMode getHordeMode() {
+		return ((HordeMode)GameObject.Find("GameLogicObject").GetComponent(typeof(HordeMode)));
+	}
 
 }

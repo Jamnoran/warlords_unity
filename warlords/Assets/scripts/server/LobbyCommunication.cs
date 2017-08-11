@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using System.Runtime.Serialization.Formatters;
 using System.Net.Configuration;
 using LitJson;
+using System.Net;
 
 public class LobbyCommunication : MonoBehaviour {
 	private SocketConnection socketConnection;
@@ -24,7 +25,7 @@ public class LobbyCommunication : MonoBehaviour {
 
    // Use this for initialization
     void Start(){
-        Debug.Log("Starting server.");
+        Debug.Log("LobbyScreen loaded");
 		StartCoroutine(getLobbyListFromWebservice(new WWW(webserviceUrl)));
     }
 
@@ -186,16 +187,17 @@ public class LobbyCommunication : MonoBehaviour {
 
 	// Handle connection 
 	IEnumerator getLobbyListFromWebservice(WWW www){
+
 		Debug.Log ("Getting lobbys from url " + webserviceUrl);
 		yield return www;
-		if (www.error == null){
+		if (www.error == null || www.error == ""){
 			responseLobbys = JsonMapper.ToObject<ResponseLobbys>(www.text);
 			Debug.Log ("Json data: " + responseLobbys.getLobbys().Count);
 			chooseLobby();
 		}
 		else
 		{
-			Debug.Log("ERROR: " + www.error);
+			Debug.Log("ERROR: [" + www.error + "] We did not get any lobby");
 		}        
 	}
 

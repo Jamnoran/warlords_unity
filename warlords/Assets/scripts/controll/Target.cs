@@ -33,11 +33,13 @@ public class Target : MonoBehaviour {
 
         if (Input.GetMouseButton(right_mouse_button)) {
             getPosition();
-            if (click(false)) {
-                getGameLogic().getMyHero().setAutoAttacking(true);
-            }else {
-                getGameLogic().getMyHero().setAutoAttacking(false);
-            }
+			if (getGameLogic ().getMyHero () != null) {
+				if (click (false)) {
+					getGameLogic ().getMyHero ().setAutoAttacking (true);
+				} else {
+					getGameLogic ().getMyHero ().setAutoAttacking (false);
+				}
+			}
         }
     }
 

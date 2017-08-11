@@ -12,6 +12,12 @@ public class MinionAnimations : MonoBehaviour {
     public float attackRange = 1.9f;
     public bool sentInAttackRange = false;
     public bool sentClearAttackRange = false;
+	public bool inCombat = false;
+	public float baseRotation = 3f;
+	public float idleRotation = 1f;
+	public float baseMovespeed = 5.0f;
+	public float idleMoveSpeed = 2.0f;
+
     #endregion
     #region private variables
     private Animator anim;
@@ -34,8 +40,10 @@ public class MinionAnimations : MonoBehaviour {
             Hero hero = getGameLogic().getHero(heroTargetId);
             if (hero != null) {
                 targetPosition = hero.getTransformPosition();
+				inCombat = true;
             } else {
                 Debug.Log("Could not find a hero with this id: " + heroTargetId);
+				inCombat = false;
             }
         }
 
@@ -72,7 +80,23 @@ public class MinionAnimations : MonoBehaviour {
             }
         }
 
+
+		if(getGameLogic().isGameMode(World.HORDE_MODE)){
+			inCombat = true;
+		}
+
+		calculateMoveSpeed ();
+
     }
+
+	void calculateMoveSpeed(){
+		if (inCombat) {
+			moveSpeed = baseMovespeed;
+		} else {
+			moveSpeed = idleMoveSpeed;
+		}
+	}
+		
 
     ServerCommunication getCommunication() {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
@@ -87,7 +111,22 @@ public class MinionAnimations : MonoBehaviour {
         //start moving the player towards the desired position
         Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
 
-        character.transform.LookAt(targetPostition);
+
+		if (inCombat) {
+			character.transform.LookAt(targetPostition);	
+		} else {
+			//find the vector pointing from our position to the target
+			Vector3 direction = (targetPostition - transform.position).normalized;
+
+			//create the rotation we need to be in to look at the target
+			Quaternion lookRotation = Quaternion.LookRotation(direction);
+
+			//rotate us over time according to speed until we are in the required rotation
+			transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * idleRotation);
+		}
+
+			
+        
 
         // find the target position relative to the player:
         Vector3 dir = targetPosition - transform.position;
