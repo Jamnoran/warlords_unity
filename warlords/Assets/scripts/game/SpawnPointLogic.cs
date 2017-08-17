@@ -26,7 +26,7 @@ public class SpawnPointLogic : MonoBehaviour {
 		
 	}
 
-    TestSpawn getTestSpawn() {
-        return ((TestSpawn)GameObject.Find("TestObject").GetComponent(typeof(TestSpawn)));
+    SpawnLocator getTestSpawn() {
+        return ((SpawnLocator)GameObject.Find("GameLogicObject").GetComponent(typeof(SpawnLocator)));
     }
 }

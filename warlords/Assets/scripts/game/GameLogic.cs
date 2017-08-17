@@ -517,7 +517,7 @@ public class GameLogic : MonoBehaviour
     }
 
 	public bool isGameMode(int gameModeToCheck){
-		if(world.worldType == gameModeToCheck){
+		if(world != null && world.worldType == gameModeToCheck){
 			return true;
 		}
 		return false;
@@ -547,7 +547,10 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Server sent to create world");
         world = responseWorld.world;
 
-        getGenerator().GenerateRandom(world.seed, world.worldType);
+        if (!getLobbyCommunication().local)
+        {
+            getGenerator().GenerateRandom(world.seed, world.worldType);
+        }
 
         getTestSpawn().startJobForSpawnPoints();
 
@@ -603,8 +606,8 @@ public class GameLogic : MonoBehaviour
         return ((DunGenerator)GameObject.Find("Generator").GetComponent(typeof(DunGenerator)));
     }
 
-    TestSpawn getTestSpawn() {
-        return ((TestSpawn)GameObject.Find("TestObject").GetComponent(typeof(TestSpawn)));
+    SpawnLocator getTestSpawn() {
+        return ((SpawnLocator)GameObject.Find("GameLogicObject").GetComponent(typeof(SpawnLocator)));
     }
 
 	HordeMode getHordeMode() {

@@ -15,6 +15,10 @@ public class ServerCommunication : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        if (getLobbyCommunication().local)
+        {
+            connectToServer("127.0.0.1", getLobbyCommunication().portForLocal, "0");
+        }
     }
 
     void Awake()
@@ -318,7 +322,10 @@ public class ServerCommunication : MonoBehaviour {
 
     public void sendRequest(object request) {
         String reqJson = JsonMapper.ToJson(request);
-        Debug.Log("Sending this request: " + reqJson);
+        if (reqJson != null && !reqJson.Contains("UPDATE_MINION_POSITION"))
+        {
+            Debug.Log("Sending this request: " + reqJson);
+        }
         socketConnection.writeSocket(reqJson);
     }
 
@@ -332,8 +339,11 @@ public class ServerCommunication : MonoBehaviour {
     }
 
     public void connectToServer(String ip, int port, String gameId) {
-        Debug.Log("Changing to game scene");
-        SceneManager.LoadScene("Game");
+        if (!getLobbyCommunication().local)
+        {
+            Debug.Log("Changing to game scene");
+            SceneManager.LoadScene("Game");
+        }
         Debug.Log("Client Started");
         socketConnection = new SocketConnection(ip, port, getLobbyCommunication().local);
         joinGame(gameId);

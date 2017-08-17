@@ -26,7 +26,10 @@ public class LobbyCommunication : MonoBehaviour {
    // Use this for initialization
     void Start(){
         Debug.Log("LobbyScreen loaded");
-		StartCoroutine(getLobbyListFromWebservice(new WWW(webserviceUrl)));
+        if (!local)
+        {
+            StartCoroutine(getLobbyListFromWebservice(new WWW(webserviceUrl)));
+        }
     }
 
     void Awake() {
