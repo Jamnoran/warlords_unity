@@ -48,7 +48,7 @@ public class Connect : MonoBehaviour {
             Debug.Log("Email: " + PlayerPrefs.GetString("EMAIL"));
             Debug.Log("Password: " + PlayerPrefs.GetString("PASSWORD"));
 			getLobbyCommunication().userId = userId;
-            SceneManager.LoadScene("LobbyTemp");
+            SceneManager.LoadScene("Lobby");
         }
     }
 
