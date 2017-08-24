@@ -53,7 +53,7 @@ public class MinionAnimations : MonoBehaviour {
             isMoving = false;
             if (heroTargetId > 0) {
                 if (!sentInAttackRange) {
-                    Debug.Log("Hero is now in range, we should stop moving and send attack command to server from minion");
+                    //Debug.Log("Hero is now in range, we should stop moving and send attack command to server from minion");
                     sentInAttackRange = true;
                     sentClearAttackRange = false;
                     sendAttackInRange(heroTargetId);
@@ -142,7 +142,7 @@ public class MinionAnimations : MonoBehaviour {
 
     public void sendAttackInRange(int heroId) {
         //if (heroTargetId != 0) {
-            Debug.Log("Sending that minion is in attack range");
+            //Debug.Log("Sending that minion is in attack range");
             Minion minion = getGameLogic().getClosestMinionByPosition(character.transform.position);
             getCommunication().sendMinionHasTargetInRange(minion.id, heroId);
         //}

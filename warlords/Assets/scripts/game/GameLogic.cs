@@ -391,8 +391,11 @@ public class GameLogic : MonoBehaviour
 
     public void setHeroTargetFriendly(int hero_id) {
         Hero myHero = getMyHero();
-        myHero.targetEnemy = 0;
-        myHero.targetFriendly = hero_id;
+        if (myHero != null)
+        {
+            myHero.targetEnemy = 0;
+            myHero.targetFriendly = hero_id;
+        }
     }
 
     public Minion getMyHeroEnemyTarget() {
@@ -487,12 +490,12 @@ public class GameLogic : MonoBehaviour
     public void autoAttack(){
         // Here we will need to check the id of the minion focused to send up to server.
         // This is a basic attack
-        int minionId = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHero().targetEnemy;
+        int minionId = getMyHero().targetEnemy;
         getCommunication().sendAutoAttack(minionId);
     }
 
     public Hero getMyHero() {
-        if (getLobbyCommunication() != null) {
+        if (getLobbyCommunication() != null && getLobbyCommunication().heroId > 0) {
             int hId = getLobbyCommunication().heroId;
             foreach (var hero in heroes) {
                 if (hId == hero.id) {

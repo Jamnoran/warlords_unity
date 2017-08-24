@@ -13,58 +13,86 @@ public class CharacterAnimations : MonoBehaviour {
 
     int grounded = 0;
     float slopefix = 8.0f;
-
+    public bool isAttacking = false;
     public bool isGrounded = false;
+    public float distanceToTarget = 10.0f;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         anim = character.GetComponent<Animator>();
 	}
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
+        // Clear all animations needing at start of each update (this is to stop them from looping since they get set to true from a method)
+        //anim.SetBool("attacking", false);
+        //anim.SetBool("spell1", false);
+
         //if (getGameLogic().isMyHeroAlive())
         //{
-            //start moving the player towards the desired position
-            Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
-            character.transform.LookAt(targetPostition);
+        //start moving the player towards the desired position
 
+        Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
+        // Update target position to minion position if we have a target and is auto attacking
+        if (getGameLogic() != null && getGameLogic().getMyHero() != null)
+        {
+            Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
+            if (thisHero.targetEnemy > 0 && isAttacking)
+            {
+                Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
+                targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
+            }
+        }
 
-            // find the target position relative to the player:
-            Vector3 dir = targetPosition - transform.position;
-            // ignore any height difference:
-            dir.y = 0;
-            // calculate velocity limited to the desired speed:
-            Vector3 velocity = Vector3.ClampMagnitude(dir * moveSpeed, moveSpeed);
-            // move the character including gravity:
-            CharacterController controller = (CharacterController)GetComponent(typeof(CharacterController));
-            controller.SimpleMove(velocity);
+        character.transform.LookAt(targetPostition);
 
-   
-
-
-
+        // find the target position relative to the player:
+        Vector3 dir = targetPosition - transform.position;
+        // ignore any height difference:
+        dir.y = 0;
+        // calculate velocity limited to the desired speed:
+        Vector3 velocity = Vector3.ClampMagnitude(dir * moveSpeed, moveSpeed);
+        // move the character including gravity:
+        CharacterController controller = (CharacterController)GetComponent(typeof(CharacterController));
+        controller.SimpleMove(velocity);
 
 
 
 
         //if we are at the desired position we must stop moving
-        if (Vector3.Distance(character.transform.position, targetPosition) < 0.2f) {
+        distanceToTarget = Vector3.Distance(character.transform.position, targetPosition);
+        if (distanceToTarget < 0.50f)
+        {
+            isMoving = false;
+        }
+
+        if (getGameLogic() != null && getGameLogic().getMyHero() != null) {
+            Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
+            if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
+                sentStopAnimation = true;
                 isMoving = false;
-            }
 
-            if (getGameLogic() != null) {
-                Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
-                if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
-                    sentStopAnimation = true;
-
-                    getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
-                    getCommunication().sendStopHero(getGameLogic().getMyHero().id);
-                }
+                getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
+                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
             }
+        }
         //}else { 
-            // Play dead animation
+        // Play dead animation
         //}
+        runAnimation();
+
+        if (Input.GetKeyDown("m"))
+        {
+            attackAnimation();
+        }
+
+        if (Input.GetKeyDown("n"))
+        {
+            spellAnimation(1);
+        }
+
+
     }
 
     public void rotateToTarget(Vector3 postition) {
@@ -75,27 +103,45 @@ public class CharacterAnimations : MonoBehaviour {
     }
 
     public void attackAnimation() {
-        anim.Play("auto", -1, 0f);
+        Debug.Log("Got auto attack animation");
+        anim.SetBool("attacking", true);
+        isAttacking = true;
+        StartCoroutine("clearAttackBool");
+    }
+
+    IEnumerator clearAttackBool()
+    {
+        yield return new WaitForSeconds(0.3f);
+        anim.SetBool("attacking", false);
+
     }
 
     public void runAnimation() {
-        anim.Play("walk", -1, 0f);
+        anim.SetBool("walking", isMoving);
     }
 
     public void idleAnimation() {
-        //Debug.Log("Starting idle animation again");
-        anim.Play("idle", -1, 0f);
+        //anim.SetBool("walking", false);
     }
+
+
+    public void spellAnimation(int spellAnimationId)
+    {
+        anim.SetBool("spell1", true);
+    }
+
 
     public void setDesiredLocation(Vector3 position) {
         targetPosition = position;
         isMoving = true;
         sentStopAnimation = false;
+        isAttacking = false;
     }
 
     public void stopMove() {
         //Debug.Log("Setting target position to current position : " + character.transform.position.x + " x " + character.transform.position.z);
         targetPosition = character.transform.position;
+        isAttacking = false;
     }
 
 

@@ -48,10 +48,12 @@ public class clickToMove : MonoBehaviour {
                             getGameLogic().getAbility(0).waitingForCdResponse = true;
                             getGameLogic().autoAttack();
                         } else {
-                            targetPosition = getGameLogic().getMinion(hero.targetEnemy).getTransformPosition();
+                            if (hero.targetEnemy > 0 && getGameLogic() != null && getGameLogic().getMinion(hero.targetEnemy) != null && getGameLogic().getMinion(hero.targetEnemy).getTransformPosition() != null)
+                            {
+                                targetPosition = getGameLogic().getMinion(hero.targetEnemy).getTransformPosition();
+                            }
                             movePlayer();
                         }
-
                     }
                 }
             }
