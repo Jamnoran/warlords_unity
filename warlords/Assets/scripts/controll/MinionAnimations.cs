@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 using Assets.scripts.vo;
 
@@ -7,12 +7,10 @@ public class MinionAnimations : MonoBehaviour {
     public GameObject character;
     public Vector3 targetPosition;
     public float moveSpeed = 5.0f;
-    public bool idleAnimationRunning = true;
     public int heroTargetId = 0;
     public float attackRange = 1.9f;
     public bool sentInAttackRange = false;
     public bool sentClearAttackRange = false;
-	public bool inCombat = false;
 	public float baseRotation = 3f;
 	public float idleRotation = 1f;
 	public float baseMovespeed = 5.0f;
@@ -21,7 +19,10 @@ public class MinionAnimations : MonoBehaviour {
     #endregion
     #region private variables
     private Animator anim;
-    bool isMoving;
+    private bool isMoving = false;
+    public bool inCombat = false;
+    public bool isAttacking = false;
+    public bool dead = false;
     #endregion
 
 
@@ -30,7 +31,8 @@ public class MinionAnimations : MonoBehaviour {
     void Start () {
         anim = character.GetComponent<Animator>();
         targetPosition = character.transform.position;
-	}
+        dead = false;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -47,36 +49,38 @@ public class MinionAnimations : MonoBehaviour {
             }
         }
 
-        //if we are at the desired position we must stop moving
-        //if minion is not too close we can move
-        if (Vector3.Distance(transform.position, targetPosition) < attackRange) {
-            isMoving = false;
-            if (heroTargetId > 0) {
-                if (!sentInAttackRange) {
-                    //Debug.Log("Hero is now in range, we should stop moving and send attack command to server from minion");
-                    sentInAttackRange = true;
-                    sentClearAttackRange = false;
-                    sendAttackInRange(heroTargetId);
+        if (anim != null && anim.GetBool("alive"))
+        {
+            //if we are at the desired position we must stop moving
+            //if minion is not too close we can move
+            if (Vector3.Distance(transform.position, targetPosition) < attackRange)
+            {
+                isMoving = false;
+                if (heroTargetId > 0)
+                {
+                    if (!sentInAttackRange)
+                    {
+                        //Debug.Log("Hero is now in range, we should stop moving and send attack command to server from minion");
+                        sentInAttackRange = true;
+                        sentClearAttackRange = false;
+                        sendAttackInRange(heroTargetId);
+                    }
                 }
             }
-        } else {
-            if (anim != null && !anim.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
-                isMoving = true;
-                runAnimation();
-                lookAndMove();
-            }
-            sentInAttackRange = false;
-            if (!sentClearAttackRange) {
-                sentClearAttackRange = true;
-                sendAttackInRange(0);
-            }
-        }
-
-        if (!isMoving) {
-            idleAnimationRunning = true;
-            //Debug.Log("Starting idle animation again");
-            if (anim != null && anim.GetCurrentAnimatorStateInfo(0).IsName("mutant_run_inPlace")) {
-                anim.Play("zombie_idle", -1, 0f);
+            else
+            {
+                if (anim != null && !anim.GetCurrentAnimatorStateInfo(0).IsName("auto"))
+                {
+                    isMoving = true;
+                    //runAnimation();
+                    lookAndMove();
+                }
+                sentInAttackRange = false;
+                if (!sentClearAttackRange)
+                {
+                    sentClearAttackRange = true;
+                    sendAttackInRange(0);
+                }
             }
         }
 
@@ -86,6 +90,13 @@ public class MinionAnimations : MonoBehaviour {
 		}
 
 		calculateMoveSpeed ();
+
+        if (dead)
+        {
+            deadAnimation();
+        }
+
+        runAnimation();
 
     }
 
@@ -97,15 +108,6 @@ public class MinionAnimations : MonoBehaviour {
 		}
 	}
 		
-
-    ServerCommunication getCommunication() {
-        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
-    }
-
-    GameLogic getGameLogic()
-    {
-        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
-    }
 
     public void lookAndMove() {
         //start moving the player towards the desired position
@@ -124,8 +126,6 @@ public class MinionAnimations : MonoBehaviour {
 			//rotate us over time according to speed until we are in the required rotation
 			transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * idleRotation);
 		}
-
-			
         
 
         // find the target position relative to the player:
@@ -152,17 +152,29 @@ public class MinionAnimations : MonoBehaviour {
 
     public void attackAnimation()  {
         //Debug.Log("Showing attack animation");
-        anim.Play("Attack", -1, 0f);
+        //anim.Play("Attack", -1, 0f);
+        if (anim != null && anim.GetBool("alive"))
+        {
+            anim.SetBool("attacking", true);
+            isAttacking = true;
+            StartCoroutine("clearAttackBool");
+        }
     }
 
+    IEnumerator clearAttackBool()
+    {
+        yield return new WaitForSeconds(0.3f);
+        anim.SetBool("attacking", false);
+    }
+
+
     public void setDesiredLocation(Vector3 position) {
-        if (anim != null && (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))) {
+        if (anim != null && (anim.GetCurrentAnimatorStateInfo(0).IsName("auto"))) {
            // Debug.Log("Dont move to another position we are attacking or we are already running");
         } else {
            // Debug.Log("Setting new targetPostion and mutantRunInPlace");
             targetPosition = position;
             isMoving = true;
-            idleAnimationRunning = false;
             runAnimation();
             //if (anim != null && !anim.GetCurrentAnimatorStateInfo(0).IsName("mutant_run_inPlace")) {
                 //anim.Play("mutant_run_inPlace", -1, 0f);
@@ -172,9 +184,30 @@ public class MinionAnimations : MonoBehaviour {
 
     public void runAnimation() {
         // Debug.Log("Showing run animation");
-        if (anim != null && anim.GetCurrentAnimatorStateInfo(0).IsName("zombie_idle")) {
-            anim.Play("mutant_run_inPlace", -1, 0f);
+        if (anim != null && anim.GetBool("alive")) {
+            //anim.Play("mutant_run_inPlace", -1, 0f);
+            anim.SetBool("walking", isMoving);
         }
     }
+
+    public void deadAnimation()
+    {
+        if(anim != null)
+        {
+            anim.SetBool("alive", false);
+        }
+    }
+
+
+    ServerCommunication getCommunication()
+    {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
+
+    GameLogic getGameLogic()
+    {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+    }
+
 
 }

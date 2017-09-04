@@ -81,18 +81,6 @@ public class CharacterAnimations : MonoBehaviour {
         // Play dead animation
         //}
         runAnimation();
-
-        if (Input.GetKeyDown("m"))
-        {
-            attackAnimation();
-        }
-
-        if (Input.GetKeyDown("n"))
-        {
-            spellAnimation(1);
-        }
-
-
     }
 
     public void rotateToTarget(Vector3 postition) {

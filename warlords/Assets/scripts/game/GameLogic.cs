@@ -138,7 +138,7 @@ public class GameLogic : MonoBehaviour
             }
             if (!found) {
                 // Initiate minion here
-                Debug.Log("Initiate minion at pos " + newMinion.desiredPositionX + "x" + newMinion.desiredPositionZ + " y: " + newMinion.desiredPositionY);
+                //Debug.Log("Initiate minion at pos " + newMinion.desiredPositionX + "x" + newMinion.desiredPositionZ + " y: " + newMinion.desiredPositionY);
                 Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ), Quaternion.identity);
                 newMinion.setTransform(minionTransform);
                 newMinion.initBars();
@@ -278,9 +278,17 @@ public class GameLogic : MonoBehaviour
             if (gameAnimation.animation_type == "MINION_DIED") {
                 Debug.Log("Minion died");
                 Minion minion = getMinion(gameAnimation.target_id);
-                Destroy(minion.minionTransform.gameObject);
+
+                ((HealthUpdate)minion.minionTransform.GetComponent(typeof(HealthUpdate))).hideBar();
+
+
+                //Destroy(minion.minionTransform.gameObject);
+                MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
+                anim.deadAnimation();
+                minion.setAlive(false);
+
                 // This is wrong, shouldnt do it while in loop (find out correct way to do it) normally done by an iterator but not sure how to do it in c#
-                minions.Remove(minion);
+                //minions.Remove(minion);
                 foreach(Hero hero in heroes)
                 {
                     if (minion.id == hero.targetEnemy)
@@ -431,10 +439,10 @@ public class GameLogic : MonoBehaviour
 
     public void setAbilities(List<Ability> updatedAbilities) {
         abilities = updatedAbilities;
-        foreach (var ability in abilities)
-        {
-            Debug.Log("Ability : " + ability.name);
-        }
+        //foreach (var ability in abilities)
+        //{
+        //    Debug.Log("Ability : " + ability.name);
+        //}
     }
 
     public void updateCooldown(Ability ability) {
@@ -541,7 +549,7 @@ public class GameLogic : MonoBehaviour
                 heroAnimation.targetPosition = new Vector3(heroInList.desiredPositionX, heroInList.desiredPositionY, heroInList.desiredPositionZ);
             }
             hero.trans.position = newPosition;
-            Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
+            //Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
         }
     }
 

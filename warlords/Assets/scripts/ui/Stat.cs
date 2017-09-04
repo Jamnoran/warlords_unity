@@ -49,4 +49,9 @@ public class Stat  {
         this.MaxVal = maxVal;
         this.CurrentVal = currentVal;
     }
+
+    public void hideBar()
+    {
+        this.bar.enabled = false;
+    }
 }

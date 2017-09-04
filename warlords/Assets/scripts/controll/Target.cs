@@ -70,23 +70,27 @@ public class Target : MonoBehaviour {
     public bool click(bool leftClick) {
         float closestDistanse = 300.0f;
         foreach (var minion in ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMinions()) {
-            Vector3 minionPosition = new Vector3(minion.minionTransform.position.x, 0.1f, minion.minionTransform.position.z);
-            float dist = Vector3.Distance(minionPosition, targetPosition);
+            if (minion.alive) {
+                Vector3 minionPosition = new Vector3(minion.minionTransform.position.x, 0.1f, minion.minionTransform.position.z);
+                float dist = Vector3.Distance(minionPosition, targetPosition);
 
-            if ((dist < closestDistanse) && dist <= MinTargetDistance) {
-                //print("Minion is closest at a distance at: " + dist);
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetEnemy(minion.id);
-                closestDistanse = dist;
+                if ((dist < closestDistanse) && dist <= MinTargetDistance) {
+                    //print("Minion is closest at a distance at: " + dist);
+                    ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetEnemy(minion.id);
+                    closestDistanse = dist;
+                }
             }
         }
         foreach (var hero in (listOfHeroes)) {
-            Vector3 heroPosition = new Vector3(hero.trans.position.x, 0.1f, hero.trans.position.z);
-            float dist = Vector3.Distance(heroPosition, targetPosition);
-            //Debug.Log("Class: " + hero.class_type + " Distance from click [" + targetPosition.x + "x"  + targetPosition.z + "] is: " + dist);
-            if ((dist < closestDistanse) && dist <= MinTargetDistance) {
-                //print("Hero is closest at a distance at: " + dist);
-                ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetFriendly(hero.id);
-                closestDistanse = dist;
+            if (hero.alive) { 
+                Vector3 heroPosition = new Vector3(hero.trans.position.x, 0.1f, hero.trans.position.z);
+                float dist = Vector3.Distance(heroPosition, targetPosition);
+                //Debug.Log("Class: " + hero.class_type + " Distance from click [" + targetPosition.x + "x"  + targetPosition.z + "] is: " + dist);
+                if ((dist < closestDistanse) && dist <= MinTargetDistance) {
+                    //print("Hero is closest at a distance at: " + dist);
+                    ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetFriendly(hero.id);
+                    closestDistanse = dist;
+                }
             }
         }
         if(closestDistanse < 300.0f) {
