@@ -23,6 +23,7 @@ public class GenericCastbar : MonoBehaviour {
     private float castTime;
     private float timeLeft;
 
+    private GameObject activeSpellPrefab;
     private GameObject activeSpell;
 
     private void Start()
@@ -51,14 +52,19 @@ public class GenericCastbar : MonoBehaviour {
 
         if (Input.GetMouseButtonUp(0))
         {
-            CircleAoe aoeSpell = activeSpell.GetComponent(typeof(CircleAoe)) as CircleAoe;
+            CircleAoe aoeSpell = activeSpellPrefab.GetComponent(typeof(CircleAoe)) as CircleAoe;
+            List<int> friendlies = new List<int>();
             List<int> enemies = aoeSpell.GetAoeTargets();
-            var foo = "bar";
+
+            //send active spell along with list of friendlies and enemies
+            NewSendSpell(activeSpell, enemies, friendlies);
+
         }
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            activeSpell = spell1;
             Ability ability = GetAbility(spell1);
             DecideSpellType(ability.targetType, ability.name);
         }
@@ -114,9 +120,7 @@ public class GenericCastbar : MonoBehaviour {
                 try
                 {
                     //load abilityprefab
-                    activeSpell = Instantiate(Resources.Load("abilities/" + spellName)) as GameObject;
-                  
-                    Debug.Log("casting cone");
+                    activeSpellPrefab = Instantiate(Resources.Load("abilities/" + spellName)) as GameObject;
                     break;
                 }
                 catch (Exception e)
@@ -145,6 +149,11 @@ public class GenericCastbar : MonoBehaviour {
     private Ability GetAbility(GameObject spell)
     {
         return getGameLogic().getAbility(getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name));
+    }
+
+    private void NewSendSpell(GameObject spell, List<int> enemies, List<int> friendlies)
+    {
+        getGameLogic().sendSpell(getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friendlies);
     }
 
     private void SendSpell(GameObject spell)
