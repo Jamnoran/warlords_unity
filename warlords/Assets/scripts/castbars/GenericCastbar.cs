@@ -50,16 +50,43 @@ public class GenericCastbar : MonoBehaviour {
 
     void Update () {
 
+
+        //if aoe/targeting spell we wait for mouse to send spell 
         if (Input.GetMouseButtonUp(0))
         {
-            CircleAoe aoeSpell = activeSpellPrefab.GetComponent(typeof(CircleAoe)) as CircleAoe;
-            List<int> friendlies = new List<int>();
-            List<int> enemies = aoeSpell.GetAoeTargets();
+            try
+            {
+                CircleAoe aoeSpell = activeSpellPrefab.GetComponent(typeof(CircleAoe)) as CircleAoe;
+                List<int> friendlies = new List<int>();
+                List<int> enemies = aoeSpell.GetAoeTargets();
 
-            //send active spell along with list of friendlies and enemies
-            NewSendSpell(activeSpell, enemies, friendlies);
+                //send active spell along with list of friendlies and enemies
+                NewSendSpell(activeSpell, enemies, friendlies);
 
+                //destroy spell after use
+                Destroy(activeSpellPrefab);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception("Could not cast spell: " + activeSpell.name + "-Error: " + e);
+            }
         }
+
+        if (Input.GetMouseButtonUp(1))
+        {
+            try
+            {
+                Destroy(activeSpellPrefab);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception("Could not abort casting spell: " + activeSpell.name + "-Error: " + e);
+            }
+        }
+
+        //cancel spell when rightclicking
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
