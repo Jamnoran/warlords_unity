@@ -16,10 +16,10 @@ public class GameLogic : MonoBehaviour
     public Transform communication;
     //hold our prefab for the first mob
     public Transform minion1;
-    // Hold prefab for a warrior hero
+    // Hold prefab for heroes
     public Transform warrior;
-    // Hold prefab for a priest hero
     public Transform priest;
+	public Transform warlock;
 
     // Animation Effects
     public Transform healAnimation;
@@ -253,6 +253,10 @@ public class GameLogic : MonoBehaviour
         {
             prefabToUse = priest;
         }
+		if (newHero.class_type == "WARLOCK")
+		{
+			prefabToUse = warlock;
+		}
         Transform heroTransform = (Transform)Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ), Quaternion.identity);
         heroTransform.name = prefabToUse.name;
         newHero.setTrans(heroTransform);
