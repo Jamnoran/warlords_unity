@@ -1,13 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.scripts.vo;
 
+namespace Assets.scripts.spells
+{ 
 public class CircleAoe : MonoBehaviour
 {
 
     private float _offset;
     public float _radius;
     public LayerMask _lookForThis;
+    private RaycastHit[] sphere;
+
 
     public CircleAoe(float radius, int lookForThis)
     {
@@ -33,16 +38,31 @@ public class CircleAoe : MonoBehaviour
                 this.transform.position = new Vector3(hit.point.x, hit.point.y + _offset, hit.point.z);         
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit[] sphere = Physics.SphereCastAll(transform.position, _radius, transform.forward, Mathf.Infinity, _lookForThis);
+            sphere = Physics.SphereCastAll(transform.position, _radius, transform.forward, Mathf.Infinity, _lookForThis);
+                foreach (var item in sphere)
+                {
+                    Debug.Log(item.transform.name);
+                }
         }
     }
 
-    public RaycastHit[] GetAoeTargets(RaycastHit[] targets)
+    public List<int> GetAoeTargets()
     {
-     
-        return targets;
+            List<int> targetsToReturn = new List<int>();
+            foreach (var target in sphere)
+            {
+                Minion minion = getGameLogic().getClosestMinionByPosition(target.transform.position);
+                targetsToReturn.Add(minion.id);
+            }
+        return targetsToReturn;
     }
 
+        GameLogic getGameLogic()
+        {
+            return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        }
+
+    }
 }

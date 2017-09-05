@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.scripts.vo;
+using Assets.scripts.spells;
 
 public class GenericCastbar : MonoBehaviour {
 
@@ -20,6 +22,8 @@ public class GenericCastbar : MonoBehaviour {
     private bool isCasting;
     private float castTime;
     private float timeLeft;
+
+    private GameObject activeSpell;
 
     private void Start()
     {
@@ -45,34 +49,43 @@ public class GenericCastbar : MonoBehaviour {
 
     void Update () {
 
+        if (Input.GetMouseButtonUp(0))
+        {
+            CircleAoe aoeSpell = activeSpell.GetComponent(typeof(CircleAoe)) as CircleAoe;
+            List<int> enemies = aoeSpell.GetAoeTargets();
+            var foo = "bar";
+        }
+
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            FindSpellAux(spell1);
+            Ability ability = GetAbility(spell1);
+            DecideSpellType(ability.targetType, ability.name);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            FindSpellAux(spell2);
+            var ab2 = GetAbility(spell2);
+            SendSpell(spell2);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            FindSpellAux(spell3);
+            SendSpell(spell3);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            FindSpellAux(spell4);
+            SendSpell(spell4);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-            FindSpellAux(spell5);
+            SendSpell(spell5);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            FindSpellAux(spell6);
+            SendSpell(spell6);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha7))
         {
-            FindSpellAux(spell7);
+            SendSpell(spell7);
         }
         //temp key so we can test this 
         if (Input.GetKeyDown("h"))
@@ -92,6 +105,35 @@ public class GenericCastbar : MonoBehaviour {
         }
 	}
 
+    //Decide spelltype and instantiate proper spell
+    private void DecideSpellType(string spellType, string spellName)
+    {
+        switch (spellType)
+        {
+            case "CONE":
+                try
+                {
+                    //load abilityprefab
+                    activeSpell = Instantiate(Resources.Load("abilities/" + spellName)) as GameObject;
+                  
+                    Debug.Log("casting cone");
+                    break;
+                }
+                catch (Exception e)
+                {
+
+                    throw new Exception("Something went wrong, trying to cast a spell: " + e);
+                }
+              
+            case "SINGLE":
+                Debug.Log("Casting single");
+                break;
+            default:
+                Debug.Log("Casting nothing");
+                break;
+        }
+    }
+
     private void resetCastBar()
     {
         tmpTxt.text = "";
@@ -100,7 +142,12 @@ public class GenericCastbar : MonoBehaviour {
         timeLeft = castTime;
     }
 
-    private void FindSpellAux(GameObject spell)
+    private Ability GetAbility(GameObject spell)
+    {
+        return getGameLogic().getAbility(getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name));
+    }
+
+    private void SendSpell(GameObject spell)
     {
 
         if (spell.transform.childCount > 0)
@@ -109,7 +156,7 @@ public class GenericCastbar : MonoBehaviour {
             enemies.Add(getGameLogic().getMyHero().targetEnemy);
             List<int> friends = new List<int>();
             friends.Add(getGameLogic().getMyHero().targetFriendly);
-            getGameLogic().sendSpell((int)getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friends);
+            getGameLogic().sendSpell(getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friends);
         }
         else
         {
