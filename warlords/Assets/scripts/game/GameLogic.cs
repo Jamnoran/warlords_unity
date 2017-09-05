@@ -342,21 +342,24 @@ public class GameLogic : MonoBehaviour
 
 
             // SPELLS
+            // TODO: Update if hero has animation as well
             if (gameAnimation.animation_type == "HEAL") {
-                Debug.Log("Heal animnation");
+                Debug.Log("Heal animation");
                 Hero target = getHero(gameAnimation.target_id);
                 Instantiate(healAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
             }
-
             if (gameAnimation.animation_type == "TAUNT") {
-                Debug.Log("Taunt animnation");
+                Debug.Log("Taunt animation");
                 Hero source = getHero(gameAnimation.source_id);
                 Instantiate(tauntAnimation, new Vector3(source.positionX, 0.3f, source.positionZ), Quaternion.identity);
             }
-
-            if (gameAnimation.animation_type == "SHIELD")
+            if (gameAnimation.animation_type == "DRAIN")
             {
-                // Do we need spell animation perhaps?
+                Debug.Log("Drain life animation");
+                Hero source = getHero(gameAnimation.source_id);
+                CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
+                anim.spellAnimation(gameAnimation.spellAnimationId);
+                //Instantiate(tauntAnimation, new Vector3(source.positionX, 0.3f, source.positionZ), Quaternion.identity);
             }
         }
     }
