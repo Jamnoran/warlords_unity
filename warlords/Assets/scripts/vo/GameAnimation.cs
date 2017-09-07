@@ -13,5 +13,6 @@ namespace Assets.scripts.vo
         public float position_x = 0.0f;
         public float position_y = 0.0f;
         public float position_z = 0.0f;
+        public int spellAnimationId = 0;
     }
 }

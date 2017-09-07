@@ -17,9 +17,14 @@ public class TestGUI : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        menu.SetActive(false);
-        restart.onClick.AddListener(() => { restartLevel(); });
-        exit.onClick.AddListener(() => { exitToLobby(); });
+        if (menu != null) {
+            menu.SetActive(false);
+        }
+        if (restart != null && exit != null)
+        {
+            restart.onClick.AddListener(() => { restartLevel(); });
+            exit.onClick.AddListener(() => { exitToLobby(); });
+        }
     }
 	
 	// Update is called once per frame
@@ -66,6 +71,10 @@ public class TestGUI : MonoBehaviour {
         //Minion enemy = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroEnemyTarget();
         //if(enemy != null) {
         //    GUILayout.Label("Enemy target: " + enemy.hp + "/" + enemy.maxHp);
+        //}
+        //else
+        //{
+        //  GUILayout.Label("No target selected");
         //}
 
         //Hero friendlyTarget = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMyHeroFriendlyTarget();

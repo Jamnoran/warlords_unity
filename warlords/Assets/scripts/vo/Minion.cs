@@ -20,6 +20,7 @@ namespace Assets.scripts.vo
         public float desiredPositionY;
         public Transform minionTransform;
         public int heroTarget = 0;
+        public bool alive = true;
         
         internal void setTransform(Transform minTransform)
         {
@@ -40,6 +41,9 @@ namespace Assets.scripts.vo
         public void setHp(int newHp)
         {
             hp = newHp;
+            if(hp <= 0){
+                alive = false;
+            }
             if (minionTransform != null)
             {
                 ((HealthUpdate)minionTransform.GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
@@ -49,6 +53,11 @@ namespace Assets.scripts.vo
         public void initBars()
         {
             ((HealthUpdate)minionTransform.GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
+        }
+
+        public void setAlive(bool v)
+        {
+            alive = v;
         }
     }
 }
