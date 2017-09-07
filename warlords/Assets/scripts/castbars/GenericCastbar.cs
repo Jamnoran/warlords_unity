@@ -52,48 +52,50 @@ public class GenericCastbar : MonoBehaviour {
 
 
         //if aoe/targeting spell we wait for mouse to send spell 
-        if (Input.GetMouseButtonUp(0))
-        {
-            try
-            {
-                CircleAoe aoeSpell = activeSpellPrefab.GetComponent(typeof(CircleAoe)) as CircleAoe;
-                List<int> friendlies = new List<int>();
-                List<int> enemies = aoeSpell.GetAoeTargets();
+        //if (Input.GetMouseButtonUp(0))
+        //{
+        //    try
+        //    {
+        //        CircleAoe aoeSpell = activeSpellPrefab.GetComponent(typeof(CircleAoe)) as CircleAoe;
+        //        List<int> friendlies = new List<int>();
+        //        List<int> enemies = aoeSpell.GetAoeTargets();
 
-                //send active spell along with list of friendlies and enemies
-                NewSendSpell(activeSpell, enemies, friendlies);
+        //        //send active spell along with list of friendlies and enemies
+        //        NewSendSpell(activeSpell, enemies, friendlies);
 
-                //destroy spell after use
-                Destroy(activeSpellPrefab);
-            }
-            catch (Exception e)
-            {
+        //        //destroy spell after use
+        //        Destroy(activeSpellPrefab);
+        //    }
+        //    catch (Exception e)
+        //    {
 
-                throw new Exception("Could not cast spell: " + activeSpell.name + "-Error: " + e);
-            }
-        }
+        //        throw new Exception("Could not cast spell: " + activeSpell.name + "-Error: " + e);
+        //    }
+        //}
 
-        if (Input.GetMouseButtonUp(1))
-        {
-            try
-            {
-                Destroy(activeSpellPrefab);
-            }
-            catch (Exception e)
-            {
+        //if (Input.GetMouseButtonUp(1))
+        //{
+        //    try
+        //    {
+        //        Destroy(activeSpellPrefab);
+        //    }
+        //    catch (Exception e)
+        //    {
 
-                throw new Exception("Could not abort casting spell: " + activeSpell.name + "-Error: " + e);
-            }
-        }
+        //        throw new Exception("Could not abort casting spell: " + activeSpell.name + "-Error: " + e);
+        //    }
+        //}
 
         //cancel spell when rightclicking
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            activeSpell = spell1;
-            Ability ability = GetAbility(spell1);
-            DecideSpellType(ability.targetType, ability.name);
+            //activeSpell = spell1;
+            //Ability ability = GetAbility(spell1);
+            //DecideSpellType(ability.targetType, ability.name);
+            var ab1 = GetAbility(spell1);
+            SendSpell(spell1);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
