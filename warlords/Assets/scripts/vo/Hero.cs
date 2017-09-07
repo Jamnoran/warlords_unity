@@ -123,6 +123,10 @@ namespace Assets.scripts.vo
                 ownHero = false;
             }
             updateHealthBar(ownHero);
+            if (hp <= 0)
+            {
+                getAnimation().setAlive(false);
+            }
         }
 
         public void updateHealthBar(bool ownHero) {

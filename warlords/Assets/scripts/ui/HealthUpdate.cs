@@ -21,9 +21,10 @@ public class HealthUpdate : MonoBehaviour {
         this.health.CurrentVal = newValue;
         if (newValue <= 0)
         {
-            this.health.hideBar();
+            //this.health.hideBar();
         }
     }
+
     public void setMaxValue(float newValue)
     {
         this.health.MaxVal = newValue;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.scripts.vo;
+using System;
 
 public class CharacterAnimations : MonoBehaviour {
     public GameObject character;
@@ -29,58 +30,60 @@ public class CharacterAnimations : MonoBehaviour {
         //anim.SetBool("attacking", false);
         //anim.SetBool("spell1", false);
 
-        //if (getGameLogic().isMyHeroAlive())
-        //{
-        //start moving the player towards the desired position
-
-        Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
-        // Update target position to minion position if we have a target and is auto attacking
-        if (getGameLogic() != null && getGameLogic().getMyHero() != null)
+        if (getGameLogic().isMyHeroAlive())
         {
-            Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
-            if (thisHero.targetEnemy > 0 && isAttacking)
+            //start moving the player towards the desired position
+
+            Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
+            // Update target position to minion position if we have a target and is auto attacking
+            if (getGameLogic() != null && getGameLogic().getMyHero() != null)
             {
-                Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
-                targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
+                Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
+                if (thisHero.targetEnemy > 0 && isAttacking)
+                {
+                    Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
+                    targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
+                }
             }
-        }
 
-        character.transform.LookAt(targetPostition);
+            character.transform.LookAt(targetPostition);
 
-        // find the target position relative to the player:
-        Vector3 dir = targetPosition - transform.position;
-        // ignore any height difference:
-        dir.y = 0;
-        // calculate velocity limited to the desired speed:
-        Vector3 velocity = Vector3.ClampMagnitude(dir * moveSpeed, moveSpeed);
-        // move the character including gravity:
-        CharacterController controller = (CharacterController)GetComponent(typeof(CharacterController));
-        controller.SimpleMove(velocity);
-
+            // find the target position relative to the player:
+            Vector3 dir = targetPosition - transform.position;
+            // ignore any height difference:
+            dir.y = 0;
+            // calculate velocity limited to the desired speed:
+            Vector3 velocity = Vector3.ClampMagnitude(dir * moveSpeed, moveSpeed);
+            // move the character including gravity:
+            CharacterController controller = (CharacterController)GetComponent(typeof(CharacterController));
+            controller.SimpleMove(velocity);
 
 
 
-        //if we are at the desired position we must stop moving
-        distanceToTarget = Vector3.Distance(character.transform.position, targetPosition);
-        if (distanceToTarget < 0.50f)
-        {
-            isMoving = false;
-        }
 
-        if (getGameLogic() != null && getGameLogic().getMyHero() != null) {
-            Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
-            if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
-                sentStopAnimation = true;
+            //if we are at the desired position we must stop moving
+            distanceToTarget = Vector3.Distance(character.transform.position, targetPosition);
+            if (distanceToTarget < 0.50f)
+            {
                 isMoving = false;
-
-                getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
-                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
             }
+
+            if (getGameLogic() != null && getGameLogic().getMyHero() != null) {
+                Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
+                if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
+                    sentStopAnimation = true;
+                    isMoving = false;
+
+                    getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
+                    getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+                }
+            }
+            runAnimation();
         }
-        //}else { 
-        // Play dead animation
-        //}
-        runAnimation();
+        else {
+            //Play dead animation
+            //anim.SetBool("alive", false);
+        }
     }
 
     public void rotateToTarget(Vector3 postition) {
@@ -101,7 +104,29 @@ public class CharacterAnimations : MonoBehaviour {
     {
         yield return new WaitForSeconds(0.3f);
         anim.SetBool("attacking", false);
+    }
 
+    IEnumerator clearSpell1()
+    {
+        yield return new WaitForSeconds(0.3f);
+        anim.SetBool("spell1", false);
+    }
+
+    IEnumerator clearSpell2()
+    {
+        yield return new WaitForSeconds(0.3f);
+        anim.SetBool("spell2", false);
+    }
+
+    IEnumerator clearSpell3()
+    {
+        yield return new WaitForSeconds(0.3f);
+        anim.SetBool("spell3", false);
+    }
+
+    internal void setAlive(bool status)
+    {
+        anim.SetBool("alive", false);
     }
 
     public void runAnimation() {
@@ -115,7 +140,21 @@ public class CharacterAnimations : MonoBehaviour {
 
     public void spellAnimation(int spellAnimationId)
     {
-        anim.SetBool("spell1", true);
+        if (spellAnimationId == 1)
+        {
+            anim.SetBool("spell1", true);
+            StartCoroutine("clearSpell1");
+        }
+        else if (spellAnimationId == 2)
+        {
+            anim.SetBool("spell2", true);
+            StartCoroutine("clearSpell2");
+        }
+        else if (spellAnimationId == 3)
+        {
+            anim.SetBool("spell3", true);
+            StartCoroutine("clearSpell3");
+        }
     }
 
 

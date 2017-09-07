@@ -109,7 +109,7 @@ public class GenericCastbar : MonoBehaviour {
             enemies.Add(getGameLogic().getMyHero().targetEnemy);
             List<int> friends = new List<int>();
             friends.Add(getGameLogic().getMyHero().targetFriendly);
-            Debug.Log("Found this many enemies : " + enemies.Count);
+            Debug.Log("Found this many enemies : " + enemies.Count + " Sending spell by name : " + spell.transform.GetChild(0).GetComponent<Image>().sprite.name);
             getGameLogic().sendSpell((int)getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friends);
         }
         else
