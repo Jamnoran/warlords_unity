@@ -32,7 +32,7 @@ public class GameLogic : MonoBehaviour
     public World world;
     public GameObject playerHealth;
 
-
+    private int thisHeroId;
     // Use this for initialization
     void Start() {
         Debug.Log("Game logic has started");
@@ -40,6 +40,18 @@ public class GameLogic : MonoBehaviour
             Debug.Log("Go to connect screen.");
             SceneManager.LoadScene("Connect");
         }
+
+        try
+        {
+            thisHeroId = getLobbyCommunication().heroId;
+        }
+        catch (Exception e)
+        {
+
+            throw new Exception("Could not load lobbycommunication: " + e);
+        }
+        
+
     }
 
     // Update is called once per frame
@@ -172,6 +184,14 @@ public class GameLogic : MonoBehaviour
         foreach (var newHero in newHeroes) {
             updateHero(newHero);
         }
+
+        UpdatePartyFrames(newHeroes);
+    }
+
+    private void UpdatePartyFrames(List<Hero> heroes)
+    {
+        heroes.RemoveAll(hero => hero.id == thisHeroId);
+        getPartyFrame().UpdatePartyFrames(heroes);
     }
 
     void updateHero(Hero newHero)
@@ -618,6 +638,13 @@ public class GameLogic : MonoBehaviour
         } else {
             return null;
         }
+    }
+
+
+
+    foobar getPartyFrame()
+    {
+        return ((foobar)GameObject.Find("GameLogicObject").GetComponent(typeof(foobar)));
     }
 
     DunGenerator getGenerator() {
