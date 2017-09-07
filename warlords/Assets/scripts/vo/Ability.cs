@@ -27,6 +27,7 @@ namespace Assets.scripts.vo
         public int castTime = 0;
         public int calculatedCastTime = 0;
         public bool isCasting = false;
+        public int resourceCost = 0;
 
         public bool isReady() {
             if (waitingForCdResponse || (timeWhenOffCooldown != null && !timeWhenOffCooldown.Equals("") && (long.Parse(timeWhenOffCooldown) >= getMillis()))) {

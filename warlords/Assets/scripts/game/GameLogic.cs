@@ -200,6 +200,7 @@ public class GameLogic : MonoBehaviour
         bool found = false;
         foreach (var hero in heroes)
         {
+            // Check if this is the corresponding hero to update
             if (newHero.id == hero.id)
             {
                 found = true;
@@ -261,6 +262,11 @@ public class GameLogic : MonoBehaviour
                 hero.setAutoAttacking(true);
             }
         }
+    }
+
+    public void updateAbilityInformation(Ability ability)
+    {
+        Debug.Log("We got an update of ability for use with castbar");
     }
 
     void initiateHero(Hero newHero)
@@ -379,7 +385,13 @@ public class GameLogic : MonoBehaviour
                 Hero source = getHero(gameAnimation.source_id);
                 CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
                 anim.spellAnimation(gameAnimation.spellAnimationId);
-                //Instantiate(tauntAnimation, new Vector3(source.positionX, 0.3f, source.positionZ), Quaternion.identity);
+            }
+            if (gameAnimation.animation_type == "SMITE")
+            {
+                Debug.Log("Smite animation");
+                Hero source = getHero(gameAnimation.source_id);
+                CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
+                anim.spellAnimation(gameAnimation.spellAnimationId);
             }
         }
     }
@@ -453,7 +465,10 @@ public class GameLogic : MonoBehaviour
 
     public void sendSpell(int spellId, List<int> enemies, List<int> friendly) {
         Debug.Log("Send spell " + spellId);
-        getCommunication().sendSpell(spellId, enemies, friendly, getMyHero().getTargetPosition());
+        if (isMyHeroAlive())
+        {
+            getCommunication().sendSpell(spellId, enemies, friendly, getMyHero().getTargetPosition());
+        }
     }
 
     public List<Ability> getAbilities() {
@@ -498,7 +513,7 @@ public class GameLogic : MonoBehaviour
     {
         foreach (var ability in abilities)
         {
-            if (ability.name == name)
+            if (ability.image == name)
             {
                 return ability.id;
             }

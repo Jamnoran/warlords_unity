@@ -54,7 +54,7 @@ public class foobar : MonoBehaviour {
 
         }
 
-        currentHealth1 = heroes[0].hp;
+      
 
     }
 
