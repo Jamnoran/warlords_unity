@@ -157,6 +157,8 @@ public class GameLogic : MonoBehaviour
                 MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
                 minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ));
                 FieldOfView fieldOfView = ((FieldOfView) minionTransform.Find("mob1").GetComponent(typeof(FieldOfView)));
+                MinionInfo minionInfo = (MinionInfo)minionTransform.GetComponent(typeof(MinionInfo));
+                minionInfo.setMinionId(newMinion.id);
                 minions.Add(newMinion);
             }
         }
@@ -191,7 +193,10 @@ public class GameLogic : MonoBehaviour
     private void UpdatePartyFrames(List<Hero> heroes)
     {
         heroes.RemoveAll(hero => hero.id == thisHeroId);
-        getPartyFrame().UpdatePartyFrames(heroes);
+        if (getPartyFrame() != null)
+        {
+            getPartyFrame().UpdatePartyFrames(heroes);
+        }
     }
 
     void updateHero(Hero newHero)
@@ -310,7 +315,12 @@ public class GameLogic : MonoBehaviour
                 Minion minion = getMinion(gameAnimation.target_id);
 
                 ((HealthUpdate)minion.minionTransform.GetComponent(typeof(HealthUpdate))).hideBar();
+                Debug.Log("Minion died, disable everything!");
 
+                ((FieldOfViewMinion)minion.minionTransform.Find("mob1").GetComponent(typeof(FieldOfViewMinion))).enabled = false;
+                // Disable capsle collider + Character animation
+                ((CapsuleCollider)minion.minionTransform.GetComponent(typeof(CapsuleCollider))).enabled = false;
+                ((CharacterController)minion.minionTransform.GetComponent(typeof(CharacterController))).enabled = false;
 
                 //Destroy(minion.minionTransform.gameObject);
                 MinionAnimations anim = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));

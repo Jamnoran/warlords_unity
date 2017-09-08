@@ -12,6 +12,7 @@ public class TargetFrame : MonoBehaviour {
     public TextVariant textVariant = TextVariant.Percent;
     public int m_TextValue = 100;
     public string m_TextValueFormat = "0";
+    public GameObject enemyRedBorder;
 
     public enum TextVariant
     {
@@ -29,19 +30,33 @@ public class TargetFrame : MonoBehaviour {
 	void Update () {
         if (getGameLogic().getMyHero() != null)
         {
-            int targetEnemy = getGameLogic().getMyHero().targetEnemy;
-            if (targetEnemy > 0)
+            // Friendly take priority
+            int friendlyTarget = getGameLogic().getMyHero().targetFriendly;
+
+            if (friendlyTarget > 0)
             {
                 targetFrame.SetActive(true);
-                Minion minion = getGameLogic().getMinion(targetEnemy);
-                float hpPerc = (float)minion.hp / (float)minion.maxHp;
+                Hero heroTarget = getGameLogic().getHero(friendlyTarget);
+                float hpPerc = (float)heroTarget.hp / (float)heroTarget.maxHp;
                 SetFillAmount(hpPerc);
+                enemyRedBorder.SetActive(false);
             }
             else
             {
-                targetFrame.SetActive(false);
+                int targetEnemy = getGameLogic().getMyHero().targetEnemy;
+                if (targetEnemy > 0)
+                {
+                    targetFrame.SetActive(true);
+                    Minion minion = getGameLogic().getMinion(targetEnemy);
+                    float hpPerc = (float)minion.hp / (float)minion.maxHp;
+                    SetFillAmount(hpPerc);
+                    enemyRedBorder.SetActive(true);
+                }
+                else
+                {
+                    targetFrame.SetActive(false);
+                }
             }
-
         }
     }
 
