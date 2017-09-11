@@ -477,7 +477,10 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Send spell " + spellId);
         if (isMyHeroAlive())
         {
-            getCommunication().sendSpell(spellId, enemies, friendly, getMyHero().getTargetPosition());
+            Hero myHero = getMyHero();
+            getCommunication().sendStopHero(myHero.id);
+            // TODO: Turn hero towards target (either against aoe/enemy/friendly)
+            getCommunication().sendSpell(spellId, enemies, friendly, myHero.getTargetPosition());
         }
     }
 

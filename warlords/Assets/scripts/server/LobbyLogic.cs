@@ -168,6 +168,11 @@ public class LobbyLogic : MonoBehaviour {
                         image.sprite = Resources.Load<Sprite>("PriestFrame");
                         Debug.Log("Setting image to priest");
                     }
+                    else if (hero.class_type.Equals("Warlock"))
+                    {
+                        image.sprite = Resources.Load<Sprite>("WarlockFrame");
+                        Debug.Log("Setting image to warlock");
+                    }
                 }
             }
         }
