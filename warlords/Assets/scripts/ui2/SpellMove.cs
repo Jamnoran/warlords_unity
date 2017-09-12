@@ -83,8 +83,11 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
             {
                 if (this.transform.parent.parent.name == "Spell" + i.ToString())
                 {
-                    Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/" + abilities[i].image);
-                    this.GetComponent<Image>().sprite = abilitySprite;
+                    if ((abilities.Count >= i-1) && abilities[i] != null)
+                    {
+                        Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/" + abilities[i].image);
+                        this.GetComponent<Image>().sprite = abilitySprite;
+                    }
                     
                 }
 

@@ -31,11 +31,14 @@ public class SpellShadow : MonoBehaviour
                 var foo = this.transform.name;
                 if (this.transform.name == "original" + i.ToString())
                 {
-                    Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/" + abilities[i].image);
-                    this.GetComponent<Image>().sprite = abilitySprite;
-                    var tmp = this.GetComponent<Image>().color;
-                    tmp.a = 0.5f;
-                    this.GetComponent<Image>().color = tmp;
+                    if ((abilities.Count > i - 1) && abilities[i] != null)
+                    {
+                        Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/" + abilities[i].image);
+                        this.GetComponent<Image>().sprite = abilitySprite;
+                        var tmp = this.GetComponent<Image>().color;
+                        tmp.a = 0.5f;
+                        this.GetComponent<Image>().color = tmp;
+                    }
 
                 }
 

@@ -17,9 +17,13 @@ public class clickToMove : MonoBehaviour {
     // Use this for initialization
     void Start () {
         //start at our current position, standing still
-        targetPosition = character.position;
-        Debug.Log("Setting target position to : " + character.position);
-        getAnimation().setDesiredLocation(targetPosition);
+        if (character != null)
+        {
+            targetPosition = character.position;
+            Debug.Log("Setting target position to : " + character.position);
+            getAnimation().setDesiredLocation(targetPosition);
+        }
+        
     }
 	
 	// Update is called once per frame

@@ -24,7 +24,10 @@ public class SetSpellNameText : MonoBehaviour {
                 if (spellIdFromAbilityList == i)
                 {
                     var tmpTextObject = this.GetComponent<Text>();
-                    tmpTextObject.text = abilities[i].name;
+                    if ((abilities.Count > i - 1) && abilities[i] != null)
+                    {
+                        tmpTextObject.text = abilities[i].name;
+                    }
 
                 }
 

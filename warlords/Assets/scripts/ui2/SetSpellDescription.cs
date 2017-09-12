@@ -23,7 +23,7 @@ public class SetSpellDescription : MonoBehaviour
             for (int i = 0; i < 12; i++)
             {
                 var foo = this.transform.name;
-                if (spellIdFromAbilityList == i)
+                if (spellIdFromAbilityList == i && abilities[i] != null)
                 {
                     var tmpTextObject = this.GetComponent<Text>();
                     tmpTextObject.text = abilities[i].description;

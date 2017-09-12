@@ -97,8 +97,11 @@ public class LobbyLogic : MonoBehaviour {
             {
                 currentHero = heroes[0];
             }
-            getLobbyCommunication().heroId = currentHero.id;
-            Debug.Log("Setting hero id : " + currentHero.id);
+            if (getLobbyCommunication() != null && currentHero != null)
+            {
+                getLobbyCommunication().heroId = currentHero.id;
+                Debug.Log("Setting hero id : " + currentHero.id);
+            }
         }
         updateCurrentHeroInformation();
     }
@@ -168,7 +171,7 @@ public class LobbyLogic : MonoBehaviour {
                         image.sprite = Resources.Load<Sprite>("PriestFrame");
                         Debug.Log("Setting image to priest");
                     }
-                    else if (hero.class_type.Equals("Warlock"))
+                    else if (hero.class_type.Equals("WARLOCK"))
                     {
                         image.sprite = Resources.Load<Sprite>("WarlockFrame");
                         Debug.Log("Setting image to warlock");

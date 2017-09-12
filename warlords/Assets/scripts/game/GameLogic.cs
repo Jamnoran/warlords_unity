@@ -41,16 +41,17 @@ public class GameLogic : MonoBehaviour
             SceneManager.LoadScene("Connect");
         }
 
-        try
-        {
-            thisHeroId = getLobbyCommunication().heroId;
-        }
-        catch (Exception e)
-        {
+        if (getLobbyCommunication() != null) {
+            try
+            {
+                thisHeroId = getLobbyCommunication().heroId;
+            }
+            catch (Exception e)
+            {
 
-            throw new Exception("Could not load lobbycommunication: " + e);
+                throw new Exception("Could not load lobbycommunication: " + e);
+            }
         }
-        
 
     }
 
@@ -218,9 +219,12 @@ public class GameLogic : MonoBehaviour
                 {
                     hero.desiredPositionX = newHero.desiredPositionX;
                     hero.desiredPositionZ = newHero.desiredPositionZ;
-                    Vector3 target = new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ);
                     CharacterAnimations animation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
+
+                    Vector3 target = new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ);
                     animation.setDesiredLocation(target);
+                    Vector3 currentPositionFromServer = new Vector3(newHero.positionX, newHero.positionY + 1.0f, newHero.positionZ);
+                    animation.setPositionFromServer(currentPositionFromServer);
                 }
                 hero.positionX = newHero.positionX;
                 hero.positionZ = newHero.positionZ;

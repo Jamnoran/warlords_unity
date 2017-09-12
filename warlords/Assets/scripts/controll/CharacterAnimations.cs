@@ -17,6 +17,7 @@ public class CharacterAnimations : MonoBehaviour {
     public bool isAttacking = false;
     public bool isGrounded = false;
     public float distanceToTarget = 10.0f;
+    public float distanceBeforeSnappingHeroes = 3.0f;
 
     // Use this for initialization
     void Start () {
@@ -165,6 +166,16 @@ public class CharacterAnimations : MonoBehaviour {
         isAttacking = false;
     }
 
+    public void setPositionFromServer(Vector3 currentPositionFromServer)
+    {
+        distanceToTarget = Vector3.Distance(currentPositionFromServer, character.transform.position);
+        if (distanceToTarget >= distanceBeforeSnappingHeroes)
+        {
+            Debug.Log("Character is too far away from where it should be, teleport it!");
+            character.transform.position = currentPositionFromServer;
+        }
+    }
+
     public void stopMove() {
         //Debug.Log("Setting target position to current position : " + character.transform.position.x + " x " + character.transform.position.z);
         targetPosition = character.transform.position;
@@ -191,4 +202,5 @@ public class CharacterAnimations : MonoBehaviour {
             return null;
         }
     }
+
 }
