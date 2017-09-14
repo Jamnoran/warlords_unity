@@ -87,11 +87,11 @@ public class ServerCommunication : MonoBehaviour {
         }
     }
 
-    public void sendMoveRequest(float positionX, float positionZ, float desiredPositionX, float desiredPositionZ)  {
+    public void sendMoveRequest(float positionX, float postionY, float positionZ, float desiredPositionX, float desiredPositionY, float desiredPositionZ)  {
         //print("Send move request to server");
         // This will send to server the players hero location (positionX,positionY) and also the desired position the players hero wants to move to
         // Make sure this does not get sent too often (every update) because then it will spam server (have a check that handles if the hero has moved more than for example 0.5 then send request)
-        writeSocket("{\"request_type\": \"MOVE\", hero_id:\"" + getHeroId() + "\", position_x: \"" + positionX + "\", position_z: \"" + positionZ + "\", desired_position_x: \"" + desiredPositionX + "\", desired_position_z: \"" + desiredPositionZ+ "\"}");
+        sendRequest(new RequestMove(getHeroId(), positionX,postionY, positionZ, desiredPositionX, desiredPositionY, desiredPositionZ));
     }
 
     public void sendStopHero(int heroId) {

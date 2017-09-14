@@ -121,7 +121,7 @@ public class move : MonoBehaviour {
     void sendMove()
     {
         lastSentPosition = transform.position;
-        getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
+        getCommunication().sendMoveRequest(transform.position.x, transform.position.y, transform.position.z, targetPosition.x, targetPosition.y, targetPosition.z);
     }
 
     void placeTracker(int color)

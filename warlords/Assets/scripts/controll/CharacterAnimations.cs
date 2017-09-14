@@ -64,7 +64,7 @@ public class CharacterAnimations : MonoBehaviour {
                 sentStopAnimation = true;
                 isMoving = false;
 
-                getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
+                getCommunication().sendMoveRequest(transform.position.x, transform.position.y, transform.position.z, targetPosition.x, targetPosition.y, targetPosition.z);
                 getCommunication().sendStopHero(getGameLogic().getMyHero().id);
             }
         }

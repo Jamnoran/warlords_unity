@@ -93,7 +93,7 @@ public class clickToMove : MonoBehaviour {
     void sendMove() {
         lastSentPosition = transform.position;
         if (getCommunication() != null) {
-            getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
+            getCommunication().sendMoveRequest(transform.position.x, transform.position.y, transform.position.z, targetPosition.x, targetPosition.y, targetPosition.z);
         }
     }
 
