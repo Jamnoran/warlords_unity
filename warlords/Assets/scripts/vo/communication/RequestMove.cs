@@ -7,23 +7,23 @@ using UnityEngine;
 public class RequestMove {
 	public String request_type;
 	public int hero_id = 0;
-    public float positionX;
-    public float positionY;
-    public float positionZ;
-    public float desiredPositionX;
-    public float desiredPositionY;
-    public float desiredPositionZ;
+    public float position_x;
+    public float position_y;
+    public float position_z;
+    public float desired_position_x;
+    public float desired_position_y;
+    public float desired_position_z;
 
     public RequestMove(int hId, float positionX, float positionY, float positionZ, float desiredPositionX, float desiredPositionY, float desiredPositionZ)
     {
         setRequestType("MOVE");
         hero_id = hId;
-        this.positionX = positionX;
-        this.positionY = positionY;
-        this.positionZ = positionZ;
-        this.desiredPositionX = desiredPositionX;
-        this.desiredPositionY = desiredPositionY;
-        this.desiredPositionZ = desiredPositionZ;
+        this.position_x = positionX;
+        this.position_y = positionY;
+        this.position_z = positionZ;
+        this.desired_position_x = desiredPositionX;
+        this.desired_position_y = desiredPositionY;
+        this.desired_position_z = desiredPositionZ;
 }
 
 	public void setRequestType(String requestType) {
