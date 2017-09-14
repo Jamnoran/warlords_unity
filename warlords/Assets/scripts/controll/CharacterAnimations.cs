@@ -147,7 +147,7 @@ public class CharacterAnimations : MonoBehaviour {
     public void setDesiredLocation(Vector3 position) {
         if (targetPosition.x != position.x && targetPosition.z != position.z)
         {
-            Debug.Log("We got a new desired location, setting movement to true");
+            //Debug.Log("We got a new desired location, setting movement to true ");
             isMoving = true;
         }
         targetPosition = position;

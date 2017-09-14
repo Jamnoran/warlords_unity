@@ -74,7 +74,7 @@ public class clickToMove : MonoBehaviour {
         if (Physics.Raycast(ray, out hit, 10000))
         {
             //update our desired position with the coordinates clicked
-            targetPosition = new Vector3(hit.point.x, 0, hit.point.z);
+            targetPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
         }
     }
     

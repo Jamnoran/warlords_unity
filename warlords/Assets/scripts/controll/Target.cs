@@ -56,7 +56,7 @@ public class Target : MonoBehaviour {
         //if we hit our ray, save the information to our "hit" variable
         if (Physics.Raycast(ray, out hit, 10000)) {
             //update our desired position with the coordinates clicked
-            targetPosition = new Vector3(hit.point.x, 0, hit.point.z);
+            targetPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             //save our type of target so we can check what we have clicked on.
             typeOftarget = hit.transform.gameObject;
         }
@@ -71,7 +71,7 @@ public class Target : MonoBehaviour {
         float closestDistanse = 300.0f;
         foreach (var minion in ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getMinions()) {
             if (minion.alive) {
-                Vector3 minionPosition = new Vector3(minion.minionTransform.position.x, 0.1f, minion.minionTransform.position.z);
+                Vector3 minionPosition = new Vector3(minion.minionTransform.position.x, minion.minionTransform.position.y, minion.minionTransform.position.z);
                 float dist = Vector3.Distance(minionPosition, targetPosition);
 
                 if ((dist < closestDistanse) && dist <= MinTargetDistance) {
@@ -83,7 +83,7 @@ public class Target : MonoBehaviour {
         }
         foreach (var hero in (listOfHeroes)) {
             if (hero.alive) { 
-                Vector3 heroPosition = new Vector3(hero.trans.position.x, 0.1f, hero.trans.position.z);
+                Vector3 heroPosition = new Vector3(hero.trans.position.x, hero.trans.position.y, hero.trans.position.z);
                 float dist = Vector3.Distance(heroPosition, targetPosition);
                 //Debug.Log("Class: " + hero.class_type + " Distance from click [" + targetPosition.x + "x"  + targetPosition.z + "] is: " + dist);
                 if ((dist < closestDistanse) && dist <= MinTargetDistance) {
