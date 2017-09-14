@@ -619,13 +619,13 @@ public class GameLogic : MonoBehaviour
             hero.positionX = heroInList.desiredPositionX;
             hero.positionZ = heroInList.desiredPositionZ;
             hero.positionY = heroInList.desiredPositionY;
-            Vector3 newPosition = new Vector3(hero.positionX, 1.0f, hero.positionZ);
+            Vector3 newPosition = new Vector3(hero.positionX, hero.positionY, hero.positionZ);
             if (hero.id == getMyHero().id) {
                 CharacterAnimations heroAnimation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
                 heroAnimation.targetPosition = new Vector3(heroInList.desiredPositionX, heroInList.desiredPositionY, heroInList.desiredPositionZ);
             }
             hero.trans.position = newPosition;
-            //Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
+            Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
         }
     }
 

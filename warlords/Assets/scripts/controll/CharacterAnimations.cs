@@ -55,7 +55,7 @@ public class CharacterAnimations : MonoBehaviour {
         distanceToTarget = Vector3.Distance(character.transform.position, targetPosition);
         if (distanceToTarget < 0.50f)
         {
-            Debug.Log("Target has reached its desired location " + thisHero.id);
+            //Debug.Log("Target has reached its desired location " + thisHero.id);
             isMoving = false;
         }
 
