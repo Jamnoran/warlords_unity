@@ -31,13 +31,12 @@ public class CharacterAnimations : MonoBehaviour {
         // Update target position to minion position if we have a target and is auto attacking
         //if (getGameLogic() != null && getGameLogic().getMyHero() != null)
         //{
-            //Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
-            Hero thisHero = getGameLogic().getHeroByTransform(character);
-            if (thisHero != null && thisHero.targetEnemy > 0 && isAttacking)
-            {
-                Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
-                targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
-            }
+        Hero thisHero = getGameLogic().getHeroByTransform(character);
+        if (thisHero != null && thisHero.targetEnemy > 0 && isAttacking)
+        {
+            Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
+            targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
+        }
         //}
 
         character.transform.LookAt(targetPostition);
@@ -59,7 +58,7 @@ public class CharacterAnimations : MonoBehaviour {
             isMoving = false;
         }
 
-        if (getGameLogic() != null && getGameLogic().getMyHero() != null && getGameLogic().getMyHero().id == thisHero.id) {
+        if (getGameLogic() != null && getGameLogic().getMyHero() != null && thisHero != null && getGameLogic().getMyHero().id == thisHero.id) {
             if (!isMoving && !sentStopAnimation && !thisHero.getAutoAttacking()) {
                 sentStopAnimation = true;
                 isMoving = false;
