@@ -31,7 +31,7 @@ public class CharacterAnimations : MonoBehaviour {
         // Update target position to minion position if we have a target and is auto attacking
         //if (getGameLogic() != null && getGameLogic().getMyHero() != null)
         //{
-        Hero thisHero = getGameLogic().getHeroByTransform(character);
+        Hero thisHero = getGameLogic().getHeroByTransform(transform);
         if (thisHero != null && thisHero.targetEnemy > 0 && isAttacking)
         {
             Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
@@ -55,6 +55,7 @@ public class CharacterAnimations : MonoBehaviour {
         distanceToTarget = Vector3.Distance(character.transform.position, targetPosition);
         if (distanceToTarget < 0.50f)
         {
+            Debug.Log("Target has reached its desired location " + thisHero.id);
             isMoving = false;
         }
 
@@ -144,8 +145,12 @@ public class CharacterAnimations : MonoBehaviour {
 
 
     public void setDesiredLocation(Vector3 position) {
+        if (targetPosition.x != position.x && targetPosition.z != position.z)
+        {
+            Debug.Log("We got a new desired location, setting movement to true");
+            isMoving = true;
+        }
         targetPosition = position;
-        isMoving = true;
         sentStopAnimation = false;
         isAttacking = false;
     }

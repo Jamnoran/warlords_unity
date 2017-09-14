@@ -55,14 +55,9 @@ public class GameLogic : MonoBehaviour
 
     }
 
-    public Hero getHeroByTransform(GameObject transform)
+    public Hero getHeroByTransform(Transform transform)
     {
-        HeroInfo heroInfo = (HeroInfo) transform.GetComponent(typeof(HeroInfo));
-        if (heroInfo != null && getHero(heroInfo.getHeroId()) != null)
-        {
-            return getHero(heroInfo.getHeroId());
-        }
-        return null;
+        return getHero(((HeroInfo)transform.GetComponent(typeof(HeroInfo))).getHeroId());
     }
 
 
