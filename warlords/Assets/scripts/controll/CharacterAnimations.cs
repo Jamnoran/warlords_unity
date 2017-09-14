@@ -155,8 +155,8 @@ public class CharacterAnimations : MonoBehaviour {
         distanceToTarget = Vector3.Distance(currentPositionFromServer, character.transform.position);
         if (distanceToTarget >= distanceBeforeSnappingHeroes)
         {
-            Debug.Log("Character is too far away from where it should be, teleport it!");
-            character.transform.position = currentPositionFromServer;
+            //Debug.Log("Character is too far away from where it should be, teleport it!");
+            //character.transform.position = currentPositionFromServer;
         }
     }
 
