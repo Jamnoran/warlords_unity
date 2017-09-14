@@ -8,7 +8,7 @@ public class RequestMove {
 	public String request_type;
 	public int hero_id = 0;
     public float positionX;
-    public float postionY;
+    public float positionY;
     public float positionZ;
     public float desiredPositionX;
     public float desiredPositionY;
@@ -19,7 +19,7 @@ public class RequestMove {
         setRequestType("MOVE");
         hero_id = hId;
         this.positionX = positionX;
-        this.postionY = positionY;
+        this.positionY = positionY;
         this.positionZ = positionZ;
         this.desiredPositionX = desiredPositionX;
         this.desiredPositionY = desiredPositionY;
