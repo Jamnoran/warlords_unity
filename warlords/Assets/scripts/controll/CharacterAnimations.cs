@@ -28,16 +28,13 @@ public class CharacterAnimations : MonoBehaviour {
     void Update()
     {
         Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
-        // Update target position to minion position if we have a target and is auto attacking
-        //if (getGameLogic() != null && getGameLogic().getMyHero() != null)
-        //{
+
         Hero thisHero = getGameLogic().getHeroByTransform(transform);
         if (thisHero != null && thisHero.targetEnemy > 0 && isAttacking)
         {
             Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
             targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
         }
-        //}
 
         character.transform.LookAt(targetPostition);
 
@@ -52,7 +49,9 @@ public class CharacterAnimations : MonoBehaviour {
         controller.SimpleMove(velocity);
 
         //if we are at the desired position we must stop moving
-        distanceToTarget = Vector3.Distance(character.transform.position, targetPosition);
+        Vector3 tempDirWithCorrectedHight = targetPosition;
+        tempDirWithCorrectedHight.y = character.transform.position.y;
+        distanceToTarget = Vector3.Distance(character.transform.position, tempDirWithCorrectedHight);
         if (distanceToTarget < 0.50f)
         {
             //Debug.Log("Target has reached its desired location " + thisHero.id);
@@ -147,7 +146,6 @@ public class CharacterAnimations : MonoBehaviour {
     public void setDesiredLocation(Vector3 position) {
         if (targetPosition.x != position.x && targetPosition.z != position.z)
         {
-            //Debug.Log("We got a new desired location, setting movement to true ");
             isMoving = true;
         }
         targetPosition = position;
@@ -157,11 +155,13 @@ public class CharacterAnimations : MonoBehaviour {
 
     public void setPositionFromServer(Vector3 currentPositionFromServer)
     {
-        distanceToTarget = Vector3.Distance(currentPositionFromServer, character.transform.position);
+        Vector3 tempDirWithCorrectedHight = targetPosition;
+        tempDirWithCorrectedHight.y = character.transform.position.y;
+        distanceToTarget = Vector3.Distance(currentPositionFromServer, tempDirWithCorrectedHight);
         if (distanceToTarget >= distanceBeforeSnappingHeroes)
         {
-            //Debug.Log("Character is too far away from where it should be, teleport it!");
-            //character.transform.position = currentPositionFromServer;
+            Debug.Log("Character is too far away from where it should be, teleport it!");
+            character.transform.position = currentPositionFromServer;
         }
     }
 
