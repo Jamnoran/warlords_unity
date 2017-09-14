@@ -7,7 +7,7 @@ public class CharacterAnimations : MonoBehaviour {
     public GameObject character;
     private Animator anim;
     public Vector3 targetPosition;
-    bool isMoving;
+    bool isMoving = false;
     public float moveSpeed = 5.0f;
     public float rotateSpeed = 3.0F;
     public bool sentStopAnimation = false;
@@ -29,15 +29,16 @@ public class CharacterAnimations : MonoBehaviour {
     {
         Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
         // Update target position to minion position if we have a target and is auto attacking
-        if (getGameLogic() != null && getGameLogic().getMyHero() != null)
-        {
-            Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
+        //if (getGameLogic() != null && getGameLogic().getMyHero() != null)
+        //{
+            //Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
+            Hero thisHero = getGameLogic().getHeroByTransform(character.transform);
             if (thisHero.targetEnemy > 0 && isAttacking)
             {
                 Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
                 targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
             }
-        }
+        //}
 
         character.transform.LookAt(targetPostition);
 
@@ -58,9 +59,8 @@ public class CharacterAnimations : MonoBehaviour {
             isMoving = false;
         }
 
-        if (getGameLogic() != null && getGameLogic().getMyHero() != null) {
-            Hero thisHero = getGameLogic().getClosestHeroByPosition(character.transform.position);
-            if (!isMoving && !sentStopAnimation && thisHero.id == getGameLogic().getMyHero().id && !thisHero.getAutoAttacking()) {
+        if (getGameLogic() != null && getGameLogic().getMyHero() != null && getGameLogic().getMyHero().id == thisHero.id) {
+            if (!isMoving && !sentStopAnimation && !thisHero.getAutoAttacking()) {
                 sentStopAnimation = true;
                 isMoving = false;
 
@@ -118,10 +118,11 @@ public class CharacterAnimations : MonoBehaviour {
         anim.SetBool("walking", isMoving);
     }
 
-    public void idleAnimation() {
+    public void idleAnimation()
+    {
+        isMoving = false;
         //anim.SetBool("walking", false);
     }
-
 
     public void spellAnimation(int spellAnimationId)
     {

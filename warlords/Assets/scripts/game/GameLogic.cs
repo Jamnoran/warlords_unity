@@ -55,6 +55,20 @@ public class GameLogic : MonoBehaviour
 
     }
 
+    public Hero getHeroByTransform(Transform transform)
+    {
+        HeroInfo heroInfo = (HeroInfo) transform.GetComponent(typeof(HeroInfo));
+        return getHero(heroInfo.getHeroId());
+    }
+
+
+
+    public Minion getMinionByTransform(Transform transform)
+    {
+        MinionInfo minionInfo = (MinionInfo)transform.GetComponent(typeof(MinionInfo));
+        return getMinion(minionInfo.getMinionId());
+    }
+
     // Update is called once per frame
     void Update() {
         if (heroes != null && heroes.Count > 0) {
@@ -302,6 +316,10 @@ public class GameLogic : MonoBehaviour
             newHero.updateHealthBar(true);
         }
         ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
+
+        HeroInfo heroInfo = (HeroInfo)heroTransform.GetComponent(typeof(HeroInfo));
+        heroInfo.setHeroId(newHero.id);
+
         heroes.Add(newHero);
         //set initial health for hero
         newHero.initBars();
