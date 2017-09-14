@@ -164,6 +164,7 @@ public class CharacterAnimations : MonoBehaviour {
         //Debug.Log("Setting target position to current position : " + character.transform.position.x + " x " + character.transform.position.z);
         targetPosition = character.transform.position;
         isAttacking = false;
+        isMoving = false;
     }
 
 
