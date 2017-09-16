@@ -6,13 +6,20 @@ namespace Assets.scripts.vo {
     public class Message {
 
         public int recipient;
+        public string sender;
         public string message;
 
         public Message() {
         }
-
-        public Message(int rec, string mess) {
+        public Message(int rec, string mess)
+        {
             recipient = rec;
+            message = mess;
+        }
+
+        public Message(int rec, string send, string mess) {
+            recipient = rec;
+            sender = send;
             message = mess;
         }
 

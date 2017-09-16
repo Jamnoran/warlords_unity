@@ -244,11 +244,11 @@ namespace UnityEngine.UI
             if (!string.IsNullOrEmpty(text))
             {
                 // Make sure the return key is pressed
-                if (Input.GetKey(KeyCode.Return))
-                {
-                    // Send the message
-                    this.SendChatMessage(text);
-                }
+                //if (Input.GetKey(KeyCode.Return))
+                //{
+                //    // Send the message
+                //    this.SendChatMessage(text);
+                //}
             }
         }
         

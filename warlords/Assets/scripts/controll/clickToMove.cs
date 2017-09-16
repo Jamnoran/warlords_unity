@@ -28,36 +28,45 @@ public class clickToMove : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (getGameLogic() != null && getGameLogic().isMyHeroAlive()) {
+        if (getGameLogic() != null && getGameLogic().isMyHeroAlive())
+        {
+            Hero hero = getGameLogic().getMyHero();
             if (isMyHero && Input.GetMouseButton(right_mouse_button)) {                 
                 //look to see if the player is clicking right mouse button
                 getPosition();
                 //where did the player click?
                 movePlayer();
             }
+            if (isMyHero && Input.GetKeyUp("a"))
+            {
+                bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
+                Debug.Log("Hero is now attacking : " + !autoAttacking);
+                getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
+            }else if (isMyHero && Input.GetKeyUp("s"))
+            {
+                Debug.Log("Send stop");
+                getGameLogic().stopHero(hero.id);
+            }
 
             // Check if hero wants to auto attack
             if (isMyHero) {
-                if (getGameLogic() != null) {
-                    Hero hero = getGameLogic().getMyHero();
-                    //Debug.Log("Hero.getAutoAttacking " + hero.getAutoAttacking() + " auto attack ready : " + getGameLogic().getAbility(0).isReady());
-                    if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0) {
-                        // Check if user is in range of auto attack otherwise set its location as targetPostion
-                        FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
-                        List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, hero.attackRange, false);
-                        if (enemiesInRange != null && enemiesInRange.Contains(hero.targetEnemy)) {
-                            // Is in range
-                            getAnimation().stopMove();
-                            getAnimation().rotateToTarget(getGameLogic().getMinion(hero.targetEnemy).getTransformPosition());
-                            getGameLogic().getAbility(0).waitingForCdResponse = true;
-                            getGameLogic().autoAttack();
-                        } else {
-                            if (hero.targetEnemy > 0 && getGameLogic() != null && getGameLogic().getMinion(hero.targetEnemy) != null && getGameLogic().getMinion(hero.targetEnemy).getTransformPosition() != null)
-                            {
-                                targetPosition = getGameLogic().getMinion(hero.targetEnemy).getTransformPosition();
-                            }
-                            movePlayer();
+                //Debug.Log("Hero.getAutoAttacking " + hero.getAutoAttacking() + " auto attack ready : " + getGameLogic().getAbility(0).isReady());
+                if (hero.getAutoAttacking() && getGameLogic().getAbility(0).isReady() && hero.targetEnemy > 0) {
+                    // Check if user is in range of auto attack otherwise set its location as targetPostion
+                    FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
+                    List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, hero.attackRange, false);
+                    if (enemiesInRange != null && enemiesInRange.Contains(hero.targetEnemy)) {
+                        // Is in range
+                        getAnimation().stopMove();
+                        getAnimation().rotateToTarget(getGameLogic().getMinion(hero.targetEnemy).getTransformPosition());
+                        getGameLogic().getAbility(0).waitingForCdResponse = true;
+                        getGameLogic().autoAttack();
+                    } else {
+                        if (hero.targetEnemy > 0 && getGameLogic() != null && getGameLogic().getMinion(hero.targetEnemy) != null && getGameLogic().getMinion(hero.targetEnemy).getTransformPosition() != null)
+                        {
+                            targetPosition = getGameLogic().getMinion(hero.targetEnemy).getTransformPosition();
                         }
+                        movePlayer();
                     }
                 }
             }

@@ -253,7 +253,7 @@ public class GameLogic : MonoBehaviour
 
     void updateHeroBuffs(Hero newHero, Hero hero)
     {
-        List<ResponseHeroBuff> oldBuffs = hero.buffs;
+        List<Buff> oldBuffs = hero.buffs;
         hero.buffs = newHero.buffs;
         foreach (var buff in newHero.buffs)
         {
@@ -403,12 +403,12 @@ public class GameLogic : MonoBehaviour
             if (gameAnimation.animation_type == "HEAL") {
                 Debug.Log("Heal animation");
                 Hero target = getHero(gameAnimation.target_id);
-                Instantiate(healAnimation, new Vector3(target.positionX, 0.3f, target.positionZ), Quaternion.identity);
+                Instantiate(healAnimation, new Vector3(target.positionX, target.positionY, target.positionZ), Quaternion.identity);
             }
             if (gameAnimation.animation_type == "TAUNT") {
                 Debug.Log("Taunt animation");
                 Hero source = getHero(gameAnimation.source_id);
-                Instantiate(tauntAnimation, new Vector3(source.positionX, 0.3f, source.positionZ), Quaternion.identity);
+                Instantiate(tauntAnimation, new Vector3(source.positionX, source.positionY, source.positionZ), Quaternion.identity);
             }
             if (gameAnimation.animation_type == "DRAIN")
             {

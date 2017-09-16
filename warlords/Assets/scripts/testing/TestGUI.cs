@@ -17,44 +17,10 @@ public class TestGUI : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        if (menu != null) {
-            menu.SetActive(false);
-        }
-        if (restart != null && exit != null)
-        {
-            restart.onClick.AddListener(() => { restartLevel(); });
-            exit.onClick.AddListener(() => { exitToLobby(); });
-        }
     }
 	
 	// Update is called once per frame
 	void Update () {
-
-
-        //// Handle auto attack, this sets a flag on the hero
-        if (getGameLogic().isMyHeroAlive() && !isChatVisible()) {
-            if (Input.GetKeyUp("a")) {
-                bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
-                Debug.Log("Hero is now attacking : " + !autoAttacking);
-                getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
-            }else if (Input.GetKeyUp("s")) {
-                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
-            }else if (Input.GetKeyDown("t")) {
-                Debug.Log("Showing talents");
-                if (!talents.active) {
-                    getTalentScript().refresh();
-                    talents.SetActive(true);
-                } else {
-                    talents.SetActive(false);
-                }
-            }else if (Input.GetKeyUp("l")) // L
-            {
-                getCommunication().selfDamage();
-            }
-        }
-        if (Input.GetKeyDown("escape")) {
-            isShowing = !isShowing;
-        }
     }
 
     bool isChatVisible()
@@ -128,10 +94,6 @@ public class TestGUI : MonoBehaviour {
 
     GameLogic getGameLogic() {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
-    }
-
-    Talents getTalentScript() {
-        return ((Talents) talents.GetComponent(typeof(Talents)));
     }
 
     Chat getChat() {

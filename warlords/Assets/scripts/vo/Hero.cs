@@ -32,7 +32,8 @@ namespace Assets.scripts.vo
         private bool autoAttacking = false;
         public float attackRange = 3.0f;
         public float baseMoveSpeed = 3.0f;
-        public List<ResponseHeroBuff> buffs = new List<ResponseHeroBuff>();
+        public List<Buff> buffs = new List<Buff>();
+        public List<Buff> deBuffs = new List<Buff>();
         public List<Talent> talents;
         private int totalTalentPoints = 0;
 
@@ -51,20 +52,20 @@ namespace Assets.scripts.vo
             {
                 for (int i = 0; i < buffs.Count; i++) 
                 {
-                    ResponseHeroBuff buff = buffs[i];
-                    if ((buff.millisBuffStarted + buff.duration) < DeviceUtil.getMillis())
-                    {
-                        buffs.Remove(buff);
-                        int type = buff.type;
-                        if (type == Buff.SPEED) 
-                        {
-                            calculateSpeed();
-                        }else if (type == Buff.SHIELD)
-                        {
-                            Debug.Log("Removing shield for hero " + id);
-                            shieldLogic.setVisibility(false);
-                        }
-                    }
+                    Buff buff = buffs[i];
+                    //if ((buff.millisBuffStarted + buff.duration) < DeviceUtil.getMillis())
+                    //{
+                    //    buffs.Remove(buff);
+                    //    int type = buff.type;
+                    //    if (type == Buff.SPEED) 
+                    //    {
+                    //        calculateSpeed();
+                    //    }else if (type == Buff.SHIELD)
+                    //    {
+                    //        Debug.Log("Removing shield for hero " + id);
+                    //        shieldLogic.setVisibility(false);
+                    //    }
+                    //}
                 }
             } else 
             {

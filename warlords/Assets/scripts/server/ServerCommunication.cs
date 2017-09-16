@@ -371,7 +371,7 @@ public class ServerCommunication : MonoBehaviour {
 
 
     Chat getChat() {
-        return ((Chat)GameObject.Find("Chat").GetComponent(typeof(Chat)));
+        return ((Chat)GameObject.Find("GameLogicObject").GetComponent(typeof(Chat)));
     }
 
 	HordeMode getHordeMode() {
