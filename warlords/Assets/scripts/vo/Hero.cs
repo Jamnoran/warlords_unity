@@ -141,6 +141,11 @@ namespace Assets.scripts.vo
         public void initBars() {
             ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
             setHp(maxHp);
+            if (class_type == "WARLOCK")
+            {
+                GameObject manaGlobe = GameObject.Find("mana globe");
+                manaGlobe.SetActive(false);
+            }
         }
 
         public void calculateSpeed() {

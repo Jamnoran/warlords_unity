@@ -289,6 +289,7 @@ public class GameLogic : MonoBehaviour
     public void updateAbilityInformation(Ability ability)
     {
         Debug.Log("We got an update of ability for use with castbar");
+        GetCooldown().setCooldown(ability.position, ability.timeWhenOffCooldown, ability.id);
     }
 
     void initiateHero(Hero newHero)
@@ -708,4 +709,8 @@ public class GameLogic : MonoBehaviour
 		return ((HordeMode)GameObject.Find("GameLogicObject").GetComponent(typeof(HordeMode)));
 	}
 
+    Cooldown GetCooldown()
+    {
+        return ((Cooldown)GameObject.Find("GameLogicObject").GetComponent(typeof(Cooldown)));
+    }
 }

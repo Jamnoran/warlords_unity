@@ -220,7 +220,7 @@ public class ServerCommunication : MonoBehaviour {
             } else if (responseType == "ABILITIES") {
                 ResponseAbilities responseAbilities = JsonMapper.ToObject<ResponseAbilities>(json);
                 getGameLogic().setAbilities(responseAbilities.abilities);
-            } else if (responseType == "ABILITIES") {
+            } else if (responseType == "ABILITY_STATUS") {
                 ResponseAbilityStatus responseAbilityStatus = JsonMapper.ToObject<ResponseAbilityStatus>(json);
                 getGameLogic().updateAbilityInformation(responseAbilityStatus.ability);
             } else if (responseType == "STOP_HERO")  {
