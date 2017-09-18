@@ -28,7 +28,7 @@ public class TargetFrame : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (getGameLogic().getMyHero() != null)
+        if (getGameLogic().getMyHero() != null && targetFrame != null)
         {
             // Friendly take priority
             int friendlyTarget = getGameLogic().getMyHero().targetFriendly;
