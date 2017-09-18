@@ -61,9 +61,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="LitJson">
       <HintPath>Assets\plugins\LitJson.dll</HintPath>
     </Reference>
@@ -132,6 +129,10 @@
     <Compile Include="Assets\scripts\vo\ResponseCreateUser.cs" />
     <Compile Include="Assets\scripts\vo\ResponseGameStatus.cs" />
     <Compile Include="Assets\scripts\vo\ResponseGetHeroes.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="Assets\scripts\vo\ResponseHeroBuff.cs" />
+>>>>>>> friendly_bars
     <Compile Include="Assets\scripts\vo\ResponseServerInfo.cs" />
     <Compile Include="Assets\scripts\vo\ResponseStopHero.cs" />
     <Compile Include="Assets\scripts\vo\ResponseTeleportHeroes.cs" />

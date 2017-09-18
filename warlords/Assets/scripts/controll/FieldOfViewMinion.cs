@@ -5,6 +5,8 @@ using Assets.scripts.vo;
 
 public class FieldOfViewMinion : MonoBehaviour
 {
+    public bool enabled = true;
+
     private bool sentInitialAggro = false;
 
     public float viewRadius;
@@ -15,8 +17,6 @@ public class FieldOfViewMinion : MonoBehaviour
     public LayerMask obstacleMask;
     
     public List<Transform> visibleTargets = new List<Transform>();
-    private List<Minion> minions = new List<Minion>();
-    private List<Hero> heroes = new List<Hero>();
 
     public float meshResolution;
     public int edgeResolveIterations;
@@ -32,14 +32,13 @@ public class FieldOfViewMinion : MonoBehaviour
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
-
         StartCoroutine("FindTargetsWithDelay", .2f);
     }
 
 
     IEnumerator FindTargetsWithDelay(float delay)
     {
-        while (true)
+        while (enabled)
         {
             yield return new WaitForSeconds(delay);
             FindVisibleTargets();
@@ -71,12 +70,12 @@ public class FieldOfViewMinion : MonoBehaviour
                         // This is what happens if this class is on a minion
                         if (!sentInitialAggro)
                         {
-                            Debug.Log("This target is in range : " + target.name);
-                            Debug.Log("Hero, found initiating aggro!");
+                            //Debug.Log("This target is in range : " + target.name);
+                            //Debug.Log("Hero, found initiating aggro!");
                             Debug.Log(gameObject.name);
                             Transform currentMinion = gameObject.transform;
-                            Debug.Log("Minions position is: " + currentMinion.position);
-                            Debug.Log("Hero position is: " + target.position);
+                            //Debug.Log("Minions position is: " + currentMinion.position);
+                            //Debug.Log("Hero position is: " + target.position);
 
                             //make mob look at target before moving it.
                             Vector3 targetPostition = new Vector3(target.position.x, target.transform.position.y, target.position.z);
@@ -88,7 +87,7 @@ public class FieldOfViewMinion : MonoBehaviour
                             if (hero != null && minion != null)
                             {
                                 sentInitialAggro = true;
-                                Debug.Log("Got minion aggro on this id: " + minion.id + " And this heroId: " + hero.id);
+                                //Debug.Log("Got minion aggro on this id: " + minion.id + " And this heroId: " + hero.id);
                                 getCommunication().sendMinionAggro(minion.id, hero.id);
                             }
                         }
@@ -98,8 +97,7 @@ public class FieldOfViewMinion : MonoBehaviour
         }
     }
 
-    GameLogic getGameLogic()
-    {
+    GameLogic getGameLogic() {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
     }
 

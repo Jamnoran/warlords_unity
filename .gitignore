@@ -30,6 +30,8 @@ warlords/*.sln
 warlords/*.user
 warlords/*.unityproj
 warlords/*.booproj
+warlords/.idea/*
+warlords/.idea/
 
 # ============ #
 # OS generated #

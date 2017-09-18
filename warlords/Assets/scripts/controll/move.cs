@@ -6,7 +6,7 @@ public class move : MonoBehaviour {
     int leftMouseButton = 0;
     int rightMouseButton = 1;
     private Vector3 targetPosition;
-    private Vector3 desiredPosition;
+    //private Vector3 desiredPosition;
     public float speed = 5;
     //public CharacterController controller;
     private Vector3 lastSentPosition = new Vector3(10.81f, 0.39f, 14.25f);           // last sent move position to server (too keep track of not sending move request too often)    
@@ -20,28 +20,25 @@ public class move : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        desiredPosition = transform.position;
+        //desiredPosition = transform.position;
 	}
 	
 	// Update is called once per frame
 	void Update () {
         // Constantly check the heroes desired location and update it
-        if(heroId > 0 && ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId) != null)
-        {
-            desiredPosition = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId).getDesiredPosition();
+        if(heroId > 0 && ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId) != null) {
+            //desiredPosition = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHero(heroId).getDesiredPosition();
         }
 
 
         //if(transform != null)
         //{
             // Handle mouse input
-            if (isMyHero && Input.GetMouseButtonUp(leftMouseButton))
-            {
+            if (isMyHero && Input.GetMouseButtonUp(leftMouseButton)) {
                 getTargetPosition();
                 leftClick();
             }
-            if (isMyHero && Input.GetMouseButtonUp(rightMouseButton))
-            {
+            if (isMyHero && Input.GetMouseButtonUp(rightMouseButton)) {
                 getTargetPosition();
                 rightClick();
             }
@@ -124,7 +121,7 @@ public class move : MonoBehaviour {
     void sendMove()
     {
         lastSentPosition = transform.position;
-        getCommunication().sendMoveRequest(transform.position.x, transform.position.z, targetPosition.x, targetPosition.z);
+        getCommunication().sendMoveRequest(transform.position.x, transform.position.y, transform.position.z, targetPosition.x, targetPosition.y, targetPosition.z);
     }
 
     void placeTracker(int color)
@@ -142,16 +139,16 @@ public class move : MonoBehaviour {
     }
 
 
-    ServerCommunication getCommunication()
-    {
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Communication");
-        //Debug.Log("Found this many gameobjects with communication as tag : " + gos.Length);
-        foreach (GameObject go in gos)
-        {
-            return (ServerCommunication)go.GetComponent(typeof(ServerCommunication));
-        }
-        return null;
+
+
+    ServerCommunication getCommunication() {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
+
+    LobbyCommunication getLobbyCommunication() {
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
+    }
+
 
     CharacterAnimations getAnimation()
     {

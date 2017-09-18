@@ -14,12 +14,16 @@ namespace Assets.scripts.vo
         public int maxHp;
         public float positionX;
         public float positionZ;
+        public float positionY;
         public float desiredPositionX;
         public float desiredPositionZ;
+        public float desiredPositionY;
         public Transform minionTransform;
-        public float hightOfTerrain = 2;
         public int heroTarget = 0;
-        
+        public bool alive = true;
+        public List<Buff> buffs = new List<Buff>();
+        public List<Buff> deBuffs = new List<Buff>();
+
         internal void setTransform(Transform minTransform)
         {
             minionTransform = minTransform;
@@ -28,7 +32,7 @@ namespace Assets.scripts.vo
         public Vector3 getDesiredPosition()
         {
             //Debug.Log("Returning new position : " + desiredPositionX + " x " + desiredPositionZ);
-            return new Vector3(desiredPositionX, hightOfTerrain, desiredPositionZ);
+            return new Vector3(desiredPositionX, desiredPositionY, desiredPositionZ);
         }
 
         public Vector3 getTransformPosition()
@@ -39,6 +43,9 @@ namespace Assets.scripts.vo
         public void setHp(int newHp)
         {
             hp = newHp;
+            if(hp <= 0){
+                alive = false;
+            }
             if (minionTransform != null)
             {
                 ((HealthUpdate)minionTransform.GetComponent(typeof(HealthUpdate))).setCurrentVal(hp);
@@ -48,6 +55,11 @@ namespace Assets.scripts.vo
         public void initBars()
         {
             ((HealthUpdate)minionTransform.GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
+        }
+
+        public void setAlive(bool v)
+        {
+            alive = v;
         }
     }
 }

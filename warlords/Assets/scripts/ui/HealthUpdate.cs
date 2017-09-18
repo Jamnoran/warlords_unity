@@ -5,6 +5,7 @@ public class HealthUpdate : MonoBehaviour {
 
     [SerializeField]
     private Stat health;
+    public Canvas healthCanvas = null;
    
     private void Awake()
     {
@@ -18,10 +19,21 @@ public class HealthUpdate : MonoBehaviour {
     public void setCurrentVal(float newValue)
     {
         this.health.CurrentVal = newValue;
+        if (newValue <= 0)
+        {
+            //this.health.hideBar();
+        }
     }
+
     public void setMaxValue(float newValue)
     {
         this.health.MaxVal = newValue;
         this.health.Initialize();
     }
+
+    public void hideBar()
+    {
+        healthCanvas.enabled = false;
+    }
+    
 }

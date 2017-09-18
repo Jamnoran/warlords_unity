@@ -21,7 +21,7 @@ public class SpellBook : MonoBehaviour {
     public List<Ability> abilities = new List<Ability>();
     public List<GameObject> slots = new List<GameObject>();
 
-    public int slotAmount = 20;
+    public int slotAmount = 12;
 
     void Start()
     {
@@ -30,7 +30,7 @@ public class SpellBook : MonoBehaviour {
         spellbookPanel = GameObject.Find("Spellbook Panel");
         spellBookOriginalPosition = spellbookPanel.transform.position;
         //Grab the slot panel that holds the slots for all abilities
-        slotPanel = spellbookPanel.transform.FindChild("Slot Panel").gameObject;
+        slotPanel = spellbookPanel.transform.Find("Slot Panel").gameObject;
 
       
         //Loop trough the ammount of slots we want and fill the list with spellbook slots
@@ -57,21 +57,22 @@ public class SpellBook : MonoBehaviour {
             }
             else if(!isSpellBookOpen && !spellsAreFetched)
             {
+                
                 spellbookPanel.transform.position = spellBookOriginalPosition;
+             
                 abilities = getGameLogic().getAbilities();
-                AddItem();
                 isSpellBookOpen = true;
+                spellsAreFetched = true;
+                AddItem();
+               
             }
             else if(!isSpellBookOpen && spellsAreFetched)
             {
                 spellbookPanel.transform.position = spellBookOriginalPosition;
                 isSpellBookOpen = true;
+
             }
             
-
-          
-          
-      
         }
 
         else if (Input.GetKeyDown("p") && abilities != null)

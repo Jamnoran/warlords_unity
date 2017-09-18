@@ -12,7 +12,7 @@ public class Cooldown : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("p") && !coolingDown)
+        if (Input.GetKeyDown("p") && !coolingDown && cooldown != null)
         {
             cooldown.fillAmount = 1.0f;
             coolingDown = true;
@@ -20,7 +20,7 @@ public class Cooldown : MonoBehaviour
         if (coolingDown) { 
             cooldown.fillAmount -= 1.0f / waitTime * Time.deltaTime;
         }
-        if (cooldown.fillAmount == 0.0f)
+        if (cooldown != null && cooldown.fillAmount == 0.0f)
         {
             coolingDown = false;
         }

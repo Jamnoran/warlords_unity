@@ -13,9 +13,7 @@ public class FieldOfView : MonoBehaviour
     public LayerMask obstacleMask;
     
     public List<Transform> visibleTargets = new List<Transform>();
-    private List<Minion> minions = new List<Minion>();
-    private List<Hero> heroes = new List<Hero>();
-
+    
     public float meshResolution;
     public int edgeResolveIterations;
     public float edgeDstThreshold;
@@ -84,7 +82,7 @@ public class FieldOfView : MonoBehaviour
     {
         foreach (var target in visibleTargets)
         {
-            if (target.name.Contains("StairsDown"))
+            if (target.name.Contains("EndPoint"))
             {
                 Debug.Log("User had portal in range");
                 return true;

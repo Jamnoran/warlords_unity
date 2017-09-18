@@ -2,86 +2,121 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class Connect : MonoBehaviour {
 
     public InputField usernameInput;
     public InputField emailInput;
     public InputField passwordInput;
-    public Button registerButton;
-    public Button loginButton;
-    public Button resetButton;
     public bool autoLogin = true;
 
-	// Use this for initialization
-	void Start () {
-        registerButton.onClick.AddListener(register);
-        loginButton.onClick.AddListener(login);
-        resetButton.onClick.AddListener(reset);
-        string userId = PlayerPrefs.GetString("USER_ID");
+    public int inputFieldFocused = 0;
+    
+    
 
-        string email = PlayerPrefs.GetString("EMAIL");
-        if (email != null && !email.Equals(""))
-        {
-            emailInput.text = email;
+    // Use this for initialization
+    void Start () {
+        int userId = PlayerPrefs.GetInt("USER_ID");
+
+        if (autoLogin) {
+            PlayerPrefs.SetInt("AUTO_LOGIN", 1);
+        } else {
+            PlayerPrefs.SetInt("AUTO_LOGIN", 0);
         }
 
-        if (autoLogin && userId != null && !userId.Equals(""))
-        {   
+        string email = PlayerPrefs.GetString("EMAIL");
+        if (email != null && !email.Equals("")) {
+            emailInput.text = email;
+            EventSystem.current.SetSelectedGameObject(passwordInput.gameObject, null);
+            passwordInput.OnPointerClick(new PointerEventData(EventSystem.current));
+            inputFieldFocused = 2;
+        } else {
+            EventSystem.current.SetSelectedGameObject(emailInput.gameObject, null);
+            emailInput.OnPointerClick(new PointerEventData(EventSystem.current));
+            inputFieldFocused = 1;
+        }
+
+        if (autoLogin && userId > 0) {   
             Debug.Log("Auto login, user id : " + userId);
             Debug.Log("Email: " + PlayerPrefs.GetString("EMAIL"));
             Debug.Log("Password: " + PlayerPrefs.GetString("PASSWORD"));
-            getCommunication().userId = userId;
+			getLobbyCommunication().userId = userId;
             SceneManager.LoadScene("Lobby");
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-        
-	}
 
-    void reset()
-    {
+    // Update is called once per frame
+    void Update() {
+
+        if (Input.GetKeyDown(KeyCode.Tab)) {
+            Debug.Log("Tab pressed");
+            if (inputFieldFocused == 0) {
+                EventSystem.current.SetSelectedGameObject(emailInput.gameObject, null);
+                emailInput.OnPointerClick(new PointerEventData(EventSystem.current));
+            } else if(inputFieldFocused == 1) {
+                EventSystem.current.SetSelectedGameObject(passwordInput.gameObject, null);
+                passwordInput.OnPointerClick(new PointerEventData(EventSystem.current));
+            } else if (inputFieldFocused == 2) {
+                EventSystem.current.SetSelectedGameObject(emailInput.gameObject, null);
+                emailInput.OnPointerClick(new PointerEventData(EventSystem.current));
+                inputFieldFocused = 0;
+            }
+            inputFieldFocused++;
+        } else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+            Debug.Log("Enter pressed");
+            login();
+        }
+    }
+    
+
+    public void reset() {
         PlayerPrefs.SetString("EMAIL", null);
         PlayerPrefs.SetString("USER_ID", null);
         PlayerPrefs.SetString("PASSWORD", null);
         PlayerPrefs.SetString("USERNAME", null);
     }
 
-    void login()
-    {
-        sendLogin(usernameInput.text, emailInput.text, passwordInput.text);
+	public void login() {
+        sendLogin("", emailInput.text, passwordInput.text);
     }
 
-    void register()
-    {
+	public void startRegisterScreen(){
+		SceneManager.LoadScene ("CreateAccount");
+	}
+
+	public void startLoginScreen(){
+		SceneManager.LoadScene ("Connect");
+	}
+
+	public void register() {
         sendRegister(usernameInput.text, emailInput.text, passwordInput.text);
     }
 
-    void sendRegister(string username, string email, string password)
-    {
+    void sendRegister(string username, string email, string password) {
         Debug.Log("Register with email : " + email);
         PlayerPrefs.SetString("EMAIL", email);
         PlayerPrefs.SetString("PASSWORD", password);
         PlayerPrefs.SetString("USERNAME", username);
 
-        getCommunication().createUser(username, email, password);
+		getLobbyCommunication().createUser(username, email, password);
 
     }
 
-    void sendLogin(string username, string email, string password)
-    {
+    void sendLogin(string username, string email, string password)     {
         Debug.Log("Login with email : " + email);
-
         //string userId = PlayerPrefs.GetString("USER_ID");
         //if (userId != null && !userId.Equals(""))
         //{
             PlayerPrefs.SetString("EMAIL", email);
             PlayerPrefs.SetString("PASSWORD", password);
-            PlayerPrefs.SetString("USERNAME", username);
+            //PlayerPrefs.SetString("USERNAME", username);
             Debug.Log("Login");
-            getCommunication().loginUser(email, password);
+            if (getLobbyCommunication() != null) {
+                getLobbyCommunication().loginUser(email, password);
+            } else {
+                Debug.Log("No lobby communication object");
+            }
         //}else
         //{
         //    Debug.Log("You need to register first");
@@ -91,11 +126,11 @@ public class Connect : MonoBehaviour {
 
 
 
-
-
-    ServerCommunication getCommunication()
-    {
+    ServerCommunication getCommunication() {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
+	LobbyCommunication getLobbyCommunication() {
+        return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
+	}
 }
