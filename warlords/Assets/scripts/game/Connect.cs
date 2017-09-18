@@ -9,9 +9,6 @@ public class Connect : MonoBehaviour {
     public InputField usernameInput;
     public InputField emailInput;
     public InputField passwordInput;
-    public Button registerButton;
-    public Button loginButton;
-    public Button resetButton;
     public bool autoLogin = true;
 
     public int inputFieldFocused = 0;
@@ -20,9 +17,6 @@ public class Connect : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        registerButton.onClick.AddListener(register);
-        loginButton.onClick.AddListener(login);
-        resetButton.onClick.AddListener(reset);
         int userId = PlayerPrefs.GetInt("USER_ID");
 
         if (autoLogin) {
@@ -76,18 +70,26 @@ public class Connect : MonoBehaviour {
     }
     
 
-    void reset() {
+    public void reset() {
         PlayerPrefs.SetString("EMAIL", null);
         PlayerPrefs.SetString("USER_ID", null);
         PlayerPrefs.SetString("PASSWORD", null);
         PlayerPrefs.SetString("USERNAME", null);
     }
 
-    void login() {
+	public void login() {
         sendLogin("", emailInput.text, passwordInput.text);
     }
 
-    void register() {
+	public void startRegisterScreen(){
+		SceneManager.LoadScene ("CreateAccount");
+	}
+
+	public void startLoginScreen(){
+		SceneManager.LoadScene ("Connect");
+	}
+
+	public void register() {
         sendRegister(usernameInput.text, emailInput.text, passwordInput.text);
     }
 

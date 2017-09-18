@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CreateHero : MonoBehaviour {
 
@@ -33,10 +34,20 @@ public class CreateHero : MonoBehaviour {
     }
 
     public void createHero() {
-
         Toggle[] toggles = GameObject.FindObjectsOfType<Toggle>();
         Debug.Log("Found toggles: " + toggles.Length);
 
         Debug.Log("Create hero with class : " + classType);
+
+		getLobbyCommunication ().createHero (classType);
+
+		SceneManager.LoadScene ("Lobby");
+
     }
+
+
+	LobbyCommunication getLobbyCommunication() {
+		return ((LobbyCommunication)GameObject.Find("Communication").GetComponent(typeof(LobbyCommunication)));
+	}
+
 }

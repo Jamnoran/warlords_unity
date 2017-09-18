@@ -10,6 +10,7 @@ using System.Runtime.Serialization.Formatters;
 using System.Net.Configuration;
 using LitJson;
 using System.Net;
+using UnityEngine.UI;
 
 public class LobbyCommunication : MonoBehaviour {
 	private SocketConnection socketConnection;
@@ -21,13 +22,18 @@ public class LobbyCommunication : MonoBehaviour {
     public Boolean local = false;
     public int portForLocal = 2080;
 
+	public Text errorMessageHolder;
+
 	private ResponseLobbys responseLobbys;
 
    // Use this for initialization
     void Start(){
         Debug.Log("LobbyScreen loaded");
         if (!local)
-        {
+		{
+			if (errorMessageHolder != null) {	
+				errorMessageHolder.text = "";
+			}
             StartCoroutine(getLobbyListFromWebservice(new WWW(webserviceUrl)));
         }
     }
@@ -67,7 +73,6 @@ public class LobbyCommunication : MonoBehaviour {
 
 	// Send request to lobby to create a hero. This must be done after a user has been created or it will crash
 	public void createHero(String classType) {
-		print("e key was pressed creating a hero for a userid: " + userId);
 		sendRequest (new RequestCreateHero (userId, classType));
 		getHeroes();
 	}
@@ -129,13 +134,21 @@ public class LobbyCommunication : MonoBehaviour {
                 ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
                 Debug.Log("Server information: " + responseServerInfo.clients);
 			} else if (responseType == "LOGIN_USER") {
-                ResponseCreateUser responseCreateUser = JsonMapper.ToObject<ResponseCreateUser>(json);
-				Debug.Log("User logged in with this id to store on device: " + responseCreateUser.user_id);
-				userId = int.Parse (responseCreateUser.user_id);
-				PlayerPrefs.SetInt("USER_ID", userId);
-				SceneManager.LoadScene("LobbyTemp");
-				Debug.Log("Getting heroes for user");
-				getHeroes();
+				int responseCode = JsonUtil.getStatusCodeFromJson (json);
+				if (responseCode == 608) {
+					Debug.Log ("Show error for user, wrong email or password");
+					errorMessageHolder.text = JsonUtil.getMessageFromJson (json);
+
+				} else {	
+					ResponseLogin responseCreateUser = JsonMapper.ToObject<ResponseLogin> (json);
+					Debug.Log ("User logged in with this id to store on device: " + responseCreateUser.user_id);
+					userId = responseCreateUser.user_id;
+					PlayerPrefs.SetInt ("USER_ID", userId);
+					SceneManager.LoadScene ("Lobby");
+					Debug.Log ("Getting heroes for user");
+					getHeroes ();
+					errorMessageHolder.text = "";
+				}
 			} else if (responseType == "HEROES") {
 				ResponseGetHeroes responseGetHeroes = JsonMapper.ToObject<ResponseGetHeroes>(json);
 				Debug.Log("Got these many heroes: " + responseGetHeroes.heroes.Count);
