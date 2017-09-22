@@ -96,7 +96,6 @@ public class ServerCommunication : MonoBehaviour {
 
     public void sendStopHero(int heroId) {
         print("Sending stop hero");
-        //writeSocket("{\"request_type\":\"STOP_HERO\", \"hero_id\":" + heroId + "}");
         sendRequest(new RequestStopHero(heroId));
     }
 
@@ -188,6 +187,7 @@ public class ServerCommunication : MonoBehaviour {
         // Handle different type of request_names
         if (responseType != null && !responseType.Equals("")) {
             if (responseType.Equals("GAME_STATUS")) {
+                //Debug.Log("GameStatus[" + json + "]");
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
                 if (responseGameStatus.gameAnimations.Count > 0)
                 {
@@ -214,9 +214,6 @@ public class ServerCommunication : MonoBehaviour {
             } else if (responseType == "COOLDOWN") {
                 ResponseCooldown responseCooldown = JsonMapper.ToObject<ResponseCooldown>(json);
                 getGameLogic().updateCooldown(responseCooldown.ability);
-            } else if (responseType == "ABILITIES") {
-                ResponseAbilities responseAbilities = JsonMapper.ToObject<ResponseAbilities>(json);
-                getGameLogic().setAbilities(responseAbilities.abilities);
             } else if (responseType == "ABILITIES") {
                 ResponseAbilities responseAbilities = JsonMapper.ToObject<ResponseAbilities>(json);
                 getGameLogic().setAbilities(responseAbilities.abilities);

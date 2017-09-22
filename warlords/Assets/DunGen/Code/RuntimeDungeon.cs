@@ -30,6 +30,10 @@ namespace DunGen
 
 			Generator.Generate();
 		}
+        public void Clear()
+        {
+            Generator.Clear();
+        }
 
 		protected virtual void OnDungeonGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status)
 		{

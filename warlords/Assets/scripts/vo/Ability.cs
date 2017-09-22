@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.scripts.util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,17 +31,12 @@ namespace Assets.scripts.vo
         public int resourceCost = 0;
 
         public bool isReady() {
-            if (waitingForCdResponse || (timeWhenOffCooldown != null && !timeWhenOffCooldown.Equals("") && (long.Parse(timeWhenOffCooldown) >= getMillis()))) {
+            if ((timeWhenOffCooldown != null && !timeWhenOffCooldown.Equals("") && (long.Parse(timeWhenOffCooldown) >= DeviceUtil.getMillis()))) {
                 return false;
             }
             return true;
         }
 
-
-        private long getMillis() {
-            DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
-        }
 
     }
 }

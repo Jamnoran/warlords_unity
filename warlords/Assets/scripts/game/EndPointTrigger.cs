@@ -20,10 +20,10 @@ public class EndPointTrigger : MonoBehaviour {
             Hero heroEntered = getGameLogic().getClosestHeroByPosition(target.transform.position);
             Hero hero = getGameLogic().getMyHero();
             if (heroEntered.id == hero.id) {
-                FieldOfView field = ((FieldOfView)hero.trans.Find(hero.getModelName()).GetComponent(typeof(FieldOfView)));
-                if (field.isPortalInRange()) {
-                    Debug.Log("Stair was in range");
-                }
+                //FieldOfView field = ((FieldOfView)hero.trans.Find(hero.getModelName()).GetComponent(typeof(FieldOfView)));
+                //if (field.isPortalInRange()) {
+                //    Debug.Log("Stair was in range");
+                //}
                 getCommunication().heroHasClickedPortal(hero.id);
             }
         }

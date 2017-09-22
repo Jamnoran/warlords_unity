@@ -13,7 +13,7 @@ namespace Assets.scripts.vo {
         public int type = 0;
         public int value = 0;
         public int duration = 0;
-        public int tickTime = 0;
+        public string tickTime = "";
         public int ticks = 0;
         public long millisBuffStarted = 0;
     }

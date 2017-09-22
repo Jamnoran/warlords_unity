@@ -14,7 +14,7 @@ public class TalentsDisplay : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("t") && !getChat().IsInputFieldFocused())
+        if (Input.GetKeyDown("m") && !getChat().IsInputFieldFocused())
         {
             Debug.Log("Showing talents");
             if (!talents.active)

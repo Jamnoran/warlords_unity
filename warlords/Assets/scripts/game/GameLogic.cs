@@ -75,6 +75,10 @@ public class GameLogic : MonoBehaviour
                 hero.update();
             }
         }
+        if (Input.GetKeyUp("n"))
+        {
+            getCommunication().heroHasClickedPortal(getMyHero().id);
+        }
     }
 
    
@@ -289,7 +293,15 @@ public class GameLogic : MonoBehaviour
     public void updateAbilityInformation(Ability ability)
     {
         Debug.Log("We got an update of ability for use with castbar");
-        GetCooldown().setCooldown(ability.position, ability.timeWhenOffCooldown, ability.id);
+        if (ability.id > 0)
+        {
+            GetCooldown().setCooldown(ability.position, ability.timeWhenOffCooldown, ability.id);
+        }
+        else
+        {
+            getAbility(0).timeWhenOffCooldown = ability.timeWhenOffCooldown;
+        }
+
     }
 
     void initiateHero(Hero newHero)
@@ -437,7 +449,7 @@ public class GameLogic : MonoBehaviour
 
         CharacterAnimations heroAnimation = (CharacterAnimations)hero.trans.GetComponent(typeof(CharacterAnimations));
         heroAnimation.stopMove();
-        hero.setAutoAttacking(false);
+        //hero.setAutoAttacking(false);
     }
 
     public void clearWorld() {
@@ -454,6 +466,20 @@ public class GameLogic : MonoBehaviour
     {
         return minions;
     }
+
+    public List<Minion> getAliveMinions()
+    {
+        List<Minion> minionsAlive = new List<Minion>();
+        foreach (Minion min in minions)
+        {
+            if (min.hp > 0)
+            {
+                minionsAlive.Add(min);
+            }
+        }
+        return minionsAlive;
+    }
+    
 
     public List<Hero> getHeroes()
     {
@@ -651,8 +677,9 @@ public class GameLogic : MonoBehaviour
 
 	IEnumerator startCheckIfLevelIsComplete() {
 		yield return new WaitForSeconds(5.0f);
-		getHordeMode ().currentMode = true;
-		Debug.Log ("Horde mode is on its way!");
+		getHordeMode().currentMode = true;
+        getNotificationhandler().startHordeMode();
+		Debug.Log ("Current game mode is horde!");
 	}
 
     public void endGame()
@@ -708,6 +735,11 @@ public class GameLogic : MonoBehaviour
 	HordeMode getHordeMode() {
 		return ((HordeMode)GameObject.Find("GameLogicObject").GetComponent(typeof(HordeMode)));
 	}
+
+    NotificationHandler getNotificationhandler()
+    {
+        return ((NotificationHandler)GameObject.Find("GameLogicObject").GetComponent(typeof(NotificationHandler)));
+    }
 
     Cooldown GetCooldown()
     {

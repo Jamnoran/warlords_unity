@@ -16,9 +16,7 @@ public class HordeMode : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
 		if(currentMode && !enabled){
-
 			if(objectsToEnableWhenLevelIsComplete == null){
 				objectsToEnableWhenLevelIsComplete = GameObject.FindGameObjectsWithTag("LevelCompleteObjects");;
 				foreach (GameObject gObject in objectsToEnableWhenLevelIsComplete) {
@@ -38,16 +36,22 @@ public class HordeMode : MonoBehaviour {
 	}
 
 	bool checkIfLevelIsComplete(){
-		int minionsLeft = getGameLogic ().getMinions ().Count;
+		int minionsLeft = getGameLogic().getAliveMinions().Count;
 		if (minionsLeft == 0 && totalMinionsLeft == 0) {
 			return true;
 		}
 		return false;
 	}
 
+    public int getMinionsLeft()
+    {
+        int minionsLeft = getGameLogic().getAliveMinions().Count;
+        return totalMinionsLeft + minionsLeft;
+    }
 
 
-	GameLogic getGameLogic() {
+
+    GameLogic getGameLogic() {
 		return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
 	}
 }

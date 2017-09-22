@@ -9,6 +9,7 @@ public class DunGenerator : MonoBehaviour {
     public RuntimeDungeon DungeonGenerator;
     public DungeonFlow crawlerFlow;
     public GameObject hordeLevel;
+    private GameObject currentHordeLevel;
 
     private void Start() {
         DungeonGenerator = GetComponentInChildren<RuntimeDungeon>();
@@ -22,6 +23,10 @@ public class DunGenerator : MonoBehaviour {
 
     public void GenerateRandom(int seed, int typeOfLevel) {
         Debug.Log("Type of level : " + typeOfLevel);
+        if (currentHordeLevel != null)
+        {
+            Destroy(currentHordeLevel);
+        }
         if (typeOfLevel == 1)
         {
             DungeonGenerator.Generator.Seed = seed;
@@ -29,9 +34,9 @@ public class DunGenerator : MonoBehaviour {
         }
         else if (typeOfLevel == 2)
         {
-            Instantiate(hordeLevel, new Vector3(0, 0, 0), Quaternion.identity);
+            DungeonGenerator.Clear();
+            currentHordeLevel = Instantiate(hordeLevel, new Vector3(0, 0, 0), Quaternion.identity);
         }
-        
     }
 
     private void Update() {

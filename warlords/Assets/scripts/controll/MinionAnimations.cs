@@ -44,7 +44,7 @@ public class MinionAnimations : MonoBehaviour {
                 targetPosition = hero.getTransformPosition();
 				inCombat = true;
             } else {
-                Debug.Log("Could not find a hero with this id: " + heroTargetId);
+                //Debug.Log("Could not find a hero with this id: " + heroTargetId);
 				inCombat = false;
             }
         }

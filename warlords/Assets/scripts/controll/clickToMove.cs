@@ -2,6 +2,7 @@
 using System.Collections;
 using Assets.scripts.vo;
 using System.Collections.Generic;
+using Assets.scripts.util;
 
 public class clickToMove : MonoBehaviour {
     

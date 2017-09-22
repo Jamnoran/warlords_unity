@@ -147,13 +147,6 @@ namespace UnityEngine.UI
 											    this.m_TalentInfo.maxPoints.ToString() + "</color>";
 			    }
             }
-            Talents talents = null;
-            if (GameObject.Find("Talents") != null) {
-                talents = ((Talents)GameObject.Find("Talents").GetComponent(typeof(Talents)));
-            }
-            if (talents != null && !talents.calculatePoints()) {
-                AddPoints(-1);
-            }
         }
 		
 		/// <summary>
@@ -190,9 +183,17 @@ namespace UnityEngine.UI
 			// Check if the talent is maxed
 			if (this.m_TalentInfo.maxPoints > 0 && this.m_CurrentPoints >= this.m_TalentInfo.maxPoints)
 				return;
-			
-			// Increase the points
-			this.m_CurrentPoints = this.m_CurrentPoints + 1;
+
+            Talents talents = null;
+            if (GameObject.Find("TalentsIcons") != null)
+            {
+                talents = ((Talents)GameObject.Find("TalentsIcons").GetComponent(typeof(Talents)));
+                if (talents != null && talents.hasPointsLeft())
+                {
+                    // Increase the points
+                    this.m_CurrentPoints = this.m_CurrentPoints + 1;
+                }
+            }
 			
 			// Update the label string
 			this.UpdatePointsLabel();
@@ -235,7 +236,8 @@ namespace UnityEngine.UI
 			
 			// Update the label string
 			this.UpdatePointsLabel();
-		}
+
+        }
 		
         public int getCurrentPoints() {
             return m_CurrentPoints;
