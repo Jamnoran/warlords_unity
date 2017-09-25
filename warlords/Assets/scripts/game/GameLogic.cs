@@ -210,7 +210,7 @@ public class GameLogic : MonoBehaviour
 
     private void UpdatePartyFrames(List<Hero> heroes)
     {
-        heroes.RemoveAll(hero => hero.id == thisHeroId);
+        //heroes.RemoveAll(hero => hero.id == thisHeroId);
         if (getPartyFrame() != null)
         {
             getPartyFrame().UpdatePartyFrames(heroes);
@@ -719,9 +719,9 @@ public class GameLogic : MonoBehaviour
 
 
 
-    foobar getPartyFrame()
+    FriendlyFrames getPartyFrame()
     {
-        return ((foobar)GameObject.Find("GameLogicObject").GetComponent(typeof(foobar)));
+        return ((FriendlyFrames)GameObject.Find("GameLogicObject").GetComponent(typeof(FriendlyFrames)));
     }
 
     DunGenerator getGenerator() {
