@@ -23,9 +23,11 @@ public class CharacterMenu : MonoBehaviour {
             else
             {
                 getUIWindow().Show();
-                updateInfo();
             }
         }
+		if (getUIWindow ().IsVisible) {
+			updateInfo();
+		}
     }
 
     void updateInfo()
@@ -35,6 +37,7 @@ public class CharacterMenu : MonoBehaviour {
         GameObject.Find("Character Title Text").GetComponent<Text>().text = hero.class_type;
         GameObject.Find("Stat (HP)/Value Text").GetComponent<Text>().text = "" + hero.maxHp;
         GameObject.Find("Stat (Level)/Value Text").GetComponent<Text>().text = "" + hero.level;
+		GameObject.Find("Stat (Energy)/Value Text").GetComponent<Text>().text = hero.resource + "/" + hero.maxResource;
         
     }
 
