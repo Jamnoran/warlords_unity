@@ -216,7 +216,8 @@ public class Talents : MonoBehaviour {
             }
         }
 
-        getCommunication().updateTalents(talentsToSend);
+		Hero myHero = getGameLogic().getMyHero();
+		getCommunication().updateTalents(myHero.id, talentsToSend);
 
         dismissWindow();
     }

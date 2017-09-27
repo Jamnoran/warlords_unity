@@ -328,15 +328,17 @@ public class SpellMove : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHand
     {
         if (getCommunication() != null && abilities != null && abilities[spell] != null)
         {
-            getCommunication().updateAbilityPosition(abilities[spell].id, 0);
+			Hero myHero = getGameLogic().getMyHero();
+			getCommunication().updateAbilityPosition(myHero.id, abilities[spell].id, 0);
         }
     }
 
     private void savePositionToDb(int position)
     {
         if (getCommunication() != null && abilities != null && abilities[spell] != null)
-        {
-            getCommunication().updateAbilityPosition(abilities[spell].id, position + 1);
+		{
+			Hero myHero = getGameLogic().getMyHero();
+			getCommunication().updateAbilityPosition(myHero.id, abilities[spell].id, position + 1);
         }
     }
 

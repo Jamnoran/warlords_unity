@@ -528,7 +528,7 @@ public class GameLogic : MonoBehaviour
             Hero myHero = getMyHero();
             getCommunication().sendStopHero(myHero.id);
             // TODO: Turn hero towards target (either against aoe/enemy/friendly)
-            getCommunication().sendSpell(spellId, enemies, friendly, myHero.getTargetPosition());
+			getCommunication().sendSpell(myHero.id, spellId, enemies, friendly, myHero.getTargetPosition());
         }
     }
 
@@ -536,8 +536,9 @@ public class GameLogic : MonoBehaviour
         return abilities;
     }
 
-    private void updateAbilities() {
-        getCommunication().getAbilities();
+	private void updateAbilities() {
+		Hero myHero = getMyHero();
+		getCommunication().getAbilities(myHero.id);
     }
 
     public void setAbilities(List<Ability> updatedAbilities) {

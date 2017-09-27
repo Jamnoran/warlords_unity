@@ -99,10 +99,10 @@ public class ServerCommunication : MonoBehaviour {
         sendRequest(new RequestStopHero(heroId));
     }
 
-    public void sendSpell(int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3) {
+	public void sendSpell(int heroId, int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3) {
         var time = getMillis();
         Debug.Log("Sending spell request spell id: " + spellId + " At time: " + time);
-        sendRequest(new RequestSpell(getHeroId(), spellId, targetEnemy, targetFriendly, vector3, time));
+		sendRequest(new RequestSpell(heroId, spellId, targetEnemy, targetFriendly, vector3, time));
     }
 
     public void sendMinionAggro(int minionId, int heroId) {
@@ -115,9 +115,9 @@ public class ServerCommunication : MonoBehaviour {
         writeSocket("{\"request_type\": \"CLICKED_PORTAL\", \"hero_id\":" + heroId + "}");
     }
 
-    public void getAbilities() {
+	public void getAbilities(int heroId) {
         Debug.Log("Get all abilities");
-        writeSocket("{\"request_type\": \"GET_ABILITIES\", \"user_id\":" + getHeroId() + "}");
+		writeSocket("{\"request_type\": \"GET_ABILITIES\", \"user_id\":" + heroId + "}");
     }
 
     public void sendMessage(Message message) {
@@ -125,14 +125,14 @@ public class ServerCommunication : MonoBehaviour {
         sendRequest(new RequestSendMessage(message));
     }
 
-    public void updateAbilityPosition(int abilityId, int position) {
-        sendRequest(new RequestAbilityPosition(getHeroId(), abilityId, position));
+	public void updateAbilityPosition(int heroId, int abilityId, int position) {
+		sendRequest(new RequestAbilityPosition(heroId, abilityId, position));
     }
 
-    public void updateTalents(List<Talent> updatedListOfTalents)
+	public void updateTalents(int heroId, List<Talent> updatedListOfTalents)
     {
         Debug.Log("Sending update talents to server");
-        sendRequest(new RequestTalents(getHeroId(), updatedListOfTalents));
+		sendRequest(new RequestTalents(heroId, updatedListOfTalents));
     }
 
 	public void  sendUpdateMinionPosition(int heroId, List<Minion> updatedList){

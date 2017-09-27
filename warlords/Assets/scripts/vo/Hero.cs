@@ -33,6 +33,16 @@ namespace Assets.scripts.vo
         private bool autoAttacking = false;
         public float attackRange = 3.0f;
         public float baseMoveSpeed = 3.0f;
+		public float armor = 0.0f;
+		public float magicResistance = 0;
+		public float armorPenetration = 0.0f;
+		public float magicPenetration = 0.0f;
+		public int strength;
+		public int intelligence;
+		public int stamina;
+		public int dexterity;
+		public int baseAttackDamage = 2;
+		public int baseMaxAttackDamage = 4;
         public List<Buff> buffs = new List<Buff>();
         public List<Buff> deBuffs = new List<Buff>();
         public List<Talent> talents;
