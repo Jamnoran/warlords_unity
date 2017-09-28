@@ -420,7 +420,9 @@ public class GameLogic : MonoBehaviour
             if (gameAnimation.animation_type == "HEAL") {
                 Debug.Log("Heal animation");
                 Hero target = getHero(gameAnimation.target_id);
-                Instantiate(healAnimation, new Vector3(target.positionX, target.positionY, target.positionZ), Quaternion.identity);
+                Transform healAn = Instantiate(healAnimation, new Vector3(target.positionX, target.positionY, target.positionZ), Quaternion.identity);
+                FollowGameObject anim = (FollowGameObject)healAn.GetComponent(typeof(FollowGameObject));
+                anim.objectToFollow = target.trans;
             }
             if (gameAnimation.animation_type == "TAUNT") {
                 Debug.Log("Taunt animation");

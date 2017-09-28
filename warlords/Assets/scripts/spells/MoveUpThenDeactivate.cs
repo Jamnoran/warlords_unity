@@ -8,6 +8,8 @@ public class MoveUpThenDeactivate : MonoBehaviour {
     public int tickCounter = 0;
     public float moveWith = 0.01f;
     public float timeTick = 0.01f;
+    public float rotateSpeed = 40.0f;
+    public bool rotate = false;
     public GameObject parent;
 
     // Use this for initialization
@@ -32,6 +34,9 @@ public class MoveUpThenDeactivate : MonoBehaviour {
         Vector3 newPosition = transform.position;
         newPosition.y = newPosition.y + moveWith;
         transform.position = newPosition;
-        
+        if (rotate)
+        {
+            transform.Rotate(0, rotateSpeed * Time.deltaTime, 0);
+        }
     }
 }
