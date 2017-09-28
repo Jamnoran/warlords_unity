@@ -230,6 +230,10 @@ public class GameLogic : MonoBehaviour
                 hero.setHp(newHero.hp);
                 hero.xp = newHero.xp;
                 hero.level = newHero.level;
+                hero.armor = newHero.armor;
+                hero.magicResistance = newHero.magicResistance;
+                hero.armorPenetration = newHero.armorPenetration;
+                hero.magicPenetration = newHero.magicPenetration;
                 hero.resource = newHero.resource;
                 // Dont change desired position for own hero
                 if (hero.id != heroid)
