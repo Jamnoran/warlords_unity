@@ -17,7 +17,7 @@ public class CharacterAnimations : MonoBehaviour {
     public bool isAttacking = false;
     public bool isGrounded = false;
     public float distanceToTarget = 10.0f;
-    public float distanceBeforeSnappingHeroes = 3.0f;
+    public float distanceBeforeSnappingHeroes = 8.0f;
 
     // Use this for initialization
     void Start () {
