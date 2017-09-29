@@ -21,6 +21,7 @@ namespace Assets.scripts.vo
         public Transform minionTransform;
         public int heroTarget = 0;
         public bool alive = true;
+        public int minionType = 1;
         public List<Buff> buffs = new List<Buff>();
         public List<Buff> deBuffs = new List<Buff>();
 

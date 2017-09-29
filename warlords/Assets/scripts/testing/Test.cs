@@ -28,6 +28,6 @@ public class Test : MonoBehaviour {
         newMinion.initBars();
         MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
         minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, 1.0f, newMinion.desiredPositionZ));
-        FieldOfView fieldOfView = ((FieldOfView)minionTransform.Find("mob1").GetComponent(typeof(FieldOfView)));
+        FieldOfView fieldOfView = ((FieldOfView)minionTransform.Find("mob").GetComponent(typeof(FieldOfView)));
     }
 }

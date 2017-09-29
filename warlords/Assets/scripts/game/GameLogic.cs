@@ -16,6 +16,7 @@ public class GameLogic : MonoBehaviour
     public Transform communication;
     //hold our prefab for the first mob
     public Transform minion1;
+    public Transform minion2;
     // Hold prefab for heroes
     public Transform warrior;
     public Transform priest;
@@ -167,22 +168,36 @@ public class GameLogic : MonoBehaviour
                 }
             }
             if (!found) {
-                // Initiate minion here
-                //Debug.Log("Initiate minion at pos " + newMinion.desiredPositionX + "x" + newMinion.desiredPositionZ + " y: " + newMinion.desiredPositionY);
-                Transform minionTransform = (Transform)Instantiate(minion1, new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ), Quaternion.identity);
-                newMinion.setTransform(minionTransform);
-                newMinion.initBars();
-                MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
-                minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ));
-                FieldOfView fieldOfView = ((FieldOfView) minionTransform.Find("mob1").GetComponent(typeof(FieldOfView)));
-                MinionInfo minionInfo = (MinionInfo)minionTransform.GetComponent(typeof(MinionInfo));
-                minionInfo.setMinionId(newMinion.id);
-                minions.Add(newMinion);
+                initiateMinion(newMinion);
             }
         }
     }
 
-	public void sendMinionPostionsToServer(){
+    public void initiateMinion(Minion newMinion)
+    {
+        // Initiate minion here
+        //Debug.Log("Initiate minion at pos " + newMinion.desiredPositionX + "x" + newMinion.desiredPositionZ + " y: " + newMinion.desiredPositionY);
+        Transform prefabOfMinion = null;
+        if (newMinion.minionType == 1)
+        {
+            prefabOfMinion = minion1;
+        }else if (newMinion.minionType == 2)
+        {
+            prefabOfMinion = minion2;
+        }
+        Transform minionTransform = (Transform)Instantiate(prefabOfMinion, new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ), Quaternion.identity);
+        newMinion.setTransform(minionTransform);
+        newMinion.initBars();
+        MinionAnimations minionAnimations = (MinionAnimations)minionTransform.GetComponent(typeof(MinionAnimations));
+        minionAnimations.setDesiredLocation(new Vector3(newMinion.desiredPositionX, newMinion.desiredPositionY + 1.0f, newMinion.desiredPositionZ));
+        FieldOfView fieldOfView = ((FieldOfView)minionTransform.Find("mob").GetComponent(typeof(FieldOfView)));
+        MinionInfo minionInfo = (MinionInfo)minionTransform.GetComponent(typeof(MinionInfo));
+        minionInfo.setMinionId(newMinion.id);
+        minions.Add(newMinion);
+    }
+
+
+    public void sendMinionPostionsToServer(){
 		if (getMinions ().Count > 0) {
 			List<Minion> updatePositionMinions = new List<Minion> ();
 			foreach (Minion minion in getMinions()) {
@@ -355,7 +370,7 @@ public class GameLogic : MonoBehaviour
                 ((HealthUpdate)minion.minionTransform.GetComponent(typeof(HealthUpdate))).hideBar();
                 Debug.Log("Minion died, disable everything!");
 
-                ((FieldOfViewMinion)minion.minionTransform.Find("mob1").GetComponent(typeof(FieldOfViewMinion))).enabled = false;
+                ((FieldOfViewMinion)minion.minionTransform.Find("mob").GetComponent(typeof(FieldOfViewMinion))).enabled = false;
                 // Disable capsle collider + Character animation
                 ((CapsuleCollider)minion.minionTransform.GetComponent(typeof(CapsuleCollider))).enabled = false;
                 ((CharacterController)minion.minionTransform.GetComponent(typeof(CharacterController))).enabled = false;
