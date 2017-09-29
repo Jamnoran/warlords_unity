@@ -130,11 +130,24 @@ namespace Assets.scripts.vo
             hp = newHp;
 
             int heroid = getLobbyCommunication().heroId;
-            bool ownHero = true;
-            if (id != heroid) {
-                ownHero = false;
+            if (id == heroid)
+            {
+                updateHealthBar(true);
             }
-            updateHealthBar(ownHero);
+            if (hp <= 0)
+            {
+                getAnimation().setAlive(false);
+            }
+        }
+
+        public void setResource(int newRes)
+        {
+            resource = newRes;
+            int heroid = getLobbyCommunication().heroId;
+            if (id == heroid)
+            {
+                updateResourceBar();
+            }
             if (hp <= 0)
             {
                 getAnimation().setAlive(false);
@@ -149,13 +162,26 @@ namespace Assets.scripts.vo
             }
         }
 
+        public void updateResourceBar()
+        {
+            if (trans != null)
+            {
+                ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setCurrentResourceVal(resource);
+            }
+        }
+
         public void initBars() {
-            ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate))).setMaxValue(maxHp);
+            HealthUpdate hUpdate = ((HealthUpdate)GameObject.Find("Canvas").GetComponent(typeof(HealthUpdate)));
+            hUpdate.setMaxValue(maxHp);
             setHp(maxHp);
             if (class_type == "WARLOCK")
             {
                 GameObject manaGlobe = GameObject.Find("mana globe");
                 manaGlobe.SetActive(false);
+            }
+            else
+            {
+                hUpdate.setMaxResourceValue(maxResource);
             }
         }
 
