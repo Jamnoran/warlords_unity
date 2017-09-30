@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
     public float MoveSpeed = 10;
     public float TurnSpeed = 90;
 
+	public bool IsControlling { get { return isControlling; } }
+	public Camera ActiveCamera { get { return isControlling ? playerCamera : overheadCamera; } }
+
     protected CharacterController movementController;
     protected Camera playerCamera;
     protected Camera overheadCamera;
@@ -40,8 +43,12 @@ public class PlayerController : MonoBehaviour
 
     protected virtual void OnGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status)
     {
-        if (status == GenerationStatus.Complete)
-            FrameObjectWithCamera(generator.Root);
+		if (status == GenerationStatus.Complete)
+		{
+			FrameObjectWithCamera(generator.Root);
+			transform.position = new Vector3(0, 1, 7); // Hard-coded spawn position
+			velocity = Vector3.zero;
+		}
     }
 
 	protected virtual void Update()
@@ -49,10 +56,12 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.C))
 			ToggleControl();
 
-        if (Input.GetKeyDown(KeyCode.R))
-            transform.position = new Vector3(3, 0, 0); // Hard-coded spawn position
+		// Repeatedly frame the dungeon while the generation process is running
+		var generator = gen.DungeonGenerator.Generator;
+		if(generator.IsGenerating)
+			FrameObjectWithCamera(generator.Root);
 
-        Vector3 direction = Vector3.zero;
+		Vector3 direction = Vector3.zero;
         direction += transform.forward * Input.GetAxisRaw("Vertical");
         direction += transform.right * Input.GetAxisRaw("Horizontal");
 
@@ -101,14 +110,14 @@ public class PlayerController : MonoBehaviour
 
         overheadCamera.transform.position = new Vector3(transform.position.x, overheadCamera.transform.position.y, transform.position.z);
 
-#if UNITY_5
-        Cursor.lockState = (isControlling) ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = !isControlling;
-#else
+#if UNITY_4
         Screen.lockCursor = isControlling;
+#else
+		Cursor.lockState = (isControlling) ? CursorLockMode.Locked : CursorLockMode.None;
+		Cursor.visible = !isControlling;
 #endif
-        
-        if (!isControlling)
+
+		if (!isControlling)
             FrameObjectWithCamera(gen.DungeonGenerator.Generator.Root);
     }
 

@@ -45,7 +45,7 @@ namespace DunGen.Editor
 				if(!string.IsNullOrEmpty(name))
 					manager.RenameKey(i, name);
 
-				if (GUILayout.Button("x", EditorStyles.miniButton, EditorConstants.SmallButtonWidth))
+				if (GUILayout.Button("x", EditorStyles.miniButton, InspectorConstants.SmallButtonWidth))
 					toDeleteIndex = i;
 
 				EditorGUILayout.EndHorizontal();

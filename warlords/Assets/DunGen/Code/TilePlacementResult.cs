@@ -17,5 +17,6 @@ namespace DunGen
 		NoMatchingDoorwayInTile,
 		TileIsColliding,
 		NewTileIsNull,
+		OutOfBounds,
 	}
 }

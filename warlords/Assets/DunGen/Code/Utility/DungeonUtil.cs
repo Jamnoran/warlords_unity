@@ -50,6 +50,8 @@ namespace DunGen
 			door.DoorwayB = doorway.ConnectedDoorway;
 			door.TileA = doorway.Tile;
 			door.TileB = doorway.ConnectedDoorway.Tile;
+
+			dungeon.AddAdditionalDoor(door);
 		}
 	}
 }

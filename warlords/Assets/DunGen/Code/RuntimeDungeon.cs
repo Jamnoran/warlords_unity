@@ -17,8 +17,6 @@ namespace DunGen
 
         protected virtual void Start()
         {
-			Generator.OnGenerationStatusChanged += OnDungeonGenerationStatusChanged;
-
 			if (GenerateOnStart)
 				Generate();
 		}
@@ -28,22 +26,21 @@ namespace DunGen
 			if(Root != null)
 				Generator.Root = Root;
 
-			Generator.Generate();
-		}
-        public void Clear()
-        {
-            Generator.Clear();
+			if (!Generator.IsGenerating)
+				Generator.Generate();
         }
 
-		protected virtual void OnDungeonGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status)
-		{
-			// Detect any NavMeshAdapters that are attached and use them to generate a NavMesh once the dungeon is done
-			if (status == GenerationStatus.Complete)
-			{
-				var navMeshGenerator = GetComponent<NavMeshAdapter>();
+        public void Clear()
+        {
+            Generator.Clear(true);
+        }
 
-				if (navMeshGenerator != null)
-					navMeshGenerator.Generate(generator.CurrentDungeon);
+        private void OnDrawGizmosSelected()
+		{
+			if (Generator.RestrictDungeonToBounds)
+			{
+				Gizmos.color = Color.red;
+				Gizmos.DrawWireCube(Generator.TilePlacementBounds.center, Generator.TilePlacementBounds.size);
 			}
 		}
 	}

@@ -18,17 +18,18 @@ namespace DunGen.Editor
 		public int MaxFailedAttempts = 20;
 		public bool RunOnStart = true;
 		public float MaximumAnalysisTime = 0;
-		public float PerFrameAnalysisTime = 0.1f;
 
 		private DungeonGenerator generator = new DungeonGenerator();
 		private GenerationAnalysis analysis;
 		private StringBuilder infoText = new StringBuilder();
-		private int targetIterations;
-		private int currentIterations;
-		private double analysisTime;
         private bool finishedEarly;
         private bool prevShouldRandomizeSeed;
-		
+		private int targetIterations;
+		private int currentIterations { get { return targetIterations - remainingIterations; } }
+		private int remainingIterations;
+		private Stopwatch analysisTime;
+		private bool generateNextFrame;
+
 
 		private void Start()
 		{
@@ -54,57 +55,59 @@ namespace DunGen.Editor
 
             prevShouldRandomizeSeed = generator.ShouldRandomizeSeed;
 
-			generator.isAnalysis = true;
+			generator.IsAnalysis = true;
 			generator.DungeonFlow = DungeonFlow;
 			generator.MaxAttemptCount = MaxFailedAttempts;
             generator.ShouldRandomizeSeed = true;
 			analysis = new GenerationAnalysis(Iterations);
-			analysisTime = 0;
+			analysisTime = Stopwatch.StartNew();
+			remainingIterations = targetIterations = Iterations;
 
-			currentIterations = 0;
-			targetIterations = Iterations;
+			generator.OnGenerationStatusChanged += OnGenerationStatusChanged;
+			generator.Generate();
 		}
 
 		private void Update()
 		{
-			if(targetIterations <= 0)
+			if (MaximumAnalysisTime > 0 && analysisTime.Elapsed.TotalSeconds >= MaximumAnalysisTime)
+			{
+				remainingIterations = 0;
+				finishedEarly = true;
+			}
+
+			if (generateNextFrame)
+			{
+				generateNextFrame = false;
+				generator.Generate();
+			}
+		}
+
+		private void CompleteAnalysis()
+		{
+			analysisTime.Stop();
+			analysis.Analyze();
+
+			UnityUtil.Destroy(generator.Root);
+			OnAnalysisComplete();
+		}
+
+		private void OnGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status)
+		{
+			if (status != GenerationStatus.Complete)
 				return;
 
-			Stopwatch sw = Stopwatch.StartNew();
+			analysis.IncrementSuccessCount();
+			analysis.Add(generator.GenerationStats);
 
-			int iterationsThisFrame = 0;
-			int remainingIterations = targetIterations - currentIterations;
-			for (int i = 0; i < remainingIterations; i++)
+			remainingIterations--;
+
+			if (remainingIterations <= 0)
 			{
-				if(sw.Elapsed.TotalSeconds >= PerFrameAnalysisTime)
-					break;
-
-				if(generator.Generate())
-				{
-					analysis.IncrementSuccessCount();
-					analysis.Add(generator.GenerationStats);
-				}
-
-				currentIterations++;
-				iterationsThisFrame++;
+				generator.OnGenerationStatusChanged -= OnGenerationStatusChanged;
+				CompleteAnalysis();
 			}
-
-			analysisTime += sw.Elapsed.TotalSeconds;
-
-            if (MaximumAnalysisTime > 0 && analysisTime >= MaximumAnalysisTime)
-            {
-                targetIterations = currentIterations;
-                finishedEarly = true;
-            }
-
-			if(currentIterations >= targetIterations)
-			{
-				targetIterations = 0;
-				analysis.Analyze();
-
-				UnityUtil.Destroy(generator.Root);
-				OnAnalysisComplete();
-			}
+			else
+				generateNextFrame = true;
 		}
 
 		private void OnAnalysisComplete()
@@ -112,13 +115,11 @@ namespace DunGen.Editor
             generator.ShouldRandomizeSeed = prevShouldRandomizeSeed;
 			infoText.Length = 0;
 
-            Debug.Log(analysis.MaxBranchDepth);
-
 			if(finishedEarly)
 				infoText.AppendLine("[ Reached maximum analysis time before the target number of iterations was reached ]");
 
 			infoText.AppendFormat("Iterations: {0}, Max Failed Attempts: {1}", (finishedEarly) ? analysis.IterationCount : analysis.TargetIterationCount, MaxFailedAttempts);
-			infoText.AppendFormat("\nTotal Analysis Time: {0:0.00} seconds", analysisTime);
+			infoText.AppendFormat("\nTotal Analysis Time: {0:0.00} seconds", analysisTime.Elapsed.TotalSeconds);
 			//infoText.AppendFormat("\n\tOf which spent generating dungeons: {0:0.00} seconds", analysis.AnalysisTime / 1000.0f);
 			infoText.AppendFormat("\nDungeons successfully generated: {0}% ({1} failed)", Mathf.RoundToInt(analysis.SuccessPercentage), analysis.TargetIterationCount - analysis.SuccessCount);
 			
@@ -154,8 +155,7 @@ namespace DunGen.Editor
 			{
 				string failedGenerationsCountText = (analysis.SuccessCount < analysis.IterationCount) ? ("\nFailed Dungeons: " + (analysis.IterationCount - analysis.SuccessCount).ToString()) : "";
 
-				GUILayout.Label(string.Format("Analyzing... {0} / {1} ({2:0.0}%){3}", currentIterations, targetIterations, (currentIterations / (float)targetIterations) * 100, failedGenerationsCountText));
-
+				GUILayout.Label(string.Format("Analysing... {0} / {1} ({2:0.0}%){3}", currentIterations, targetIterations, (currentIterations / (float)targetIterations) * 100, failedGenerationsCountText));
 				return;
 			}
 

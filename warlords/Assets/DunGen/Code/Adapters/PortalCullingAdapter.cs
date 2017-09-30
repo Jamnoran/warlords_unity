@@ -7,27 +7,18 @@ using UnityEngine;
 
 namespace DunGen.Adapters
 {
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-	public sealed class AdapterDisplayName : Attribute
+	public abstract class CullingAdapter : BaseAdapter
 	{
-		public string Name { get; private set; }
-
-
-		public AdapterDisplayName(string name)
+		public CullingAdapter()
 		{
-			Name = name;
+			Priority = -1;
 		}
-    }
 
-	[Serializable]
-	public abstract class PortalCullingAdapter
-	{
-		public virtual void Clear() { }
-		public abstract PortalCullingAdapter Clone();
-		public abstract void PrepareForCulling(DungeonGenerator generator, Dungeon dungeon);
-		public abstract void ChangeDoorState(Door door, bool isOpen);
+		protected abstract void PrepareForCulling(DungeonGenerator generator, Dungeon dungeon);
 
-		[Conditional("UNITY_EDITOR")]
-		public virtual void OnInspectorGUI(DungeonGenerator generator, bool isRuntimeDungeon) { }
+		protected override void Run(DungeonGenerator generator)
+		{
+			PrepareForCulling(generator, generator.CurrentDungeon);
+		}
 	}
 }

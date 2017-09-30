@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace DunGen.Adapters
 {
-	public abstract class NavMeshAdapter : MonoBehaviour
+	public abstract class NavMeshAdapter : BaseAdapter
 	{
 		#region Helpers
 
@@ -18,6 +19,12 @@ namespace DunGen.Adapters
 		#endregion
 
 		public OnNavMeshGenerationProgress OnProgress;
+
+
+		protected override void Run(DungeonGenerator generator)
+		{
+			Generate(generator.CurrentDungeon);
+		}
 
 		public abstract void Generate(Dungeon dungeon);
 	}

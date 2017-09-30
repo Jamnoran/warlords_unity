@@ -64,10 +64,13 @@ namespace DunGen
                     foreach(var tileSet in archetype.TileSets)
                         foreach (var tile in tileSet.TileWeights.Weights.Select(x => x.Value))
                         {
-                            int doorwayCount = tile.GetComponentsInChildren<Doorway>(true).Count();
+							if (tile == null)
+								continue;
 
-                            if (doorwayCount <= 1)
-                                LogWarning("The Tile \"{0}\" in TileSet \"{1}\" has {2} doorways. Tiles in an archetype should have more than 1 doorway.", tile.name, tileSet.name, doorwayCount);
+							int doorwayCount = tile.GetComponentsInChildren<Doorway>(true).Count();
+
+							if (doorwayCount <= 1)
+								LogWarning("The Tile \"{0}\" in TileSet \"{1}\" has {2} doorways. Tiles in an archetype should have more than 1 doorway.", tile.name, tileSet.name, doorwayCount);
                         }
                 }
             }

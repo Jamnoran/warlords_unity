@@ -100,13 +100,16 @@ namespace DunGen
         {
 			float totalWeight = 0;
 			foreach (var w in Weights)
-				if (allowImmediateRepeats || previouslyChosen == null || w.Value != previouslyChosen)
+				if (w != null && w.Value != null && (allowImmediateRepeats || previouslyChosen == null || w.Value != previouslyChosen))
 					totalWeight += w.GetWeight(isOnMainPath, normalizedDepth);
 
             float randomNumber = (float)(random.NextDouble() * totalWeight);
 
             foreach (var w in Weights)
             {
+				if (w == null || w.Value == null)
+					continue;
+
 				if (w.Value == previouslyChosen && Weights.Count > 1 && !allowImmediateRepeats)
 					continue;
 

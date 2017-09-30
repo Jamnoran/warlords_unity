@@ -18,7 +18,26 @@ namespace DunGen
 		/// <summary>
 		/// Should this tile be allowed to be placed next to another instance of itself?
 		/// </summary>
-		public bool AllowImmediateRepeats = false;
+		public bool AllowImmediateRepeats = true;
+
+		/// <summary>
+		/// Should the automatically generated tile bounds be overriden with a user-defined value?
+		/// </summary>
+		public bool OverrideAutomaticTileBounds = false;
+
+		/// <summary>
+		/// Optional tile bounds to override the automatically calculated tile bounds
+		/// </summary>
+		public Bounds TileBoundsOverride = new Bounds(Vector3.zero, Vector3.one);
+
+		public Doorway Entrance;
+		public Doorway Exit;
+
+		/// <summary>
+		/// The calculated world-space bounds of this Tile
+		/// </summary>
+		[HideInInspector]
+		public Bounds Bounds { get { return transform.TransformBounds(Placement.LocalBounds); } }
 
 		/// <summary>
 		/// Information about the tile's position in the generated dungeon
@@ -76,15 +95,9 @@ namespace DunGen
         /// The dungeon that this tile belongs to
         /// </summary>
         public Dungeon Dungeon { get; internal set; }
-        /// <summary>
-        /// Is this Tile visible?
-        /// </summary>
-        public bool IsVisible { get { return isVisible; } }
 
         [SerializeField]
         private TilePlacementData placement;
-        [SerializeField]
-        private bool isVisible = true;
 
         [SerializeField]
         private DungeonArchetype archetype;
@@ -99,14 +112,8 @@ namespace DunGen
         internal void AddTriggerVolume()
         {
             BoxCollider triggerVolume = gameObject.AddComponent<BoxCollider>();
-            triggerVolume.center = transform.InverseTransformPoint(Placement.Bounds.center);
-
-            Vector3 size = transform.InverseTransformDirection(Placement.Bounds.size);
-			size.x = Mathf.Abs(size.x);
-			size.y = Mathf.Abs(size.y);
-			size.z = Mathf.Abs(size.z);
-
-			triggerVolume.size = size;
+			triggerVolume.center = Placement.LocalBounds.center;
+			triggerVolume.size = Placement.LocalBounds.size;
             triggerVolume.isTrigger = true;
         }
 
@@ -123,14 +130,18 @@ namespace DunGen
 
         private void OnDrawGizmosSelected()
         {
-            if (placement == null)
-                return;
+			Gizmos.color = Color.red;
+			Bounds? bounds = null;
 
-            Bounds bounds = placement.Bounds;
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(bounds.center, bounds.size);
-        }
+			if (OverrideAutomaticTileBounds)
+				bounds = transform.TransformBounds(TileBoundsOverride);
+			else if (placement != null)
+				bounds = Bounds;
+
+			if(bounds.HasValue)
+				Gizmos.DrawWireCube(bounds.Value.center, bounds.Value.size);
+		}
 
         public IEnumerable<Tile> GetAdjactedTiles()
         {
@@ -144,29 +155,6 @@ namespace DunGen
                     return true;
 
             return false;
-        }
-
-        public void Show()
-        {
-            if(!isVisible)
-                SetVisibility(true);
-        }
-
-        public void Hide()
-        {
-            if(isVisible)
-                SetVisibility(false);
-        }
-
-        public void SetVisibility(bool isVisible)
-        {
-            if (this.isVisible == isVisible)
-                return;
-
-            this.isVisible = isVisible;
-
-            foreach (var r in gameObject.GetComponentsInChildren<Renderer>())
-                r.enabled = isVisible;
         }
 	}
 }

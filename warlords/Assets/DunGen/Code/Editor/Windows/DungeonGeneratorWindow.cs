@@ -44,17 +44,22 @@ namespace DunGen.Editor
 					generator.DetachDungeon();
 			}
 
-            lastDungeon = new GameObject("Dungeon Layout");
+			lastDungeon = new GameObject("Dungeon Layout");
             generator.Root = lastDungeon;
 
             Undo.RegisterCreatedObjectUndo(lastDungeon, "Create Procedural Dungeon");
-            bool success = generator.Generate();
-
-            if (!success)
-            {
-                UnityUtil.Destroy(lastDungeon);
-                lastDungeon = generator.Root = null;
-            }
+			generator.OnGenerationStatusChanged += OnGenerationStatusChanged;
+			generator.GenerateAsynchronously = false;
+            generator.Generate();
         }
-    }
+
+		private void OnGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status)
+		{
+			if(status == GenerationStatus.Failed)
+			{
+				UnityUtil.Destroy(lastDungeon);
+				lastDungeon = generator.Root = null;
+			}
+		}
+	}
 }

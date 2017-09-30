@@ -58,7 +58,7 @@ namespace DunGen.Editor
 
 					l.SocketGroup = (DoorwaySocketType)EditorGUILayout.EnumPopup(l.SocketGroup);
 
-					if (GUILayout.Button("x", EditorStyles.miniButton, EditorConstants.SmallButtonWidth))
+					if (GUILayout.Button("x", EditorStyles.miniButton, InspectorConstants.SmallButtonWidth))
 						toDeleteIndex = i;
 
 					EditorGUILayout.EndHorizontal();

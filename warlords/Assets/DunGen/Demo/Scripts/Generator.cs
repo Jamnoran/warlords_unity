@@ -30,42 +30,41 @@ public class Generator : MonoBehaviour
         if (status != GenerationStatus.Complete)
             return;
 
-        if (false) { 
-            infoText.Length = 0;
-            infoText.AppendLine("Seed: " + generator.ChosenSeed);
-            infoText.AppendLine();
-            infoText.Append("## TIME TAKEN ##");
-            infoText.AppendFormat("\n\tPre-Processing:\t\t{0:0.00} ms", generator.GenerationStats.PreProcessTime);
-            infoText.AppendFormat("\n\tMain Path Generation:\t{0:0.00} ms", generator.GenerationStats.MainPathGenerationTime);
-            infoText.AppendFormat("\n\tBranch Path Generation:\t{0:0.00} ms", generator.GenerationStats.BranchPathGenerationTime);
-            infoText.AppendFormat("\n\tPost-Processing:\t\t{0:0.00} ms", generator.GenerationStats.PostProcessTime);
-            infoText.Append("\n\t-------------------------------------------------------");
-            infoText.AppendFormat("\n\tTotal:\t\t\t{0:0.00} ms", generator.GenerationStats.TotalTime);
+        infoText.Length = 0;
+        infoText.AppendLine("Seed: " + generator.ChosenSeed);
+        infoText.AppendLine();
+        infoText.Append("## TIME TAKEN ##");
+        infoText.AppendFormat("\n\tPre-Processing:\t\t{0:0.00} ms", generator.GenerationStats.PreProcessTime);
+        infoText.AppendFormat("\n\tMain Path Generation:\t{0:0.00} ms", generator.GenerationStats.MainPathGenerationTime);
+        infoText.AppendFormat("\n\tBranch Path Generation:\t{0:0.00} ms", generator.GenerationStats.BranchPathGenerationTime);
+        infoText.AppendFormat("\n\tPost-Processing:\t\t{0:0.00} ms", generator.GenerationStats.PostProcessTime);
+        infoText.Append("\n\t-------------------------------------------------------");
+        infoText.AppendFormat("\n\tTotal:\t\t\t{0:0.00} ms", generator.GenerationStats.TotalTime);
 
-            infoText.AppendLine();
-            infoText.AppendLine();
+        infoText.AppendLine();
+        infoText.AppendLine();
 
-            infoText.AppendLine("## ROOM COUNT ##");
-            infoText.AppendFormat("\n\tMain Path: {0}", generator.GenerationStats.MainPathRoomCount);
-            infoText.AppendFormat("\n\tBranch Paths: {0}", generator.GenerationStats.BranchPathRoomCount);
-            infoText.Append("\n\t-------------------");
-            infoText.AppendFormat("\n\tTotal: {0}", generator.GenerationStats.TotalRoomCount);
+        infoText.AppendLine("## ROOM COUNT ##");
+        infoText.AppendFormat("\n\tMain Path: {0}", generator.GenerationStats.MainPathRoomCount);
+        infoText.AppendFormat("\n\tBranch Paths: {0}", generator.GenerationStats.BranchPathRoomCount);
+        infoText.Append("\n\t-------------------");
+        infoText.AppendFormat("\n\tTotal: {0}", generator.GenerationStats.TotalRoomCount);
 
-		    infoText.AppendLine();
-		    infoText.AppendLine();
+		infoText.AppendLine();
+		infoText.AppendLine();
 
-		    infoText.AppendFormat("Retry Count: {0}", generator.GenerationStats.TotalRetries);
+		infoText.AppendFormat("Retry Count: {0}", generator.GenerationStats.TotalRetries);
 
-            infoText.AppendLine();
-            infoText.AppendLine();
+        infoText.AppendLine();
+        infoText.AppendLine();
 
-            infoText.AppendLine("Press 'F1' to toggle this information");
-            infoText.AppendLine("Press 'R' to generate a new layout");
-            infoText.AppendLine("Press 'C' to switch between camera modes");
-        }
+        infoText.AppendLine("Press 'F1' to toggle this information");
+        infoText.AppendLine("Press 'R' to generate a new layout");
+        infoText.AppendLine("Press 'C' to switch between camera modes");
     }
 
-    public void GenerateRandom() {
+    public void GenerateRandom()
+    {
         DungeonGenerator.Generate();
     }
 

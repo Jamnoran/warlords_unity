@@ -23,7 +23,7 @@ namespace DunGen
         /// <summary>
         /// Defines how the TileSets and BranchEndTileSets are used when placing rooms at the end of a branch
         /// </summary>
-        public BranchCapType BranchCapType = BranchCapType.AswellAs;
+        public BranchCapType BranchCapType = BranchCapType.AsWellAs;
         /// <summary>
         /// The maximum depth (in tiles) that any branch in the dungeon can be
         /// </summary>
@@ -38,7 +38,7 @@ namespace DunGen
         public float StraightenChance = 0.0f;
 
 
-        public bool GetHasValidBranchCapTiles()
+		public bool GetHasValidBranchCapTiles()
         {
             if (BranchCapTileSets.Count == 0)
                 return false;
@@ -54,6 +54,6 @@ namespace DunGen
     public enum BranchCapType : byte
     {
         InsteadOf,
-        AswellAs,
+        AsWellAs,
     }
 }

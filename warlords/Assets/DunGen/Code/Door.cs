@@ -41,12 +41,17 @@ namespace DunGen
 		private bool isOpen;
 
 
+		private void OnDestroy()
+		{
+			OnDoorStateChanged = null;
+		}
+
 		public void SetDoorState(bool isOpen)
 		{
-			this.isOpen = isOpen;
+			if (this.isOpen == isOpen)
+				return;
 
-			if (Dungeon != null && Dungeon.Culling != null)
-				Dungeon.Culling.ChangeDoorState(this, isOpen);
+			this.isOpen = isOpen;
 
 			if (OnDoorStateChanged != null)
 				OnDoorStateChanged(this, isOpen);

@@ -79,7 +79,7 @@ namespace DunGen.Editor
 				else
 					w.Value = null;
 
-                if (GUILayout.Button("x", EditorStyles.miniButton, EditorConstants.SmallButtonWidth))
+                if (GUILayout.Button("x", EditorStyles.miniButton, InspectorConstants.SmallButtonWidth))
                     toDeleteIndex = i;
 
                 EditorGUILayout.EndHorizontal();
@@ -120,16 +120,26 @@ namespace DunGen.Editor
 		/// <param name="range">The range to modify</param>
         public static void DrawIntRange(string name, IntRange range)
         {
-            EditorGUILayout.BeginHorizontal();
-
-			EditorGUILayout.LabelField(name, EditorConstants.LabelWidth);
-            GUILayout.FlexibleSpace();
-			range.Min = EditorGUILayout.IntField(range.Min, EditorConstants.IntFieldWidth);
-			EditorGUILayout.LabelField("-", EditorConstants.SmallWidth);
-			range.Max = EditorGUILayout.IntField(range.Max, EditorConstants.IntFieldWidth);
-
-            EditorGUILayout.EndHorizontal();
+			DrawIntRange(new GUIContent(name), range);
         }
+
+		/// <summary>
+		/// Draws a simple GUI for an IntRange
+		/// </summary>
+		/// <param name="name">A descriptive label</param>
+		/// <param name="range">The range to modify</param>
+		public static void DrawIntRange(GUIContent name, IntRange range)
+		{
+			EditorGUILayout.BeginHorizontal();
+
+			EditorGUILayout.LabelField(name, InspectorConstants.LabelWidth);
+			GUILayout.FlexibleSpace();
+			range.Min = EditorGUILayout.IntField(range.Min, InspectorConstants.IntFieldWidth);
+			EditorGUILayout.LabelField("-", InspectorConstants.SmallWidth);
+			range.Max = EditorGUILayout.IntField(range.Max, InspectorConstants.IntFieldWidth);
+
+			EditorGUILayout.EndHorizontal();
+		}
 
 		/// <summary>
 		/// Draws a min/max slider representing a float range
@@ -179,11 +189,25 @@ namespace DunGen.Editor
 		/// <param name="allowedSelectionTypes">The types of objects that are allowed to be selected</param>
 		/// <typeparam name="T">The type of object in the list</typeparam>
 		public static void DrawObjectList<T>(string header, IList<T> objects, GameObjectSelectionTypes allowedSelectionTypes) where T : UnityEngine.Object
+		{
+			DrawObjectList(new GUIContent(header), objects, allowedSelectionTypes);
+		}
+
+		/// <summary>
+		/// Draws the GUI for a list of Unity.Object. Allows users to add/remove/modify a specific type
+		/// deriving from Unity.Object (such as GameObject, or a Component type)
+		/// </summary>
+		/// <param name="header">A descriptive header</param>
+		/// <param name="objects">The object list to edit</param>
+		/// <param name="allowedSelectionTypes">The types of objects that are allowed to be selected</param>
+		/// <typeparam name="T">The type of object in the list</typeparam>
+		public static void DrawObjectList<T>(GUIContent header, IList<T> objects, GameObjectSelectionTypes allowedSelectionTypes) where T : UnityEngine.Object
         {
 			bool allowSceneSelection = (allowedSelectionTypes & GameObjectSelectionTypes.InScene) == GameObjectSelectionTypes.InScene;
 			bool allowPrefabSelection = (allowedSelectionTypes & GameObjectSelectionTypes.Prefab) == GameObjectSelectionTypes.Prefab;
 
-            EditorGUILayout.PrefixLabel(header);
+			GUILayout.BeginVertical("box");
+			EditorGUILayout.LabelField(header, EditorStyles.boldLabel);
             EditorGUI.indentLevel = 0;
 
             int toDeleteIndex = -1;
@@ -204,7 +228,7 @@ namespace DunGen.Editor
 						objects[i] = tempObj;
 				}
 
-				if (GUILayout.Button("x", EditorStyles.miniButton, EditorConstants.SmallButtonWidth))
+				if (GUILayout.Button("x", EditorStyles.miniButton, InspectorConstants.SmallButtonWidth))
                     toDeleteIndex = i;
 
                 EditorGUILayout.EndHorizontal();
@@ -217,6 +241,7 @@ namespace DunGen.Editor
                 objects.Add(default(T));
 
             EditorGUILayout.EndVertical();
+			EditorGUILayout.EndVertical();
         }
 
 		public static void DrawKeySelection(string label, KeyManager manager, List<KeyLockPlacement> keys, bool includeRange)
@@ -243,7 +268,7 @@ namespace DunGen.Editor
 				int nameIndex = EditorGUILayout.Popup(Array.IndexOf(keyNames, key.Name), keyNames);
 				keys[i].ID = manager.GetKeyByName(keyNames[nameIndex]).ID;
 
-				if (GUILayout.Button("x", EditorStyles.miniButton, EditorConstants.SmallButtonWidth))
+				if (GUILayout.Button("x", EditorStyles.miniButton, InspectorConstants.SmallButtonWidth))
 					toDeleteIndex = i;
 
 				EditorGUILayout.EndHorizontal();
@@ -267,15 +292,15 @@ namespace DunGen.Editor
         {
             generator.DungeonFlow = (DungeonFlow)EditorGUILayout.ObjectField("Dungeon Flow", generator.DungeonFlow, typeof(DungeonFlow), false);
 
-            generator.ShouldRandomizeSeed = EditorGUILayout.Toggle("Randomize Seed", generator.ShouldRandomizeSeed);
+            generator.ShouldRandomizeSeed = EditorGUILayout.Toggle(new GUIContent("Randomize Seed", "If checked, a new random seed will be created every time a dungeon is generated. If unchecked, a specific seed will be used each time"), generator.ShouldRandomizeSeed);
 
             if (!generator.ShouldRandomizeSeed)
-                generator.Seed = EditorGUILayout.IntField("Seed", generator.Seed);
+                generator.Seed = EditorGUILayout.IntField(new GUIContent("Seed", "The seed used to generate a dungeon layout. Generating a dungoen multiple times with the same seed will produce the exact same results each time"), generator.Seed);
 
-            generator.MaxAttemptCount = EditorGUILayout.IntField("Max Failed Attempts", generator.MaxAttemptCount);
-			generator.LengthMultiplier = EditorGUILayout.FloatField("Length Multiplier", generator.LengthMultiplier);
-            generator.IgnoreSpriteBounds = EditorGUILayout.Toggle("Ignore Sprite Bounds", generator.IgnoreSpriteBounds);
-            generator.UpVector = EditorGUILayout.Vector3Field("Up Vector", generator.UpVector);
+            generator.MaxAttemptCount = EditorGUILayout.IntField(new GUIContent("Max Failed Attempts", "The maximum number of times DunGen is allowed to fail at generating a dungeon layout before giving up. This only applies in-editor; in a packaged build, DunGen will keep trying indefinitely"), generator.MaxAttemptCount);
+			generator.LengthMultiplier = EditorGUILayout.FloatField(new GUIContent("Length Multiplier", "Used to alter the length of the dungeon without modifying the Dungeon Flow asset. 1 = normal-length, 2 = double-length, 0.5 = half-length, etc."), generator.LengthMultiplier);
+            generator.IgnoreSpriteBounds = EditorGUILayout.Toggle(new GUIContent("Ignore Sprite Bounds", "When calculating bounding boxes for tiles, if this is checked, sprited will be ignored"), generator.IgnoreSpriteBounds);
+            generator.UpVector = EditorGUILayout.Vector3Field(new GUIContent("Up Vector", "The up direction of the dungeon. This won't actually rotate your dungeon, but it must match the expected up-vector for your dungeon layout - usually (0, 1, 0) for 3D and (0, 0, -1) for 2D"), generator.UpVector);
 
 			if (generator.LengthMultiplier < 0)
 				generator.LengthMultiplier = 0.0f;
@@ -283,9 +308,23 @@ namespace DunGen.Editor
             if (isRuntimeDungeon)
                 generator.DebugRender = EditorGUILayout.Toggle("Debug Render", generator.DebugRender);
 
-			generator.UseLegacyWeightCombineMethod = EditorGUILayout.Toggle(new GUIContent("Use Legacy Weighting", "Reverts to the old method of handling weight combination for multiple TileSets.\n\nNEW: Tiles are put into one pool and chosen from at random based on their weight.\n\nLEGACY: One TileSet is selected at random, then a Tile is chosen from that set based on their weight."), generator.UseLegacyWeightCombineMethod);
 			generator.PlaceTileTriggers = EditorGUILayout.Toggle(new GUIContent("Place Tile Triggers", "Places trigger colliders around Tiles which can be used in conjunction with the DungenCharacter component to receieve events when changing rooms"), generator.PlaceTileTriggers);
 			generator.TileTriggerLayer = EditorGUILayout.LayerField(new GUIContent("Trigger Layer", "The layer to place the tile root objects on if \"Place Tile Triggers\" is checked"), generator.TileTriggerLayer);
+
+			if (isRuntimeDungeon)
+			{
+				generator.GenerateAsynchronously = EditorGUILayout.Toggle(new GUIContent("Generate Asynchronously", "If checked, DunGen will generate the layout without blocking Unity's main thread, allowing for things like animated loading screens to be shown"), generator.GenerateAsynchronously);
+
+				EditorGUI.BeginDisabledGroup(!generator.GenerateAsynchronously);
+				generator.MaxAsyncFrameMilliseconds = EditorGUILayout.Slider(new GUIContent("Max Frame Time", "How many milliseconds the dungeon generation is allowed to take per-frame"), generator.MaxAsyncFrameMilliseconds, 0f, 1000f);
+				generator.PauseBetweenRooms = EditorGUILayout.Slider(new GUIContent("Pause Between Rooms", "If greater than zero, the dungeon generation will pause for the set time (in seconds) after placing a room; useful for visualising the generation process"), generator.PauseBetweenRooms, 0, 5);
+				EditorGUI.EndDisabledGroup();
+			}
+
+			generator.RestrictDungeonToBounds = EditorGUILayout.Toggle(new GUIContent("Restrict to Bounds?", "If checked, tiles will only be placed within the specified bounds below. May increase generation times"), generator.RestrictDungeonToBounds);
+			EditorGUI.BeginDisabledGroup(!generator.RestrictDungeonToBounds);
+			generator.TilePlacementBounds = EditorGUILayout.BoundsField(new GUIContent("Placement Bounds", "Tiles are not allowed to be placed outside of these bounds"), generator.TilePlacementBounds);
+			EditorGUI.EndDisabledGroup();
 
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
@@ -298,61 +337,7 @@ namespace DunGen.Editor
 			DrawOverride("Allow Tile Rotation", ref generator.OverrideAllowTileRotation, ref generator.AllowTileRotation);
 
 			EditorGUILayout.EndVertical();
-
-			DrawPortalCullingAdapter(generator, isRuntimeDungeon);
         }
-
-		private static void DrawPortalCullingAdapter(DungeonGenerator generator, bool isRuntimeDungeon)
-		{
-			Type[] cullingTypes;
-			string[] cullingTypeNames;
-			bool isCullingAdapterAvailable = TypeUtil.GetAdapterTypesInfo(typeof(PortalCullingAdapter), out cullingTypes, out cullingTypeNames, true);
-
-			EditorGUILayout.Space();
-			EditorGUILayout.BeginVertical("box");
-
-			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField("Portal Culling", EditorStyles.boldLabel);
-
-			int chosenAdapterClassIndex = Array.IndexOf(cullingTypes, generator.PortalCullingAdapterClass.Type);
-
-			bool previousEnabled = GUI.enabled;
-			GUI.enabled = isCullingAdapterAvailable;
-			chosenAdapterClassIndex = EditorGUILayout.Popup(chosenAdapterClassIndex, cullingTypeNames);
-			GUI.enabled = previousEnabled;
-
-			generator.PortalCullingAdapterClass = (chosenAdapterClassIndex > 0) ? new SerializableType(cullingTypes[chosenAdapterClassIndex]) : new SerializableType();
-
-			if (generator.PortalCullingAdapterClass.Type == null && generator.Culling != null)
-				generator.Culling = null;
-			else if (generator.PortalCullingAdapterClass.Type != null)
-			{
-				if (generator.Culling == null || generator.Culling.GetType() != generator.PortalCullingAdapterClass.Type)
-					generator.Culling = Activator.CreateInstance(generator.PortalCullingAdapterClass.Type) as PortalCullingAdapter;
-
-				if (generator.Culling == null)
-					Debug.Log("Culling is NULL");
-				if (generator.Culling.GetType() != generator.PortalCullingAdapterClass.Type)
-					Debug.Log("Culling adapter type mismatch");
-			}
-
-			EditorGUILayout.EndHorizontal();
-
-
-			var culling = generator.Culling;
-
-			if (culling != null)
-			{
-				generator.IsPortalCullingEnabled = EditorGUILayout.Toggle("Enabled", generator.IsPortalCullingEnabled);
-
-				previousEnabled = GUI.enabled;
-				GUI.enabled = generator.IsPortalCullingEnabled;
-				culling.OnInspectorGUI(generator, isRuntimeDungeon);
-				GUI.enabled = previousEnabled;
-			}
-
-			EditorGUILayout.EndVertical();
-		}
 
 		public static void DrawOverride(string label, ref bool shouldOverride, ref bool value)
 		{

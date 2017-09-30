@@ -62,10 +62,19 @@ namespace DunGen
             get { return bounds; }
             internal set { bounds = value; }
         }
-        /// <summary>
-        /// Gets the depth of this tile. Returns the branch depth if on a branch path, otherwise, returns the main path depth
-        /// </summary>
-        public int Depth { get { return (isOnMainPath) ? pathDepth : branchDepth; } }
+
+		/// <summary>
+		/// The local boundaries of this tile
+		/// </summary>
+		public Bounds LocalBounds
+		{
+			get { return localBounds; }
+			internal set { localBounds = value; }
+		}
+		/// <summary>
+		/// Gets the depth of this tile. Returns the branch depth if on a branch path, otherwise, returns the main path depth
+		/// </summary>
+		public int Depth { get { return (isOnMainPath) ? pathDepth : branchDepth; } }
         /// <summary>
         /// Gets the normalized depth (0-1) of this tile. Returns the branch depth if on a branch path, otherwise, returns the main path depth
         /// </summary>
@@ -87,7 +96,9 @@ namespace DunGen
 		private bool isOnMainPath;
         [SerializeField]
         private Bounds bounds;
-        [SerializeField]
+		[SerializeField]
+		private Bounds localBounds;
+		[SerializeField]
         private GameObject root;
         [SerializeField]
         private Tile tile;
@@ -118,7 +129,6 @@ namespace DunGen
             }
 
             UnusedDoorways.AddRange(AllDoorways);
-            root.SetActive(false);
         }
 
         public void ProcessDoorways(System.Random randomStream)
@@ -160,37 +170,9 @@ namespace DunGen
 		{
 			Bounds = UnityUtil.CalculateObjectBounds(Root, true, ignoreSpriteRenderers);
             Bounds = UnityUtil.CondenseBounds(Bounds, AllDoorways);
+
+			LocalBounds = Root.transform.InverseTransformBounds(Bounds);
 		}
-
-        public Doorway PickRandomDoorway(System.Random randomStream, bool mustBeAvailable, DungeonArchetype archetype)
-        {
-            float straightenChance = (archetype == null) ? 0.0f : archetype.StraightenChance;
-            double rnd = randomStream.NextDouble();
-
-            // Try to pick the opposing doorway, based on archetype's StraightenChance
-            if (isOnMainPath && UsedDoorways.Count == 1 && rnd < straightenChance)
-            {
-                // Find the doorway opposite to the first
-                foreach (Doorway d in UnusedDoorways)
-                {
-                    if (UsedDoorways[0].transform.forward == -d.transform.forward)
-                        return d;
-                }
-            }
-
-            int index = PickRandomDoorwayIndex(randomStream, mustBeAvailable);
-            return (index == -1) ? null : AllDoorways[index];
-        }
-
-        public int PickRandomDoorwayIndex(System.Random randomStream, bool mustBeAvailable)
-        {
-            var possibleDoorways = (mustBeAvailable) ? UnusedDoorways : AllDoorways;
-
-            if (possibleDoorways.Count == 0)
-                return -1;
-
-            return AllDoorways.IndexOf(possibleDoorways[randomStream.Next(0, possibleDoorways.Count)]);
-        }
 	}
 }
 

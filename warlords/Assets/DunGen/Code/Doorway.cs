@@ -68,6 +68,10 @@ namespace DunGen
         /// The prefab that has been placed as a door for this doorway
         /// </summary>
         public GameObject UsedDoorPrefab { get { return doorPrefab; } }
+		/// <summary>
+		/// The Door component that has been assigned to the door prefab instance (if any)
+		/// </summary>
+		public Door DoorComponent { get { return doorComponent; } }
         /// <summary>
         /// The dungeon that this doorway belongs to
         /// </summary>
@@ -99,7 +103,10 @@ namespace DunGen
         [SerializeField]
         [HideInInspector]
         private GameObject doorPrefab;
-        [SerializeField]
+		[SerializeField]
+		[HideInInspector]
+		private Door doorComponent;
+		[SerializeField]
         private Tile tile;
         [SerializeField]
         private Doorway connectedDoorway;
@@ -118,6 +125,9 @@ namespace DunGen
         internal void SetUsedPrefab(GameObject doorPrefab)
         {
             this.doorPrefab = doorPrefab;
+
+			if (doorPrefab != null)
+				doorComponent = doorPrefab.GetComponent<Door>();
         }
 
         internal void RemoveUsedPrefab()
