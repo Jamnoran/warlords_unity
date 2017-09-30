@@ -181,7 +181,16 @@ namespace Assets.scripts.vo
             }
             else
             {
+                Debug.Log("Setting resource type to" + resource);
                 hUpdate.setMaxResourceValue(maxResource);
+                if (class_type == "WARRIOR")
+                {
+                    hUpdate.setResourceType(2);
+                }
+                else if (class_type == "PRIEST")
+                {
+                    hUpdate.setResourceType(1);
+                }
             }
         }
 

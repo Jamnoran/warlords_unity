@@ -325,7 +325,7 @@ public class ServerCommunication : MonoBehaviour {
 
     public void sendRequest(object request) {
         String reqJson = JsonMapper.ToJson(request);
-        if (reqJson != null && !reqJson.Contains("UPDATE_MINION_POSITION"))
+        if (reqJson != null && (!reqJson.Contains("UPDATE_MINION_POSITION") && reqJson.Contains("\"request_type\": \"MOVE\"")))
         {
             Debug.Log("Sending this request: " + reqJson);
         }

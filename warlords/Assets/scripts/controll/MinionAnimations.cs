@@ -120,12 +120,16 @@ public class MinionAnimations : MonoBehaviour {
 			//find the vector pointing from our position to the target
 			Vector3 direction = (targetPostition - transform.position).normalized;
 
-			//create the rotation we need to be in to look at the target
-			Quaternion lookRotation = Quaternion.LookRotation(direction);
+            //direction.y = character.transform.position.y;
 
-			//rotate us over time according to speed until we are in the required rotation
-			transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * idleRotation);
-		}
+            //create the rotation we need to be in to look at the target
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+
+            lookRotation.z = 0;
+            lookRotation.x = 0;
+            //rotate us over time according to speed until we are in the required rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * idleRotation);
+        }
         
 
         // find the target position relative to the player:
