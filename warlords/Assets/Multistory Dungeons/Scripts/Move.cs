@@ -6,7 +6,7 @@ namespace commanastationwww.multistorydungeons{
 public class Move : MonoBehaviour {
 
 	private float speed = 7f;
-	private float gravity = 300f;
+	private float gravity = 1000f;
 	float horizontalMovement;
 	float verticalMovement;
 	private CharacterController character;

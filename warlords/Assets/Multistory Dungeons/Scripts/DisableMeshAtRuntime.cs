@@ -2,6 +2,7 @@
 using System.Collections;
 
 namespace commanastationwww.multistorydungeons{
+
 public class DisableMeshAtRuntime : MonoBehaviour {
 
 	// Use this for initialization
