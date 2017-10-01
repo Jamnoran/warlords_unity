@@ -603,7 +603,18 @@ public class GameLogic : MonoBehaviour
         }
         return 9999;
     }
-    
+    public Ability getAbilityByAbilityName(string name)
+    {
+        foreach (var ability in abilities)
+        {
+            if (ability.image == name)
+            {
+                return ability;
+            }
+        }
+        return null;
+    }
+
     /// <summary>
     /// Get the description of the ability so we can show it to the user
     /// </summary>

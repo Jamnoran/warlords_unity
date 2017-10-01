@@ -66,7 +66,7 @@ public class ServerCommunication : MonoBehaviour {
 
     public void sendAutoAttack(int minionId) {
         if (minionId > 0) {
-            print("Trying to attack minion " + minionId);
+            //print("Trying to attack minion " + minionId);
             var time = getMillis();
             sendRequest(new RequestAttack(getHeroId(), minionId, time));
         } else {

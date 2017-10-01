@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MinionInfo : MonoBehaviour {
 
-    private int minionId = 0;
+    public int minionId = 0;
 
 	// Use this for initialization
 	void Start () {

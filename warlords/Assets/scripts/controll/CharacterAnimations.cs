@@ -11,6 +11,8 @@ public class CharacterAnimations : MonoBehaviour {
     public float moveSpeed = 5.0f;
     public float rotateSpeed = 3.0F;
     public bool sentStopAnimation = false;
+    public GameObject autoAttackProjectilePosition;
+    public GameObject autoAttackProjectilePrefab;
 
     int grounded = 0;
     float slopefix = 8.0f;
@@ -71,17 +73,46 @@ public class CharacterAnimations : MonoBehaviour {
     }
 
     public void rotateToTarget(Vector3 postition) {
-        Debug.Log("Rotating towards target");
+        //Debug.Log("Rotating towards target");
         Vector3 rotatingPostition = new Vector3(postition.x, character.transform.position.y, postition.z);
         character.transform.LookAt(rotatingPostition);
 
     }
 
     public void attackAnimation() {
-        Debug.Log("Got auto attack animation");
+        //Debug.Log("Got auto attack animation");
         anim.SetBool("attacking", true);
         isAttacking = true;
         StartCoroutine("clearAttackBool");
+
+        checkIfAttackHasProjectile();
+
+    }
+
+    public float autoAttackTimeToReachGoal = 0.1f;
+    public float timeToWaitToSendAutoProjectile = 0.3f;
+    private void checkIfAttackHasProjectile()
+    {
+        Debug.Log("Sending projectile!");
+        if (autoAttackProjectilePosition != null)
+        {
+            StartCoroutine("sendAutoAttackProjectile");
+        }
+    }
+
+    IEnumerator sendAutoAttackProjectile()
+    {
+        yield return new WaitForSeconds(timeToWaitToSendAutoProjectile);
+        var projectile = (GameObject)Instantiate(
+                   autoAttackProjectilePrefab,
+                   autoAttackProjectilePosition.transform.position,
+                   autoAttackProjectilePosition.transform.rotation);
+        Projectile projectileScript = ((Projectile)projectile.GetComponent(typeof(Projectile)));
+        Hero thisHero = getGameLogic().getHeroByTransform(transform);
+        projectileScript.minionId = thisHero.targetEnemy;
+        projectileScript.timeToReachGoal = autoAttackTimeToReachGoal;
+        projectileScript.source = autoAttackProjectilePosition;
+        Debug.Log("Projectile sent!");
     }
 
     IEnumerator clearAttackBool()

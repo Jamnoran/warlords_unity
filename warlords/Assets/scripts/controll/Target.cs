@@ -17,7 +17,7 @@ public class Target : MonoBehaviour {
     #endregion
 
     void Start() {
-        listOfHeroes = ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).getHeroes();
+        listOfHeroes = getGameLogic().getHeroes();
     }
 
 	// Update is called once per frame
@@ -76,7 +76,7 @@ public class Target : MonoBehaviour {
 
                 if ((dist < closestDistanse) && dist <= MinTargetDistance) {
                     //print("Minion is closest at a distance at: " + dist);
-                    ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetEnemy(minion.id);
+                    getGameLogic().setHeroTargetEnemy(minion.id);
                     closestDistanse = dist;
                 }
             }
@@ -88,7 +88,7 @@ public class Target : MonoBehaviour {
                 //Debug.Log("Class: " + hero.class_type + " Distance from click [" + targetPosition.x + "x"  + targetPosition.z + "] is: " + dist);
                 if ((dist < closestDistanse) && dist <= MinTargetDistance) {
                     //print("Hero is closest at a distance at: " + dist);
-                    ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic))).setHeroTargetFriendly(hero.id);
+                    getGameLogic().setHeroTargetFriendly(hero.id);
                     closestDistanse = dist;
                 }
             }

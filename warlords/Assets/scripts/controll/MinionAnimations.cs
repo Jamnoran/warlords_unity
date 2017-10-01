@@ -85,7 +85,7 @@ public class MinionAnimations : MonoBehaviour {
         }
 
 
-		if(getGameLogic().isGameMode(World.HORDE_MODE)){
+		if(getGameLogic() != null && getGameLogic().isGameMode(World.HORDE_MODE)){
 			inCombat = true;
 		}
 
@@ -210,7 +210,14 @@ public class MinionAnimations : MonoBehaviour {
 
     GameLogic getGameLogic()
     {
-        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        if (GameObject.Find("GameLogicObject") != null)
+        {
+            return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        }
+        else
+        {
+            return null;
+        }
     }
 
 

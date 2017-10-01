@@ -64,16 +64,21 @@ public class UseAbilitiesActionBar : MonoBehaviour
    
         if (spell.transform.childCount > 0)
         {
-            List<int> enemies = new List<int>();
-            enemies.Add(getGameLogic().getMyHero().targetEnemy);
-            List<int> friends = new List<int>();
-            friends.Add(getGameLogic().getMyHero().targetFriendly);
-            getGameLogic().sendSpell((int)getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friends);
+            // This return false if we dont have a target
+            if (!getTargetingLogic().sendSpell(getGameLogic().getAbilityByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name)))
+            {
+                // Show no target message to user
+            }
         }
         else
         {
             Debug.Log("No spell assigned to ");
         }
+    }
+
+    TargetingLogic getTargetingLogic()
+    {
+        return ((TargetingLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(TargetingLogic)));
     }
 
     GameLogic getGameLogic()
