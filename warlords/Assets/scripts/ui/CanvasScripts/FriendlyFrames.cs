@@ -1,5 +1,5 @@
 ﻿using Assets.scripts.vo;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,8 +34,8 @@ public class FriendlyFrames : MonoBehaviour
     }
 
     //debug vars only
-    public Text currentXp;
-    public Text maxXp;
+    //public Text currentXp;
+    //public Text maxXp;
     
 
 
@@ -70,13 +70,13 @@ public class FriendlyFrames : MonoBehaviour
             case 3:
                 hp1 = (float)heroes[0].hp / (float)heroes[0].maxHp;
                 hp2 = (float)heroes[1].hp / (float)heroes[1].maxHp;
-                hp2 = (float)heroes[2].hp / (float)heroes[2].maxHp;
+                hp3 = (float)heroes[2].hp / (float)heroes[2].maxHp;
                 SetFillAmount(hpBar1, hp_Text1, hp1);
                 SetFillAmount(hpBar2, hp_Text2, hp2);
                 SetFillAmount(hpBar3, hp_Text3, hp3);
             break;
             default:
-                break;
+                throw new InvalidOperationException("More than four players not allowed"); 
         }
       
         
@@ -94,8 +94,8 @@ public class FriendlyFrames : MonoBehaviour
         XpBar.maxValue = hero.xpForLevel;
         XpBar.value = hero.xp;
         
-        currentXp.text = hero.xp.ToString();
-        maxXp.text = hero.xpForLevel.ToString();
+        //currentXp.text = hero.xp.ToString();
+        //maxXp.text = hero.xpForLevel.ToString();
 
         Debug.Log("property:" + hero.topGameLvl);
 
