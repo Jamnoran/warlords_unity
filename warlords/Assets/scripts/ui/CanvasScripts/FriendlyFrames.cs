@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class FriendlyFrames : MonoBehaviour
 {
-
+    public Slider XpBar;
     public GameObject friendlyFrame1;
     public GameObject friendlyFrame2;
     public GameObject friendlyFrame3;
@@ -20,6 +20,7 @@ public class FriendlyFrames : MonoBehaviour
     public int m_TextValue = 100;
     public string m_TextValueFormat = "0";
     public GameObject enemyRedBorder;
+    
 
     private float hp1;
     private float hp2;
@@ -32,11 +33,27 @@ public class FriendlyFrames : MonoBehaviour
         ValueMax
     }
 
+    //debug vars only
+    public Text currentXp;
+    public Text maxXp;
+    
+
+
+    /// <summary>
+    /// Update your allies partyframes, this gets called from gamelogic.
+    /// </summary>
+    /// <param name="heroes"></param>
    public void UpdatePartyFrames(List<Hero> heroes)
     {
+
         var allies = heroes.Count;
         switch (allies)
         {
+            case 0:
+                friendlyFrame1.SetActive(false);
+                friendlyFrame2.SetActive(false);
+                friendlyFrame3.SetActive(false);
+                break;
             case 1:
                 friendlyFrame2.SetActive(false);
                 friendlyFrame3.SetActive(false);
@@ -65,6 +82,23 @@ public class FriendlyFrames : MonoBehaviour
         
         
       
+    }
+
+    
+    /// <summary>
+    /// Update your own experience bar
+    /// </summary>
+    /// <param name="hero"></param>
+    public void UpdateXpBar(Hero hero)
+    {
+        XpBar.maxValue = hero.xpForLevel;
+        XpBar.value = hero.xp;
+        
+        currentXp.text = hero.xp.ToString();
+        maxXp.text = hero.xpForLevel.ToString();
+
+        Debug.Log("property:" + hero.topGameLvl);
+
     }
 
 

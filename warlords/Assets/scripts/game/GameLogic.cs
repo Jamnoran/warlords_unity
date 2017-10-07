@@ -172,7 +172,7 @@ public class GameLogic : MonoBehaviour
             }
         }
     }
-
+        
     public void initiateMinion(Minion newMinion)
     {
         // Initiate minion here
@@ -220,16 +220,38 @@ public class GameLogic : MonoBehaviour
             updateHero(newHero);
         }
 
+        UpdateXpBar();
         UpdatePartyFrames(newHeroes);
     }
 
     private void UpdatePartyFrames(List<Hero> heroes)
     {
-        //heroes.RemoveAll(hero => hero.id == thisHeroId);
-        if (getPartyFrame() != null)
+        try
         {
-            getPartyFrame().UpdatePartyFrames(heroes);
+            heroes.RemoveAll(hero => hero.id == thisHeroId);
+            if (getPartyFrame() != null)
+            {
+                getPartyFrame().UpdatePartyFrames(heroes);
+            }
         }
+        catch (Exception e)
+        {
+            throw new Exception("Could not update party-frames: " + e);
+        }
+     
+    }
+
+    private void UpdateXpBar()
+    {
+        try
+        {
+            getPartyFrame().UpdateXpBar(getMyHero());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Could not update xp-bar: " + e);
+        }
+        
     }
 
     void updateHero(Hero newHero)
@@ -353,7 +375,11 @@ public class GameLogic : MonoBehaviour
 
         heroes.Add(newHero);
         //set initial health for hero
-        newHero.initBars();
+        if (newHero.id == heroid)
+        {
+            newHero.initBars();
+        }
+        
     }
 
     internal void setTalents(ResponseTalents response) {
