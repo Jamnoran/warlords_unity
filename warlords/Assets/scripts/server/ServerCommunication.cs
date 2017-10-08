@@ -186,7 +186,8 @@ public class ServerCommunication : MonoBehaviour {
 
         // Handle different type of request_names
         if (responseType != null && !responseType.Equals("")) {
-            if (responseType.Equals("GAME_STATUS")) {
+            if (responseType.Equals("GAME_STATUS"))
+            {
                 //Debug.Log("GameStatus[" + json + "]");
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
                 if (responseGameStatus.gameAnimations.Count > 0)
@@ -195,44 +196,80 @@ public class ServerCommunication : MonoBehaviour {
                 }
                 getGameLogic().updateListOfMinions(responseGameStatus.minions);
                 getGameLogic().updateListOfHeroes(responseGameStatus.heroes);
-				if (getGameLogic ().isGameMode (World.HORDE_MODE)) {
-					getHordeMode ().totalMinionsLeft = responseGameStatus.totalMinionsLeft;
-				}	
-            } else if (responseType == "WORLD") {
+                if (getGameLogic().isGameMode(World.HORDE_MODE))
+                {
+                    getHordeMode().totalMinionsLeft = responseGameStatus.totalMinionsLeft;
+                }
+            }
+            else if (responseType == "WORLD")
+            {
                 ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
-				if (responseWorld != null && responseWorld.world != null) {
-					Debug.Log ("Creating world with seed " + responseWorld.world.seed);
-					getGameLogic ().createWorld (responseWorld);
-				} else {
-					Debug.Log ("We did not recieve a world, or the seed, check this out why is this happening.");
-				}
-            } else if (responseType == "CLEAR_WORLD")  {
+                if (responseWorld != null && responseWorld.world != null)
+                {
+                    Debug.Log("Creating world with seed " + responseWorld.world.seed);
+                    getGameLogic().createWorld(responseWorld);
+                }
+                else
+                {
+                    Debug.Log("We did not recieve a world, or the seed, check this out why is this happening.");
+                }
+            }
+            else if (responseType == "CLEAR_WORLD")
+            {
                 getGameLogic().clearWorld();
-            } else if (responseType == "TELEPORT_HEROES") {
+            }
+            else if (responseType == "TELEPORT_HEROES")
+            {
                 ResponseTeleportHeroes responseTeleportHeroes = JsonMapper.ToObject<ResponseTeleportHeroes>(json);
                 getGameLogic().teleportHeroes(responseTeleportHeroes.heroes);
-            } else if (responseType == "COOLDOWN") {
+            }
+            else if (responseType == "COOLDOWN")
+            {
                 ResponseCooldown responseCooldown = JsonMapper.ToObject<ResponseCooldown>(json);
                 getGameLogic().updateCooldown(responseCooldown.ability);
-            } else if (responseType == "ABILITIES") {
+            }
+            else if (responseType == "ABILITIES")
+            {
                 ResponseAbilities responseAbilities = JsonMapper.ToObject<ResponseAbilities>(json);
                 getGameLogic().setAbilities(responseAbilities.abilities);
-            } else if (responseType == "ABILITY_STATUS") {
+            }
+            else if (responseType == "ABILITY_STATUS")
+            {
                 ResponseAbilityStatus responseAbilityStatus = JsonMapper.ToObject<ResponseAbilityStatus>(json);
                 getGameLogic().updateAbilityInformation(responseAbilityStatus.ability);
-            } else if (responseType == "STOP_HERO")  {
+            }
+            else if (responseType == "STOP_HERO")
+            {
                 ResponseStopHero responseStopHero = JsonMapper.ToObject<ResponseStopHero>(json);
                 getGameLogic().stopHero(responseStopHero.hero);
-            } else if (responseType == "TALENTS") {
+            }
+            else if (responseType == "TALENTS")
+            {
                 ResponseTalents response = JsonMapper.ToObject<ResponseTalents>(json);
                 getGameLogic().setTalents(response);
-			} else if (responseType == "UPDATE_MINION_POSITION") {
-				getGameLogic().sendMinionPostionsToServer();
-            } else if (responseType == "MESSAGE") {
+            }
+            else if (responseType == "UPDATE_MINION_POSITION")
+            {
+                getGameLogic().sendMinionPostionsToServer();
+            }
+            else if (responseType == "ROTATE_TARGET")
+            {
+                ResponseRotateTarget responseRotateTarget = JsonMapper.ToObject<ResponseRotateTarget>(json);
+                getGameLogic().rotateTarget(responseRotateTarget);
+            }
+            else if (responseType == "COMBAT_TEXT")
+            {
+                ResponseCombatText responseCombatText = JsonMapper.ToObject<ResponseCombatText>(json);
+                getGameLogic().combatText(responseCombatText);
+            }
+            else if (responseType == "MESSAGE")
+            {
                 ResponseMessage response = JsonMapper.ToObject<ResponseMessage>(json);
                 Debug.Log("Someone wrote: " + response.message.message);
                 getChat().addMessage(response.message);
-            } else {
+            }
+            else
+            {
                 Debug.Log("Have type but did not match any of the ones we have [" + responseType + "]");
             }
         } else {

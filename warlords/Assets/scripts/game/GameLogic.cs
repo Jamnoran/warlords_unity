@@ -274,6 +274,46 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    public void combatText(ResponseCombatText responseCombatText)
+    {
+        if (responseCombatText.friendly)
+        {
+            Hero hero = getHero(responseCombatText.idOfTarget);
+            Transform sctObject = hero.trans.Find("ganfaul_m_aure/FriendlyCanvas/frame/SCTpoint");
+            ScrollingCombatText sct = (ScrollingCombatText)sctObject.GetComponent(typeof(ScrollingCombatText));
+            sct.showText(responseCombatText.amount, responseCombatText.crit, responseCombatText.color);
+        }
+        else
+        {
+            Minion minion = getMinion(responseCombatText.idOfTarget);
+            Transform sctObject = minion.minionTransform.Find("mob/EnemyCanvas/frame/SCTpoint");
+            Debug.Log("Found object : " + sctObject.tag);
+            ScrollingCombatText sct = (ScrollingCombatText)sctObject.GetComponent(typeof(ScrollingCombatText));
+            sct.showText(responseCombatText.amount, responseCombatText.crit, responseCombatText.color);
+        }
+    }
+
+    public void rotateTarget(ResponseRotateTarget responseRotateTarget)
+    {
+        CharacterAnimations anim = (CharacterAnimations)getMyHero().trans.GetComponent(typeof(CharacterAnimations));
+        if (responseRotateTarget.getTargetPosition() != null && responseRotateTarget.getTargetPosition().x != 0 && responseRotateTarget.getTargetPosition().z != 0)
+        {
+            Debug.Log("Rotate towards : " + responseRotateTarget.getTargetPosition());
+            anim.rotateToTarget(responseRotateTarget.getTargetPosition());
+        }
+        else if (responseRotateTarget.isFriendly())
+        {
+            Debug.Log("Rotate to hero : " + responseRotateTarget.getIdOfTarget());
+            anim.rotateToTarget(getHero(responseRotateTarget.getIdOfTarget()).getTransformPosition());
+        }
+        else
+        {
+            Debug.Log("Rotate to minion : " + responseRotateTarget.getIdOfTarget());
+            anim.rotateToTarget(getMinion(responseRotateTarget.getIdOfTarget()).getTransformPosition());
+        }
+        
+    }
+
     void updateHeroBuffs(Hero newHero, Hero hero)
     {
         List<Buff> oldBuffs = hero.buffs;

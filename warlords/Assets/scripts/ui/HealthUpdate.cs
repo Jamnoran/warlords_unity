@@ -30,18 +30,10 @@ public class HealthUpdate : MonoBehaviour {
     public void setCurrentVal(float newValue)
     {
         this.health.CurrentVal = newValue;
-        if (newValue <= 0)
-        {
-            //this.health.hideBar();
-        }
     }
     public void setCurrentResourceVal(float newValue)
     {
         this.resource.CurrentVal = newValue;
-        if (newValue <= 0)
-        {
-            //this.resource.hideBar();
-        }
     }
 
     public void setResourceType(int type)
@@ -70,7 +62,10 @@ public class HealthUpdate : MonoBehaviour {
 
     public void hideBar()
     {
-        healthCanvas.enabled = false;
+        GameObject background = healthCanvas.transform.Find("frame/background").gameObject;
+        background.SetActive(false);
+        GameObject mask = healthCanvas.transform.Find("frame/mask").gameObject;
+        mask.SetActive(false);
     }
 
     public void hideResource()

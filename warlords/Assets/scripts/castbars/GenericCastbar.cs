@@ -49,51 +49,8 @@ public class GenericCastbar : MonoBehaviour {
     }
 
     void Update () {
-
-
-        //if aoe/targeting spell we wait for mouse to send spell 
-        //if (Input.GetMouseButtonUp(0))
-        //{
-        //    try
-        //    {
-        //        CircleAoe aoeSpell = activeSpellPrefab.GetComponent(typeof(CircleAoe)) as CircleAoe;
-        //        List<int> friendlies = new List<int>();
-        //        List<int> enemies = aoeSpell.GetAoeTargets();
-
-        //        //send active spell along with list of friendlies and enemies
-        //        NewSendSpell(activeSpell, enemies, friendlies);
-
-        //        //destroy spell after use
-        //        Destroy(activeSpellPrefab);
-        //    }
-        //    catch (Exception e)
-        //    {
-
-        //        throw new Exception("Could not cast spell: " + activeSpell.name + "-Error: " + e);
-        //    }
-        //}
-
-        //if (Input.GetMouseButtonUp(1))
-        //{
-        //    try
-        //    {
-        //        Destroy(activeSpellPrefab);
-        //    }
-        //    catch (Exception e)
-        //    {
-
-        //        throw new Exception("Could not abort casting spell: " + activeSpell.name + "-Error: " + e);
-        //    }
-        //}
-
-        //cancel spell when rightclicking
-
-
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            //activeSpell = spell1;
-            //Ability ability = GetAbility(spell1);
-            //DecideSpellType(ability.targetType, ability.name);
             var ab1 = GetAbility(spell1);
             SendSpell(spell1);
         }
@@ -122,22 +79,7 @@ public class GenericCastbar : MonoBehaviour {
         {
             SendSpell(spell7);
         }
-        //temp key so we can test this 
-        if (Input.GetKeyDown("h"))
-        {
-            isCasting = true;
-        }
 
-        if (isCasting && castBarFiller.fillAmount < 1.0f)
-        {
-            castBarFiller.fillAmount += 1.0f / castTime * Time.deltaTime;
-            timeLeft = timeLeft - Time.deltaTime;
-            tmpTxt.text = (Math.Round(timeLeft,2)).ToString();
-        }
-        else
-        {
-            resetCastBar();
-        }
 	}
 
     //Decide spelltype and instantiate proper spell
@@ -167,39 +109,24 @@ public class GenericCastbar : MonoBehaviour {
         }
     }
 
-    private void resetCastBar()
-    {
-        tmpTxt.text = "";
-        isCasting = false;
-        castBarFiller.fillAmount = 0;
-        timeLeft = castTime;
-    }
-
     private Ability GetAbility(GameObject spell)
     {
         return getGameLogic().getAbility(getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name));
     }
-
-    private void NewSendSpell(GameObject spell, List<int> enemies, List<int> friendlies)
-    {
-        getGameLogic().sendSpell(getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friendlies);
-    }
-
+    
     private void SendSpell(GameObject spell)
     {
+        // This return false if we dont have a target
+        if (!getTargetingLogic().sendSpell(getGameLogic().getAbilityByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name)))
+        {
+            // Show no target message to user
+        }
+    }
 
-        if (spell.transform.childCount > 0)
-        {
-            List<int> enemies = new List<int>();
-            enemies.Add(getGameLogic().getMyHero().targetEnemy);
-            List<int> friends = new List<int>();
-            friends.Add(getGameLogic().getMyHero().targetFriendly);
-            getGameLogic().sendSpell(getGameLogic().getAbilityIdByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name), enemies, friends);
-        }
-        else
-        {
-            Debug.Log("No spell assigned to ");
-        }
+
+    TargetingLogic getTargetingLogic()
+    {
+        return ((TargetingLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(TargetingLogic)));
     }
 
     GameLogic getGameLogic()

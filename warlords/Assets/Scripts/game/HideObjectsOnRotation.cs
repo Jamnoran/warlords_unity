@@ -12,8 +12,15 @@ public class HideObjectsOnRotation : MonoBehaviour {
     void Start () {
         if (parentToCheckObjective != null)
         {
-            foreach (GameObject objectToHide in objectsToHide)
-            {
+            foreach (int rotation in rotationsToHide) {
+                if(parentToCheckObjective.transform.rotation.eulerAngles.y == rotation)
+                {
+                    foreach (GameObject objectToHide in objectsToHide)
+                    {
+                        Renderer rend = objectToHide.GetComponent<Renderer>();
+                        rend.enabled = false;
+                    }
+                }
             }
         }
 	}

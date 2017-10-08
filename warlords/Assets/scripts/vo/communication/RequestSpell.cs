@@ -12,6 +12,7 @@ public class RequestSpell {
     public List<int> target_friendly;
     public float target_position_x;
     public float target_position_z;
+    public float target_position_y;
     public long time;
 
     public RequestSpell(int hId, int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3, long t)
@@ -23,6 +24,7 @@ public class RequestSpell {
         target_friendly = targetFriendly;
         target_position_x = vector3.x;
         target_position_z = vector3.z;
+        target_position_y = vector3.y;
         time = t;
 	}
 
