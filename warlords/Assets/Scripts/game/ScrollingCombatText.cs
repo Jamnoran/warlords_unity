@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,7 +28,7 @@ public class ScrollingCombatText : MonoBehaviour {
         tempRect.transform.localPosition = sctPrefab.transform.localPosition;
         tempRect.transform.localScale = sctPrefab.transform.localScale;
         tempRect.transform.localRotation = sctPrefab.transform.localRotation;
-        string damageInDisplayFormat = damage.ToString();
+        string damageInDisplayFormat = "" + Math.Round(float.Parse(damage));
 
         if (color == "#FF00FF00")
         {

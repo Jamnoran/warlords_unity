@@ -279,7 +279,7 @@ public class GameLogic : MonoBehaviour
         if (responseCombatText.friendly)
         {
             Hero hero = getHero(responseCombatText.idOfTarget);
-            Transform sctObject = hero.trans.Find("ganfaul_m_aure/FriendlyCanvas/frame/SCTpoint");
+            Transform sctObject = hero.trans.Find("3dmodel/FriendlyCanvas/frame/SCTpoint");
             ScrollingCombatText sct = (ScrollingCombatText)sctObject.GetComponent(typeof(ScrollingCombatText));
             sct.showText(responseCombatText.amount, responseCombatText.crit, responseCombatText.color);
         }
