@@ -116,10 +116,22 @@ public class GenericCastbar : MonoBehaviour {
     
     private void SendSpell(GameObject spell)
     {
+        Debug.Log("Getting spell by name : " + spell.transform.GetChild(0).GetComponent<Image>().sprite.name);
         // This return false if we dont have a target
-        if (!getTargetingLogic().sendSpell(getGameLogic().getAbilityByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name)))
+        if (getGameLogic() != null)
         {
-            // Show no target message to user
+            if (getGameLogic().getAbilityByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name) == null)
+            {
+                Debug.Log("Cant get ability by ability image name");
+            }
+            if(getTargetingLogic() == null)
+            {
+                Debug.Log("Targeting is null");
+            }
+            if (!getTargetingLogic().sendSpell(getGameLogic().getAbilityByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name)))
+            {
+                // Show no target message to user
+            }
         }
     }
 
