@@ -92,21 +92,6 @@ public class FieldOfView : MonoBehaviour
         return false;
     }
 
-    GameLogic getGameLogic()
-    {
-        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
-    }
-
-
-    MinionAnimations getAnimation()
-    {
-        return (MinionAnimations)transform.GetComponent(typeof(MinionAnimations));
-    }
-
-    ServerCommunication getCommunication()
-    {
-        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
-    }
 
     /// <summary>
     /// Draw a visual representation of the fov
@@ -249,6 +234,23 @@ public class FieldOfView : MonoBehaviour
             pointA = _pointA;
             pointB = _pointB;
         }
+    }
+
+
+    GameLogic getGameLogic()
+    {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+    }
+
+
+    MinionAnimations getAnimation()
+    {
+        return (MinionAnimations)transform.GetComponent(typeof(MinionAnimations));
+    }
+
+    ServerCommunication getCommunication()
+    {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
 
 }

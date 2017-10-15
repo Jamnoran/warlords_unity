@@ -301,7 +301,7 @@ public class GameLogic : MonoBehaviour
             Debug.Log("Rotate towards : " + responseRotateTarget.getTargetPosition());
             anim.rotateToTarget(responseRotateTarget.getTargetPosition());
         }
-        else if (responseRotateTarget.isFriendly())
+        else if (responseRotateTarget.isFriendly() && responseRotateTarget.getIdOfTarget() > 0)
         {
             Debug.Log("Rotate to hero : " + responseRotateTarget.getIdOfTarget());
             anim.rotateToTarget(getHero(responseRotateTarget.getIdOfTarget()).getTransformPosition());
@@ -311,7 +311,6 @@ public class GameLogic : MonoBehaviour
             Debug.Log("Rotate to minion : " + responseRotateTarget.getIdOfTarget());
             anim.rotateToTarget(getMinion(responseRotateTarget.getIdOfTarget()).getTransformPosition());
         }
-        
     }
 
     void updateHeroBuffs(Hero newHero, Hero hero)
@@ -503,7 +502,7 @@ public class GameLogic : MonoBehaviour
 
     
     public void stopHero(int heroId) {
-        Debug.Log("Stopping hero.");
+        //Debug.Log("Stopping hero.");
         Hero hero = getHero(heroId);
         hero.desiredPositionX = hero.trans.position.x;
         hero.desiredPositionZ = hero.trans.position.z;

@@ -95,7 +95,7 @@ public class ServerCommunication : MonoBehaviour {
     }
 
     public void sendStopHero(int heroId) {
-        print("Sending stop hero");
+        //print("Sending stop hero");
         sendRequest(new RequestStopHero(heroId));
     }
 
@@ -106,7 +106,7 @@ public class ServerCommunication : MonoBehaviour {
     }
 
     public void sendMinionAggro(int minionId, int heroId) {
-        Debug.Log("Sending minion aggro : " + minionId + " on hero: " + heroId);
+        //Debug.Log("Sending minion aggro : " + minionId + " on hero: " + heroId);
         writeSocket("{\"request_type\": \"MINION_AGGRO\", \"hero_id\":" + heroId + ", \"minion_id\": " + minionId + "}");
     }
 

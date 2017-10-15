@@ -60,9 +60,11 @@ public class TargetingLogic : MonoBehaviour {
             if (enemiesInRange != null && enemiesInRange.Count > 0)
             {
                 enemies = enemiesInRange;
+                Debug.Log(enemiesInRange.Count + " targets in range");
             }
             else
             {
+                Debug.Log("Didnt find any targets");
                 return false;
             }
         }
