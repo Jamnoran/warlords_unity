@@ -719,6 +719,7 @@ namespace DunGen
 				newTile.BranchDepth = (pair.PreviousTile.Placement.IsOnMainPath) ? 0 : pair.PreviousTile.Placement.BranchDepth + 1;
 			}
 
+            if (Root != null && Root.transform != null) { 
 			if (fromDoorway != null)
 			{
 				newTile.Root.transform.parent = Root.transform;
@@ -732,8 +733,9 @@ namespace DunGen
 				newTile.Root.transform.parent = Root.transform;
 				newTile.Root.transform.localPosition = Vector3.zero;
 			}
+            }
 
-			currentDungeon.AddTile(newTile.Tile);
+            currentDungeon.AddTile(newTile.Tile);
 
 			if (!newTile.Tile.OverrideAutomaticTileBounds)
 				newTile.RecalculateBounds(IgnoreSpriteBounds, UpVector);

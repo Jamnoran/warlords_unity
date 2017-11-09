@@ -25,6 +25,7 @@ public class GameLogic : MonoBehaviour
     // Animation Effects
     public Transform healAnimation;
     public Transform tauntAnimation;
+    public Transform cleaveAnimation;
     public Transform shieldAnimation;
 
     private List<Ability> abilities = null;
@@ -496,6 +497,12 @@ public class GameLogic : MonoBehaviour
                 Hero source = getHero(gameAnimation.source_id);
                 CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
                 anim.spellAnimation(gameAnimation.spellAnimationId);
+            }
+            if (gameAnimation.animation_type == "CLEAVE")
+            {
+                Debug.Log("Cleave animation");
+                Hero source = getHero(gameAnimation.source_id);
+                Instantiate(cleaveAnimation, new Vector3(source.positionX, source.positionY, source.positionZ), Quaternion.identity);
             }
         }
     }
