@@ -14,7 +14,9 @@ public class Target : MonoBehaviour {
     #endregion
     #region public variables
     public float MinTargetDistance = 3.0f;
+    //Layers to skip targeting
     #endregion
+    public int layer = 9;
 
     void Start() {
         listOfHeroes = getGameLogic().getHeroes();
@@ -52,13 +54,20 @@ public class Target : MonoBehaviour {
         RaycastHit hit;
         //cast a ray from our camera onto the ground to get our desired position
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // Bit shift the index of the layer (10) to get a bit mask
+        int layerMaskTemp = 1 << layer;
 
+        // This would cast rays only against colliders in layer 8.
+        // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+        LayerMask layerMaskToUse = ~layerMaskTemp;
         //if we hit our ray, save the information to our "hit" variable
-        if (Physics.Raycast(ray, out hit, 10000)) {
+        if (Physics.Raycast(ray, out hit, 10000, layerMaskToUse)) {
             //update our desired position with the coordinates clicked
             targetPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            //Debug.Log("Cliked on point : " + targetPosition);
             //save our type of target so we can check what we have clicked on.
             typeOftarget = hit.transform.gameObject;
+            //Debug.Log("Clicked on type: " + hit.transform.gameObject.name);
         }
     }
     
@@ -87,7 +96,7 @@ public class Target : MonoBehaviour {
                 float dist = Vector3.Distance(heroPosition, targetPosition);
                 //Debug.Log("Class: " + hero.class_type + " Distance from click [" + targetPosition.x + "x"  + targetPosition.z + "] is: " + dist);
                 if ((dist < closestDistanse) && dist <= MinTargetDistance) {
-                    //print("Hero is closest at a distance at: " + dist);
+                   // print("Hero is closest at a distance at: " + dist);
                     getGameLogic().setHeroTargetFriendly(hero.id);
                     closestDistanse = dist;
                 }
