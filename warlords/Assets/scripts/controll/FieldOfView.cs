@@ -34,7 +34,7 @@ public class FieldOfView : MonoBehaviour
 
     void Update()
     {
-        //if (Input.GetKeyUp("t")){}
+
     }
 
 

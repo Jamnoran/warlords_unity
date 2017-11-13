@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Assets.scripts.spells;
 
 public class TargetingLogic : MonoBehaviour {
 
+    public GameObject activeSpellPrefab;
     private Ability abilityToWaitForMoreInput;
 
 	// Use this for initialization
@@ -21,6 +23,7 @@ public class TargetingLogic : MonoBehaviour {
 
     public bool sendSpell(Ability abi)
     {
+        bool sendSpell = true;
         Hero hero = getGameLogic().getMyHero();
         List<int> enemies = new List<int>();
         List<int> friends = new List<int>();
@@ -56,6 +59,9 @@ public class TargetingLogic : MonoBehaviour {
         }
         else if (abi.targetType == "CONE")
         {
+            //sendSpell = false;
+            //abilityToWaitForMoreInput = abi;
+            //handleInput();
             List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(90f, abi.range, false);
             if (enemiesInRange != null && enemiesInRange.Count > 0)
             {
@@ -64,8 +70,8 @@ public class TargetingLogic : MonoBehaviour {
             }
             else
             {
+                getNotificationHandler().showNotification(2, "Didnt find any targets");
                 Debug.Log("Didnt find any targets");
-                return false;
             }
         }
         else
@@ -73,76 +79,69 @@ public class TargetingLogic : MonoBehaviour {
             enemies.Add(getGameLogic().getMyHero().targetEnemy);
             friends.Add(getGameLogic().getMyHero().targetFriendly);
         }
-        getGameLogic().sendSpell(abi.id, enemies, friends);
-        return true;
+        if (sendSpell)
+        {
+            getGameLogic().sendSpell(abi.id, enemies, friends);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void handleInput()
     {
 
         //if aoe/targeting spell we wait for mouse to send spell 
-        //if (Input.GetMouseButtonUp(0))
-        //{
-        //    try
-        //    {
-        //        CircleAoe aoeSpell = activeSpellPrefab.GetComponent(typeof(CircleAoe)) as CircleAoe;
-        //        List<int> friendlies = new List<int>();
-        //        List<int> enemies = aoeSpell.GetAoeTargets();
+        if (Input.GetMouseButtonUp(0))
+        {
+            try
+            {
+                //CircleAoe aoeSpell = activeSpellPrefab.GetComponent(typeof(CircleAoe)) as CircleAoe;
+                //List<int> enemies = aoeSpell.GetAoeTargets();
+                List<int> enemies = new List<int>();
+                List<int> friends = new List<int>();
 
-        //        //send active spell along with list of friendlies and enemies
-        //        NewSendSpell(activeSpell, enemies, friendlies);
+                //destroy spell after use
+                Destroy(activeSpellPrefab);
 
-        //        //destroy spell after use
-        //        Destroy(activeSpellPrefab);
-        //    }
-        //    catch (Exception e)
-        //    {
+                Hero hero = getGameLogic().getMyHero();
+                FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
+                List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(90f, abilityToWaitForMoreInput.range, false);
+                if (enemiesInRange != null && enemiesInRange.Count > 0)
+                {
+                    enemies = enemiesInRange;
+                    Debug.Log(enemiesInRange.Count + " targets in range");
+                }
+                else
+                {
+                    //getNotificationHandler().showNotification(2, "Didnt find any targets");
+                    //Debug.Log("Didnt find any targets");
+                }
+                getGameLogic().sendSpell(abilityToWaitForMoreInput.id, enemies, friends);
+            }
+            catch (Exception e)
+            {
 
-        //        throw new Exception("Could not cast spell: " + activeSpell.name + "-Error: " + e);
-        //    }
-        //}
+                throw new Exception("Could not cast spell: " + abilityToWaitForMoreInput.name + "-Error: " + e);
+            }
+        }
 
-        //if (Input.GetMouseButtonUp(1))
-        //{
-        //    try
-        //    {
-        //        Destroy(activeSpellPrefab);
-        //    }
-        //    catch (Exception e)
-        //    {
+        if (Input.GetMouseButtonUp(1))
+        {
+            try
+            {
+                Destroy(activeSpellPrefab);
+            }
+            catch (Exception e)
+            {
 
-        //        throw new Exception("Could not abort casting spell: " + activeSpell.name + "-Error: " + e);
-        //    }
-        //}
-
-        //cancel spell when rightclicking
-
-
+                throw new Exception("Could not abort casting spell: " + abilityToWaitForMoreInput.name + "-Error: " + e);
+            }
+        }
+        abilityToWaitForMoreInput = null;
     }
-
-    // Temp for castBar
-
-
-    //if (isCasting && castBarFiller.fillAmount< 1.0f)
-    // {
-    //castBarFiller.fillAmount += 1.0f / castTime* Time.deltaTime;
-    //timeLeft = timeLeft - Time.deltaTime;
-    //tmpTxt.text = (Math.Round(timeLeft,2)).ToString();
-    //}
-    //      else
-    //      {
-    //resetCastBar();
-    //}
-
-
-    //private void resetCastBar()
-    //{
-    //    tmpTxt.text = "";
-    //    isCasting = false;
-    //    castBarFiller.fillAmount = 0;
-    //    timeLeft = castTime;
-    //}
-
 
     private void rotateToPosition(Vector3 vector3)
     {
@@ -154,5 +153,10 @@ public class TargetingLogic : MonoBehaviour {
     GameLogic getGameLogic()
     {
         return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+    }
+
+    NotificationHandler getNotificationHandler()
+    {
+        return ((NotificationHandler)GameObject.Find("GameLogicObject").GetComponent(typeof(NotificationHandler)));
     }
 }

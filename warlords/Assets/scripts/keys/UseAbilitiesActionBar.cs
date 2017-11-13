@@ -30,7 +30,7 @@ public class UseAbilitiesActionBar : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-        
+            FindSpellAux(spell1);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {

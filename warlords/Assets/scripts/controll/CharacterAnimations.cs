@@ -31,45 +31,47 @@ public class CharacterAnimations : MonoBehaviour {
     {
         Vector3 targetPostition = new Vector3(targetPosition.x, character.transform.position.y, targetPosition.z);
 
-        Hero thisHero = getGameLogic().getHeroByTransform(transform);
-        if (thisHero != null && thisHero.targetEnemy > 0 && isAttacking)
-        {
-            Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
-            targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
-        }
-
-        character.transform.LookAt(targetPostition);
-
-        // find the target position relative to the player:
-        Vector3 dir = targetPosition - transform.position;
-        // ignore any height difference:
-        dir.y = 0;
-        // calculate velocity limited to the desired speed:
-        Vector3 velocity = Vector3.ClampMagnitude(dir * moveSpeed, moveSpeed);
-        // move the character including gravity:
-        CharacterController controller = (CharacterController)GetComponent(typeof(CharacterController));
-        controller.SimpleMove(velocity);
-
-        //if we are at the desired position we must stop moving
-        Vector3 tempDirWithCorrectedHight = targetPosition;
-        tempDirWithCorrectedHight.y = character.transform.position.y;
-        distanceToTarget = Vector3.Distance(character.transform.position, tempDirWithCorrectedHight);
-        if (distanceToTarget < 0.50f)
-        {
-            //Debug.Log("Target has reached its desired location " + thisHero.id);
-            isMoving = false;
-        }
-
-        if (getGameLogic() != null && getGameLogic().getMyHero() != null && thisHero != null && getGameLogic().getMyHero().id == thisHero.id) {
-            if (!isMoving && !sentStopAnimation && !thisHero.getAutoAttacking()) {
-                sentStopAnimation = true;
-                isMoving = false;
-
-                getCommunication().sendMoveRequest(transform.position.x, transform.position.y, transform.position.z, targetPosition.x, targetPosition.y, targetPosition.z);
-                getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+        if(getGameLogic() != null) { 
+            Hero thisHero = getGameLogic().getHeroByTransform(transform);
+            if (thisHero != null && thisHero.targetEnemy > 0 && isAttacking)
+            {
+                Vector3 pos = getGameLogic().getMinion(thisHero.targetEnemy).getTransformPosition();
+                targetPostition = new Vector3(pos.x, character.transform.position.y, pos.z);
             }
+
+            character.transform.LookAt(targetPostition);
+
+            // find the target position relative to the player:
+            Vector3 dir = targetPosition - transform.position;
+            // ignore any height difference:
+            dir.y = 0;
+            // calculate velocity limited to the desired speed:
+            Vector3 velocity = Vector3.ClampMagnitude(dir * moveSpeed, moveSpeed);
+            // move the character including gravity:
+            CharacterController controller = (CharacterController)GetComponent(typeof(CharacterController));
+            controller.SimpleMove(velocity);
+
+            //if we are at the desired position we must stop moving
+            Vector3 tempDirWithCorrectedHight = targetPosition;
+            tempDirWithCorrectedHight.y = character.transform.position.y;
+            distanceToTarget = Vector3.Distance(character.transform.position, tempDirWithCorrectedHight);
+            if (distanceToTarget < 0.50f)
+            {
+                //Debug.Log("Target has reached its desired location " + thisHero.id);
+                isMoving = false;
+            }
+
+            if (getGameLogic() != null && getGameLogic().getMyHero() != null && thisHero != null && getGameLogic().getMyHero().id == thisHero.id) {
+                if (!isMoving && !sentStopAnimation && !thisHero.getAutoAttacking()) {
+                    sentStopAnimation = true;
+                    isMoving = false;
+
+                    getCommunication().sendMoveRequest(transform.position.x, transform.position.y, transform.position.z, targetPosition.x, targetPosition.y, targetPosition.z);
+                    getCommunication().sendStopHero(getGameLogic().getMyHero().id);
+                }
+            }
+            runAnimation();
         }
-        runAnimation();
     }
 
     public void rotateToTarget(Vector3 postition) {

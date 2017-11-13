@@ -180,7 +180,7 @@ public class ServerCommunication : MonoBehaviour {
             responseType = JsonUtil.getTypeOfRequestFromJson(json);
         }
 
-		if (responseType != null && !responseType.Equals("") && responseType != "GAME_STATUS" && responseType != "UPDATE_MINION_POSITION") {
+		if (responseType != null && !responseType.Equals("") && responseType != "GAME_STATUS" && responseType != "UPDATE_MINION_POSITION" && responseType != "STOP_HERO") {
             Debug.Log("Type request: " + responseType);
         }
 
