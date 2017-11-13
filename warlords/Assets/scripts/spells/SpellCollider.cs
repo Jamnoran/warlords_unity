@@ -28,8 +28,13 @@ public class SpellCollider : MonoBehaviour {
      
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Foooooooooooooooooobar");
+    }
 
-    
+
+
 
 
     GameLogic getGameLogic()
