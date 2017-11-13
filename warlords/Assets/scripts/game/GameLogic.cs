@@ -12,6 +12,9 @@ public class GameLogic : MonoBehaviour
     private List<Minion> minions = new List<Minion>();
     private List<Hero> heroes = new List<Hero>();
 
+    //list of minions targeted by aoe
+    private List<Minion> aoeMinions = new List<Minion>();
+
     // Must have a prefab for communication in case of we want to start game scene without going through lobby (in that case the communication gameobject is not alive)
     public Transform communication;
     //hold our prefab for the first mob
@@ -120,6 +123,44 @@ public class GameLogic : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void AddAoeMinion(Transform minionTransform)
+    {
+        try
+        {
+            Minion minion = getMinionByTransform(minionTransform);
+            if (!aoeMinions.Contains(minion))
+            {
+                aoeMinions.Add(minion);
+                Debug.Log("Minion added to list, minions in cone: " + aoeMinions.Count);
+            }
+        }
+        catch (Exception e)
+        {
+
+            throw new Exception("Could not add minion to list: " + e);
+        }
+      
+    }
+
+    public void RemoveAoeMinion(Transform minionTransform)
+    {
+        try
+        {
+            Minion minion = getMinionByTransform(minionTransform);
+            if (aoeMinions.Contains(minion))
+            {
+                aoeMinions.Remove(minion);
+                Debug.Log("Minion removed from list, minions in cone: " + aoeMinions.Count);
+            }
+        }
+        catch (Exception e)
+        {
+
+            throw new Exception("Could not remove minion from list: " + e);
+        }
+       
     }
 
     public Minion getClosestMinionByPosition(Vector3 position) {

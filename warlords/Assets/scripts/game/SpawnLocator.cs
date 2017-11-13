@@ -23,7 +23,6 @@ public class SpawnLocator : MonoBehaviour {
     }
 
     IEnumerator sendSpawnPoints() {
-        //yield return new WaitForSeconds(1.0f);
         yield return new WaitForSeconds(0.5f);
         Debug.Log("Trying to find all spawn points");
         GameObject[] points = GameObject.FindGameObjectsWithTag("Point");
