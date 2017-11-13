@@ -14,6 +14,7 @@ public class TargetingByFKeys : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.F1))
         {
+            Debug.Log("Targeting self");
             setTarget(0);
         }
         else if (Input.GetKeyDown(KeyCode.F2))
@@ -35,9 +36,14 @@ public class TargetingByFKeys : MonoBehaviour {
     private void setTarget(int position)
     {
         Hero myHero = getGameLogic().getMyHero();
-        if (getGameLogic().getHeroes().Count >= position)
+        if (getGameLogic().getHeroes().Count > position)
         {
             myHero.targetFriendly = getGameLogic().getHeroes()[position].id;
+            myHero.targetEnemy = 0;
+        }
+        else
+        {
+            myHero.targetFriendly = 0;
             myHero.targetEnemy = 0;
         }
     }
