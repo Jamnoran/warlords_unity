@@ -15,10 +15,10 @@ namespace Assets.scripts.vo
         public int level;
         public int xpForLevel;
         public int topGameLvl;
-        public int hp;
-        public int maxHp;
-        public int resource;
-        public int maxResource;
+        public float hp;
+        public float maxHp;
+        public float resource;
+        public float maxResource;
         public bool alive = true; 
         public string class_type;
         public float positionX;
@@ -126,7 +126,7 @@ namespace Assets.scripts.vo
             return null;
         }
 
-        public void setHp(int newHp) {
+        public void setHp(float newHp) {
             hp = newHp;
 
             int heroid = getLobbyCommunication().heroId;
@@ -140,7 +140,7 @@ namespace Assets.scripts.vo
             }
         }
 
-        public void setResource(int newRes)
+        public void setResource(float newRes)
         {
             resource = newRes;
             int heroid = getLobbyCommunication().heroId;
