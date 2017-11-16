@@ -731,7 +731,7 @@ public class GameLogic : MonoBehaviour
                 heroAnimation.targetPosition = new Vector3(heroInList.desiredPositionX, heroInList.desiredPositionY, heroInList.desiredPositionZ);
             }
             hero.trans.position = newPosition;
-            Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
+            //Debug.Log("Moved hero: " + hero.id + " to position : " + newPosition);
         }
     }
 

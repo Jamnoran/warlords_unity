@@ -181,7 +181,7 @@ namespace Assets.scripts.vo
             }
             else
             {
-                Debug.Log("Setting resource type to" + resource);
+                //Debug.Log("Setting resource type to " + resource);
                 hUpdate.setMaxResourceValue(maxResource);
                 if (class_type == "WARRIOR")
                 {

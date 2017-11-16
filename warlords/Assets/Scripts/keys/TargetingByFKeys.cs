@@ -14,7 +14,6 @@ public class TargetingByFKeys : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            Debug.Log("Targeting self");
             setTarget(0);
         }
         else if (Input.GetKeyDown(KeyCode.F2))
