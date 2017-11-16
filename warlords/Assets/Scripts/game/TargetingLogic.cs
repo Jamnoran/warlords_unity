@@ -38,14 +38,30 @@ public class TargetingLogic : MonoBehaviour {
         }
         else if (abi.targetType == "SINGLE" || abi.targetType == "DOT")
         {
-            enemies.Add(getGameLogic().getMyHero().targetEnemy);
-            getGameLogic().getMyHero().targetFriendly = 0;
+            int enemy = hero.targetEnemy;
+            if (enemy > 0)
+            {
+                Minion min = getGameLogic().getMinion(enemy);
+                if (Vector3.Distance(hero.trans.position, min.minionTransform.position) < abi.range)
+                {
+                    enemies.Add(enemy);
+                    hero.targetFriendly = 0;
+                }
+                else
+                {
+                    getNotificationHandler().showNotification(2, "Target out of range");
+                }
+            }
+            else
+            {
+                getNotificationHandler().showNotification(2, "Didnt find any targets");
+            }
             
         }
         else if (abi.targetType == "SINGLE_FRIENDLY" || abi.targetType == "HOT")
         {
-            friends.Add(getGameLogic().getMyHero().targetFriendly);
-            getGameLogic().getMyHero().targetEnemy = 0;
+            friends.Add(hero.targetFriendly);
+            hero.targetEnemy = 0;
         }
         else if (abi.targetType == "AOE")
         {
@@ -76,8 +92,8 @@ public class TargetingLogic : MonoBehaviour {
         }
         else
         {
-            enemies.Add(getGameLogic().getMyHero().targetEnemy);
-            friends.Add(getGameLogic().getMyHero().targetFriendly);
+            enemies.Add(hero.targetEnemy);
+            friends.Add(hero.targetFriendly);
         }
         if (sendSpell)
         {

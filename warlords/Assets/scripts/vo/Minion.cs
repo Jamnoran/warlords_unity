@@ -10,8 +10,8 @@ namespace Assets.scripts.vo
     {
         public int id;
         public int level;
-        public int hp;
-        public int maxHp;
+        public float hp;
+        public float maxHp;
         public float positionX;
         public float positionZ;
         public float positionY;
@@ -41,7 +41,7 @@ namespace Assets.scripts.vo
             return new Vector3(minionTransform.position.x, minionTransform.position.y, minionTransform.position.z);
         }
 
-        public void setHp(int newHp)
+        public void setHp(float newHp)
         {
             hp = newHp;
             if(hp <= 0){

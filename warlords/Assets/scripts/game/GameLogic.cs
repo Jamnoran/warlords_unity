@@ -32,7 +32,6 @@ public class GameLogic : MonoBehaviour
 
     public bool isInGame = false;
     public World world;
-    public GameObject playerHealth;
 
     private int thisHeroId;
     // Use this for initialization
@@ -245,7 +244,8 @@ public class GameLogic : MonoBehaviour
                 found = true;
                 hero.setHp(newHero.hp);
                 hero.xp = newHero.xp;
-                hero.level = newHero.level;
+                hero.xpForLevel = newHero.xpForLevel;
+                hero.setLevel(newHero.level);
                 hero.armor = newHero.armor;
                 hero.magicResistance = newHero.magicResistance;
                 hero.armorPenetration = newHero.armorPenetration;
@@ -740,6 +740,8 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Server sent to create world");
         world = responseWorld.world;
 
+        getHideWalls().clearHiddenObjects();
+
         if (!getLobbyCommunication().local)
         {
             getGenerator().GenerateRandom(world.seed, world.worldType);
@@ -749,7 +751,12 @@ public class GameLogic : MonoBehaviour
 
 		if(isGameMode(World.HORDE_MODE)){
 			StartCoroutine("startCheckIfLevelIsComplete");
-		}
+        }
+        else
+        {
+            getNotificationhandler().setHordeMode(false);
+            getNotificationhandler().showNotification(1, "");
+        }
     }
 
 
@@ -757,7 +764,7 @@ public class GameLogic : MonoBehaviour
 	IEnumerator startCheckIfLevelIsComplete() {
 		yield return new WaitForSeconds(5.0f);
 		getHordeMode().currentMode = true;
-        getNotificationhandler().startHordeMode();
+        getNotificationhandler().setHordeMode(true);
 		Debug.Log ("Current game mode is horde!");
 	}
 
@@ -823,5 +830,10 @@ public class GameLogic : MonoBehaviour
     Cooldown GetCooldown()
     {
         return ((Cooldown)GameObject.Find("GameLogicObject").GetComponent(typeof(Cooldown)));
+    }
+
+    HideWalls getHideWalls()
+    {
+        return ((HideWalls)GameObject.Find("GameLogicObject").GetComponent(typeof(HideWalls)));
     }
 }

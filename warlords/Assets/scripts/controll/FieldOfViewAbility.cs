@@ -66,8 +66,11 @@ public class FieldOfViewAbility : MonoBehaviour {
 
     void rotateMeshHolderToMousePosition()
     {
-        Vector3 rotatingPostition = new Vector3(mousePosition.x, meshHolderGameObject.transform.position.y, mousePosition.z);
-        meshHolderGameObject.transform.LookAt(rotatingPostition);
+        if (meshHolderGameObject != null)
+        {
+            Vector3 rotatingPostition = new Vector3(mousePosition.x, meshHolderGameObject.transform.position.y, mousePosition.z);
+            meshHolderGameObject.transform.LookAt(rotatingPostition);
+        }
     }
 
 

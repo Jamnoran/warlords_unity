@@ -83,6 +83,11 @@ public class HideWalls : MonoBehaviour
         }
     }
 
+    public void clearHiddenObjects()
+    {
+        hiddenObjects.Clear();
+        hiddenObjects = new List<Transform>();
+    }
 
 
     GameLogic getGameLogic()

@@ -7,7 +7,7 @@ public class NotificationHandler : MonoBehaviour {
 
     public GameObject topNotification;
     public GameObject bottomNotification;
-    public GameObject bigMiddleNotification;
+    public GameObject levelUpNotification;
 
     private bool hordeMode = false;
     private List<string> notifications;
@@ -15,6 +15,7 @@ public class NotificationHandler : MonoBehaviour {
 	void Start () {
         topNotification.transform.Find("Text").GetComponent<Text>().text = "";
         bottomNotification.transform.Find("Text").GetComponent<Text>().text = "";
+        levelUpNotification.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -26,7 +27,7 @@ public class NotificationHandler : MonoBehaviour {
         }
 	}
 
-    // Type 1 = top, 2 = bottom, 3 = middle
+    // Type 1 = top, 2 = bottom, 3 = level up
     public void showNotification(int type, string notification)
     {
         if (type == 1)
@@ -36,6 +37,11 @@ public class NotificationHandler : MonoBehaviour {
         else if (type == 2) 
         {
             bottomNotification.transform.Find("Text").GetComponent<Text>().text = notification;
+        }
+        else if (type == 3)
+        {
+            levelUpNotification.SetActive(true);
+            levelUpNotification.transform.Find("Text 2").GetComponent<Text>().text = notification;
         }
         StartCoroutine(hideNotification(type));
     }
@@ -50,11 +56,16 @@ public class NotificationHandler : MonoBehaviour {
         {
             bottomNotification.transform.Find("Text").GetComponent<Text>().text = "";
         }
+        else if (type == 3)
+        {
+            levelUpNotification.SetActive(false);
+            levelUpNotification.transform.Find("Text 2").GetComponent<Text>().text = "";
+        }
     }
 
-    public void startHordeMode()
+    public void setHordeMode(bool active)
     {
-        hordeMode = true;
+        hordeMode = active;
     }
 
 
