@@ -17,8 +17,8 @@ public class GenericCastbar : MonoBehaviour {
     private GameObject spell6;
     private GameObject spell7;
 
-    public Image castBarFiller;
-    public GameObject textToUpdate;
+    //public Image castBarFiller;
+    //public GameObject textToUpdate;
     private Text tmpTxt;
     private bool isCasting;
     private float castTime;
@@ -27,8 +27,16 @@ public class GenericCastbar : MonoBehaviour {
     private GameObject activeSpellPrefab;
     private GameObject activeSpell;
 
+    //handle splats for aoe targeting etc
+    public SplatManager Splats { get; set; }
+
+    //hold current spell when using targetin systems such as a cone
+    private GameObject tmpSpell;
+
     private void Start()
     {
+        Splats = GetComponentInChildren<SplatManager>();
+
         spell1 = GameObject.FindGameObjectWithTag("spell1");
         spell2 = GameObject.FindGameObjectWithTag("spell2");
         spell3 = GameObject.FindGameObjectWithTag("spell3");
@@ -37,26 +45,46 @@ public class GenericCastbar : MonoBehaviour {
         spell6 = GameObject.FindGameObjectWithTag("spell6");
         spell7 = GameObject.FindGameObjectWithTag("spell7");
 
-        tmpTxt = textToUpdate.GetComponent<Text>();
+        //tmpTxt = textToUpdate.GetComponent<Text>();
         //instantiate casting to false, just in case something wierd sets it to true
         isCasting = false;
         //set fillammount to 0, seing how we allways start casting from scratch
-        castBarFiller.fillAmount = 0;
+        //castBarFiller.fillAmount = 0;
       
 
         //mock casttime:
         castTime = 5.0f;
         timeLeft = castTime;
 
-        //fetch splats to fix spell targeting
+        //null tempspell
+        tmpSpell = null;
+
+      
+        
         
     }
 
     void Update () {
+
+        if (Input.GetMouseButtonDown(0) && tmpSpell != null)
+        {
+            SendSpell(tmpSpell);
+            CancelAllSplats();
+        }
+    
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             var ab1 = GetAbility(spell1);
-            SendSpell(spell1);
+            if (NeedToDisplayIndicatorBeforeCast(ab1.targetType))
+            {
+                Splats.SelectSpellIndicator(ab1.targetType);
+                tmpSpell = spell1;
+            }
+            else
+            {
+                SendSpell(spell1);
+            }
+            
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -85,6 +113,30 @@ public class GenericCastbar : MonoBehaviour {
         }
 
 	}
+
+    private void CancelAllSplats()
+    {
+        Splats.CancelSpellIndicator();
+        Splats.CancelRangeIndicator();
+        Splats.CancelStatusIndicator();
+    }
+
+    private bool NeedToDisplayIndicatorBeforeCast(string targetType)
+    {
+        switch (targetType)
+        {
+            case "SELF":
+                return false;
+            case "SINGLE":
+                return false;
+            case "DOT":
+                return false;
+            case "CONE":
+                return true;
+            default:
+                return false;
+        }
+    }
 
     //Decide spelltype and instantiate proper spell
     private void DecideSpellType(string spellType, string spellName)

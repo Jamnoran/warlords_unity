@@ -546,9 +546,9 @@ public class GameLogic : MonoBehaviour
             }
             if (gameAnimation.animation_type == "CLEAVE")
             {
-                Debug.Log("Cleave animation");
-                Hero source = getHero(gameAnimation.source_id);
-                Instantiate(cleaveAnimation, new Vector3(source.positionX, source.positionY, source.positionZ), Quaternion.identity);
+                //Debug.Log("Cleave animation");
+               // Hero source = getHero(gameAnimation.source_id);
+               // Instantiate(cleaveAnimation, new Vector3(source.positionX, source.positionY, source.positionZ), Quaternion.identity);
             }
         }
     }
