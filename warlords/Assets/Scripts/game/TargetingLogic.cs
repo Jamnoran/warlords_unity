@@ -75,20 +75,15 @@ public class TargetingLogic : MonoBehaviour {
         }
         else if (abi.targetType == "CONE")
         {
-            //sendSpell = false;
-            //abilityToWaitForMoreInput = abi;
-            //handleInput();
-            List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(90f, abi.range, false);
-            if (enemiesInRange != null && enemiesInRange.Count > 0)
+            try
             {
-                enemies = enemiesInRange;
-                Debug.Log(enemiesInRange.Count + " targets in range");
+                enemies = getGameLogic().GetAoeMinions();
             }
-            else
+            catch (Exception e)
             {
-                getNotificationHandler().showNotification(2, "Didnt find any targets");
-                Debug.Log("Didnt find any targets");
+                throw new Exception("Could not fetch aoe minions, reason: " + e);
             }
+         
         }
         else
         {
@@ -174,5 +169,10 @@ public class TargetingLogic : MonoBehaviour {
     NotificationHandler getNotificationHandler()
     {
         return ((NotificationHandler)GameObject.Find("GameLogicObject").GetComponent(typeof(NotificationHandler)));
+    }
+
+    SpellCollider spellCollider()
+    {
+        return ((SpellCollider)GameObject.Find("ConeCollider").GetComponent(typeof(SpellCollider)));
     }
 }

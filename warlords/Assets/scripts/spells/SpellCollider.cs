@@ -8,7 +8,6 @@ public class SpellCollider : MonoBehaviour {
 
     public List<Minion> MinionList = new List<Minion>();
 
-
     private void OnTriggerEnter(Collider minionTransform)
     {
 
@@ -27,15 +26,6 @@ public class SpellCollider : MonoBehaviour {
         }
      
     }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log("Foooooooooooooooooobar");
-    }
-
-
-
-
 
     GameLogic getGameLogic()
     {

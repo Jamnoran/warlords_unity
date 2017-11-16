@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Assets.scripts.vo;
 using Assets.scripts.spells;
+using Werewolf.StatusIndicators.Components;
 
 public class GenericCastbar : MonoBehaviour {
 
@@ -46,6 +47,9 @@ public class GenericCastbar : MonoBehaviour {
         //mock casttime:
         castTime = 5.0f;
         timeLeft = castTime;
+
+        //fetch splats to fix spell targeting
+        
     }
 
     void Update () {
