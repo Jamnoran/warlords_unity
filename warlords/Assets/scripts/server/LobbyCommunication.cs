@@ -196,7 +196,7 @@ public class LobbyCommunication : MonoBehaviour {
 
 	public void sendRequest(object request) {
 		String reqJson = JsonMapper.ToJson(request);
-		Debug.Log("Sending this request: " + reqJson);
+		//Debug.Log("Sending this request: " + reqJson);
 		socketConnection.writeSocket(reqJson);
 	}
 
@@ -204,7 +204,7 @@ public class LobbyCommunication : MonoBehaviour {
 	// Handle connection 
 	IEnumerator getLobbyListFromWebservice(WWW www){
 
-		Debug.Log ("Getting lobbys from url " + webserviceUrl);
+		//Debug.Log ("Getting lobbys from url " + webserviceUrl);
 		yield return www;
 		if (www.error == null || www.error == ""){
 			responseLobbys = JsonMapper.ToObject<ResponseLobbys>(www.text);

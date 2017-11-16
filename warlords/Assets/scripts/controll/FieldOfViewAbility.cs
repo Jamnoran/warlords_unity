@@ -17,8 +17,12 @@ public class FieldOfViewAbility : MonoBehaviour {
     public float meshResolution;
     public int edgeResolveIterations;
     public float edgeDstThreshold;
-    
+    public List<Transform> visibleTargets = new List<Transform>();
 
+
+    public GameObject meshHolderGameObject;
+    private Vector3 mousePosition;
+    public int layer = 9;
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
 
@@ -27,12 +31,48 @@ public class FieldOfViewAbility : MonoBehaviour {
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
+        
     }
 
     void Update()
     {
-
+        getPosition();
     }
+
+
+
+    /// <summary>
+    /// Raycast and save the information hit in our private variables above
+    /// </summary>
+    void getPosition()
+    {
+        RaycastHit hit;
+        //cast a ray from our camera onto the ground to get our desired position
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // Bit shift the index of the layer (10) to get a bit mask
+        int layerMaskTemp = 1 << layer;
+
+        // This would cast rays only against colliders in layer 8.
+        // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+        LayerMask layerMaskToUse = ~layerMaskTemp;
+        //if we hit our ray, save the information to our "hit" variable
+        if (Physics.Raycast(ray, out hit, 10000, layerMaskToUse))
+        {
+            //update our desired position with the coordinates clicked
+            mousePosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+        }
+        rotateMeshHolderToMousePosition();
+    }
+
+    void rotateMeshHolderToMousePosition()
+    {
+        if (meshHolderGameObject != null)
+        {
+            Vector3 rotatingPostition = new Vector3(mousePosition.x, meshHolderGameObject.transform.position.y, mousePosition.z);
+            meshHolderGameObject.transform.LookAt(rotatingPostition);
+        }
+    }
+
 
     void LateUpdate()
     {
@@ -41,6 +81,7 @@ public class FieldOfViewAbility : MonoBehaviour {
     
     public List<int> FindVisibleTargets(float angle, float radius, bool friendly)
     {
+        visibleTargets = new List<Transform>();
         if (friendly)
         {
             targetMask = friendlyMask;
@@ -50,7 +91,6 @@ public class FieldOfViewAbility : MonoBehaviour {
         }
         viewRadius = radius;
         viewAngle = angle;
-        List<Transform> visibleTargets = new List<Transform>();
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
         for (int i = 0; i < targetsInViewRadius.Length; i++)
         {
@@ -71,6 +111,7 @@ public class FieldOfViewAbility : MonoBehaviour {
         if (visibleTargets.Count > 0) {
             List<int> targets = new List<int>();
             foreach (Transform trans in visibleTargets){
+                // TODO: Change these to go by heroInfo and minionInfo.id instead
                 if (friendly){
                     Hero hero = getGameLogic().getClosestHeroByPosition(trans.position);
                     targets.Add(hero.id);

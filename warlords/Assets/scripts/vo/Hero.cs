@@ -15,10 +15,10 @@ namespace Assets.scripts.vo
         public int level;
         public int xpForLevel;
         public int topGameLvl;
-        public int hp;
-        public int maxHp;
-        public int resource;
-        public int maxResource;
+        public float hp;
+        public float maxHp;
+        public float resource;
+        public float maxResource;
         public bool alive = true; 
         public string class_type;
         public float positionX;
@@ -126,7 +126,7 @@ namespace Assets.scripts.vo
             return null;
         }
 
-        public void setHp(int newHp) {
+        public void setHp(float newHp) {
             hp = newHp;
 
             int heroid = getLobbyCommunication().heroId;
@@ -140,7 +140,7 @@ namespace Assets.scripts.vo
             }
         }
 
-        public void setResource(int newRes)
+        public void setResource(float newRes)
         {
             resource = newRes;
             int heroid = getLobbyCommunication().heroId;
@@ -181,7 +181,7 @@ namespace Assets.scripts.vo
             }
             else
             {
-                Debug.Log("Setting resource type to" + resource);
+                //Debug.Log("Setting resource type to " + resource);
                 hUpdate.setMaxResourceValue(maxResource);
                 if (class_type == "WARRIOR")
                 {
@@ -206,6 +206,17 @@ namespace Assets.scripts.vo
             ((CharacterAnimations) trans.GetComponent(typeof(CharacterAnimations))).moveSpeed = newCalculatedMoveSpeed;
         }
 
+        public void setLevel(int newLevel)
+        {
+            if (newLevel > level)
+            {
+                if (getGameLogic().getMyHero().id == id)
+                {
+                    getNotificationHandler().showNotification(3, "Level " + newLevel);
+                }
+            }
+            level = newLevel;
+        }
 
         public bool getAutoAttacking()
         {
@@ -228,5 +239,14 @@ namespace Assets.scripts.vo
             return (CharacterAnimations) trans.GetComponent(typeof(CharacterAnimations));
         }
 
+        GameLogic getGameLogic()
+        {
+            return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        }
+
+        NotificationHandler getNotificationHandler()
+        {
+            return ((NotificationHandler)GameObject.Find("GameLogicObject").GetComponent(typeof(NotificationHandler)));
+        }
     }
 }

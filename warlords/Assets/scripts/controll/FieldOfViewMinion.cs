@@ -72,7 +72,7 @@ public class FieldOfViewMinion : MonoBehaviour
                         {
                             //Debug.Log("This target is in range : " + target.name);
                             //Debug.Log("Hero, found initiating aggro!");
-                            Debug.Log(gameObject.name);
+                            //Debug.Log(gameObject.name);
                             Transform currentMinion = gameObject.transform;
                             //Debug.Log("Minions position is: " + currentMinion.position);
                             //Debug.Log("Hero position is: " + target.position);
@@ -81,14 +81,17 @@ public class FieldOfViewMinion : MonoBehaviour
                             Vector3 targetPostition = new Vector3(target.position.x, target.transform.position.y, target.position.z);
                             currentMinion.transform.LookAt(targetPostition);
 
-                            // Send this information to server
-                            Hero hero = getGameLogic().getClosestHeroByPosition(target.position);
-                            Minion minion = getGameLogic().getClosestMinionByPosition(target.position);
-                            if (hero != null && minion != null)
+                            if (getGameLogic() != null)
                             {
-                                sentInitialAggro = true;
-                                //Debug.Log("Got minion aggro on this id: " + minion.id + " And this heroId: " + hero.id);
-                                getCommunication().sendMinionAggro(minion.id, hero.id);
+                                // Send this information to server
+                                Hero hero = getGameLogic().getClosestHeroByPosition(target.position);
+                                Minion minion = getGameLogic().getClosestMinionByPosition(target.position);
+                                if (hero != null && minion != null)
+                                {
+                                    sentInitialAggro = true;
+                                    //Debug.Log("Got minion aggro on this id: " + minion.id + " And this heroId: " + hero.id);
+                                    getCommunication().sendMinionAggro(minion.id, hero.id);
+                                }
                             }
                         }
                     }
@@ -98,7 +101,13 @@ public class FieldOfViewMinion : MonoBehaviour
     }
 
     GameLogic getGameLogic() {
-        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        if (GameObject.Find("GameLogicObject") != null)
+        {
+            return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+        }else
+        {
+            return null;
+        }
     }
 
 

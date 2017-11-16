@@ -174,9 +174,8 @@ public class MinionAnimations : MonoBehaviour {
 
     public void setDesiredLocation(Vector3 position) {
         if (anim != null && (anim.GetCurrentAnimatorStateInfo(0).IsName("auto"))) {
-           // Debug.Log("Dont move to another position we are attacking or we are already running");
+           //Debug.Log("Dont move to another position we are attacking or we are already running");
         } else {
-           // Debug.Log("Setting new targetPostion and mutantRunInPlace");
             targetPosition = position;
             isMoving = true;
             runAnimation();

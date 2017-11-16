@@ -21,7 +21,7 @@ public class HideWalls : MonoBehaviour
 
     void Update()
     {
-        foreach(Hero hero in getGameLogic().getHeroes())
+        foreach (Hero hero in getGameLogic().getHeroes())
         {
 
             if (hero.trans != null)
@@ -83,6 +83,11 @@ public class HideWalls : MonoBehaviour
         }
     }
 
+    public void clearHiddenObjects()
+    {
+        hiddenObjects.Clear();
+        hiddenObjects = new List<Transform>();
+    }
 
 
     GameLogic getGameLogic()

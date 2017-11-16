@@ -31,6 +31,8 @@ public class Chat : MonoBehaviour {
             if (!IsInputFieldFocused()) {
                 EventSystem.current.SetSelectedGameObject(inputField.gameObject, null);
                 inputField.OnPointerClick(new PointerEventData(EventSystem.current));
+                inputField.placeholder.GetComponent<Text>().text = "";
+                Debug.Log("Enter pressed and input field is selected");
             } else {
                 //TODO: If we got user name here send it!
                 sendMessageInField();
@@ -57,6 +59,7 @@ public class Chat : MonoBehaviour {
             Debug.Log("Message to send: " + inputField.text);
             getCommunication().sendMessage(new Message(0, getGameLogic().getMyHero().class_type, inputField.text));
             inputField.text = "";
+            inputField.placeholder.GetComponent<Text>().text = "Enter your message here...";
         }
         EventSystem.current.SetSelectedGameObject(null);
     }
