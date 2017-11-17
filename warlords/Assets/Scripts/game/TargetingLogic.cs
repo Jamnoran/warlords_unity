@@ -23,7 +23,6 @@ public class TargetingLogic : MonoBehaviour {
 
     public bool sendSpell(Ability abi)
     {
-        bool sendSpell = true;
         Hero hero = getGameLogic().getMyHero();
         List<int> enemies = new List<int>();
         List<int> friends = new List<int>();
@@ -50,11 +49,13 @@ public class TargetingLogic : MonoBehaviour {
                 else
                 {
                     getNotificationHandler().showNotification(2, "Target out of range");
+                    return false;
                 }
             }
             else
             {
                 getNotificationHandler().showNotification(2, "Didnt find any targets");
+                return false;
             }
             
         }
@@ -88,6 +89,7 @@ public class TargetingLogic : MonoBehaviour {
             {
                 getNotificationHandler().showNotification(2, "Didnt find any targets");
                 Debug.Log("Didnt find any targets");
+                return false;
             }
         }
         else
@@ -95,15 +97,8 @@ public class TargetingLogic : MonoBehaviour {
             enemies.Add(hero.targetEnemy);
             friends.Add(hero.targetFriendly);
         }
-        if (sendSpell)
-        {
-            getGameLogic().sendSpell(abi.id, enemies, friends);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        getGameLogic().sendSpell(abi.id, enemies, friends);
+        return true;
     }
 
     private void handleInput()
