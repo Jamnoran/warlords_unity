@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class TargetFrame : MonoBehaviour {
 
     public GameObject targetFrame;
-    public UIProgressBar hpBar;
-    public Text hp_Text;
+
     public TextVariant textVariant = TextVariant.Percent;
     public int m_TextValue = 100;
     public string m_TextValueFormat = "0";
@@ -35,22 +34,18 @@ public class TargetFrame : MonoBehaviour {
 
             if (friendlyTarget > 0)
             {
-                targetFrame.SetActive(true);
                 Hero heroTarget = getGameLogic().getHero(friendlyTarget);
                 float hpPerc = (float)heroTarget.hp / (float)heroTarget.maxHp;
-                SetFillAmount(hpPerc);
-                enemyRedBorder.SetActive(false);
+                updateInformation(targetFrame, hpPerc, 0.0f, true, heroTarget.class_type);
             }
             else
             {
                 int targetEnemy = getGameLogic().getMyHero().targetEnemy;
                 if (targetEnemy > 0)
                 {
-                    targetFrame.SetActive(true);
                     Minion minion = getGameLogic().getMinion(targetEnemy);
                     float hpPerc = (float)minion.hp / (float)minion.maxHp;
-                    SetFillAmount(hpPerc);
-                    enemyRedBorder.SetActive(true);
+                    updateInformation(targetFrame, hpPerc, 0.0f, false, "" + minion.minionType);
                 }
                 else
                 {
@@ -60,31 +55,33 @@ public class TargetFrame : MonoBehaviour {
         }
     }
 
-
-    protected void SetFillAmount(float amount)
+    private void updateInformation(GameObject frame, float hp, float resource, bool friendly, string classType)
     {
-        if (this.hpBar == null)
-            return;
+        frame.SetActive(true);
+        frame.transform.Find("Red Border").gameObject.SetActive(!friendly);
+        frame.transform.Find("HP Bar").GetComponent<UIProgressBar>().fillAmount = hp;
+        setTextDescription(frame.transform.Find("HP Bar/Text").GetComponent<Text>(), hp);
+    }
 
-        this.hpBar.fillAmount = amount;
 
-        if (this.hp_Text != null)
+    private void setTextDescription(Text amountText, float amount)
+    {
+        if (amountText != null)
         {
             if (this.textVariant == TextVariant.Percent)
             {
-                this.hp_Text.text = Mathf.RoundToInt(amount * 100f).ToString() + "%";
+                amountText.text = Mathf.RoundToInt(amount * 100f).ToString() + "%";
             }
             else if (this.textVariant == TextVariant.Value)
             {
-                this.hp_Text.text = ((float)this.m_TextValue * amount).ToString(this.m_TextValueFormat);
+                amountText.text = ((float)this.m_TextValue * amount).ToString(this.m_TextValueFormat);
             }
             else if (this.textVariant == TextVariant.ValueMax)
             {
-                this.hp_Text.text = ((float)this.m_TextValue * amount).ToString(this.m_TextValueFormat) + "/" + this.m_TextValue;
+                amountText.text = ((float)this.m_TextValue * amount).ToString(this.m_TextValueFormat) + "/" + this.m_TextValue;
             }
         }
     }
-
 
 
     GameLogic getGameLogic()
