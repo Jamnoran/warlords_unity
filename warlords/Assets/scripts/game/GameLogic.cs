@@ -261,15 +261,15 @@ public class GameLogic : MonoBehaviour
             updateHero(newHero);
         }
 
-        UpdatePartyFrames(newHeroes);
+        UpdatePartyFrames();
     }
 
-    private void UpdatePartyFrames(List<Hero> heroes)
+    private void UpdatePartyFrames()
     {
         //heroes.RemoveAll(hero => hero.id == thisHeroId);
         if (getPartyFrame() != null)
         {
-            getPartyFrame().UpdatePartyFrames(heroes);
+            getPartyFrame().UpdatePartyFrames(getHeroesWithoutSelf());
         }
     }
 
@@ -594,6 +594,20 @@ public class GameLogic : MonoBehaviour
         return heroes;
     }
 
+    public List<Hero> getHeroesWithoutSelf()
+    {
+        
+        List<Hero> heroesWithoutSelf = new List<Hero>();
+        foreach(Hero hero in heroes)
+        {
+            if (hero.id != getLobbyCommunication().heroId)
+            {
+                heroesWithoutSelf.Add(hero);
+            }
+        }
+        return heroesWithoutSelf;
+    }
+
     public void setHeroTargetEnemy(int minion_id) {
         Hero myHero = getMyHero();
         if (myHero != null) {
@@ -651,10 +665,6 @@ public class GameLogic : MonoBehaviour
 
     public void setAbilities(List<Ability> updatedAbilities) {
         abilities = updatedAbilities;
-        //foreach (var ability in abilities)
-        //{
-        //    Debug.Log("Ability : " + ability.name);
-        //}
     }
 
     public void updateCooldown(Ability ability) {
@@ -819,13 +829,6 @@ public class GameLogic : MonoBehaviour
         {
             Destroy(minion.minionTransform.gameObject);
         }
-        //foreach (var obstacle in world.obstacles)
-        //{
-        //    if(obstacle.transform != null)
-        //    {
-        //        Destroy(obstacle.transform.gameObject);
-        //    }
-        //}
         world = null;
         minions = new List<Minion>();
         heroes = new List<Hero>();
@@ -843,8 +846,6 @@ public class GameLogic : MonoBehaviour
             return null;
         }
     }
-
-
 
     FriendlyFrames getPartyFrame()
     {

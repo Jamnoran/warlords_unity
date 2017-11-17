@@ -40,26 +40,27 @@ public class FriendlyFrames : MonoBehaviour
             GameObject targetFrame = null;
             switch (i)
             {
+                case 0:
+                    targetFrame = friendlyFrame1;
+                    break;
                 case 1:
                     targetFrame = friendlyFrame1;
                     break;
                 case 2:
                     targetFrame = friendlyFrame1;
                     break;
-                case 3:
-                    targetFrame = friendlyFrame1;
-                    break;
             }
             float hpPerc = (float)heroes[i].hp / (float)heroes[i].maxHp;
-            updateInformation(targetFrame, hpPerc, 0.0f, true, heroes[i].class_type);
+            updateInformation(targetFrame, hpPerc, 0.0f, true, heroes[i].class_type, heroes[i].class_type);
         }
     }
 
 
-    private void updateInformation(GameObject frame, float hp, float resource, bool friendly, string classType)
+    private void updateInformation(GameObject frame, float hp, float resource, bool friendly, string classType, string charName)
     {
         frame.SetActive(true);
         frame.transform.Find("HP Bar").GetComponent<UIProgressBar>().fillAmount = hp;
+        frame.transform.Find("Unit Name").GetComponent<Text>().text = charName;
         setTextDescription(frame.transform.Find("HP Bar/Text").GetComponent<Text>(), hp);
     }
 
