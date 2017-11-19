@@ -7,6 +7,7 @@ using LitJson;
 using Assets.scripts.vo;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using Assets.scripts.util;
 
 public class ServerCommunication : MonoBehaviour {
 
@@ -67,7 +68,7 @@ public class ServerCommunication : MonoBehaviour {
     public void sendAutoAttack(int minionId) {
         if (minionId > 0) {
             //print("Trying to attack minion " + minionId);
-            var time = getMillis();
+            var time = DeviceUtil.getMillis();
             sendRequest(new RequestAttack(getHeroId(), minionId, time));
         } else {
             print("You have no target!!! click on something");
@@ -100,7 +101,7 @@ public class ServerCommunication : MonoBehaviour {
     }
 
 	public void sendSpell(int heroId, int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3) {
-        var time = getMillis();
+        var time = DeviceUtil.getMillis();
         Debug.Log("Sending spell request spell id: " + spellId + " At time: " + time);
 		sendRequest(new RequestSpell(heroId, spellId, targetEnemy, targetFriendly, vector3, time));
     }
@@ -206,13 +207,15 @@ public class ServerCommunication : MonoBehaviour {
                 ResponseWorld responseWorld = JsonMapper.ToObject<ResponseWorld>(json);
                 if (responseWorld != null && responseWorld.world != null)
                 {
-                    Debug.Log("Creating world with seed " + responseWorld.world.seed);
+                    Debug.Log("Creating world with seed " + responseWorld.world.seed + " After " + (DeviceUtil.getMillis() - millisStarted));
                     getGameLogic().createWorld(responseWorld);
                 }
                 else
                 {
                     Debug.Log("We did not recieve a world, or the seed, check this out why is this happening.");
                 }
+
+                Debug.Log("We got world after millis : " + (DeviceUtil.getMillis() - millisStarted));
             }
             else if (responseType == "CLEAR_WORLD")
             {
@@ -339,14 +342,6 @@ public class ServerCommunication : MonoBehaviour {
 
 
 
-
-    private long getMillis()
-    {
-        DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        return (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
-    }
-
-   
     void handleCommunication() {
         // Handle communication sent from server to client (this can be a response of a request we have sent or status message etc.)
         if (socketConnection != null)
@@ -377,8 +372,10 @@ public class ServerCommunication : MonoBehaviour {
         }
         socketConnection.writeSocket(request);
     }
+    long millisStarted = 0;
 
     public void connectToServer(String ip, int port, String gameId) {
+        millisStarted = DeviceUtil.getMillis();
         if (!getLobbyCommunication().local)
         {
             Debug.Log("Changing to game scene");
@@ -386,6 +383,7 @@ public class ServerCommunication : MonoBehaviour {
         }
         Debug.Log("Client Started");
         socketConnection = new SocketConnection(ip, port, getLobbyCommunication().local);
+        Debug.Log(" Created socket and sending join game after: " + (DeviceUtil.getMillis() - millisStarted));
         joinGame(gameId);
     }
 

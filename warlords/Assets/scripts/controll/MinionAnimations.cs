@@ -72,7 +72,6 @@ public class MinionAnimations : MonoBehaviour {
                 if (anim != null && !anim.GetCurrentAnimatorStateInfo(0).IsName("auto"))
                 {
                     isMoving = true;
-                    //runAnimation();
                     lookAndMove();
                 }
                 sentInAttackRange = false;

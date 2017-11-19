@@ -40,6 +40,11 @@ public class GameLogic : MonoBehaviour
     // Use this for initialization
     void Start() {
         Debug.Log("Game logic has started");
+
+        if (GameObject.Find("TestGameObject") != null)
+        {
+            Debug.Log("Took this long to change scene : " + (DeviceUtil.getMillis() - ((Test)GameObject.Find("TestGameObject").GetComponent(typeof(Test))).timeStarted) );
+        }
         if ((GameObject.Find("Communication")) == null){
             Debug.Log("Go to connect screen.");
             SceneManager.LoadScene("Connect");
