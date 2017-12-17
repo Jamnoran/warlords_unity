@@ -1,22 +1,8 @@
 fileFormatVersion: 2
-guid: 9909ff5e78cc347408678d2df052d8f3
-labels:
-- map
-- random
-- boss
-- labyrinth
-- generator
-- maze
-- dungeoncrawler
-- roguelike
-- rogue
-- dungen
-- tile
-- room
-- layout
-- dungeon
-- proceduralgeneration
-- generation
-- procedural
+guid: 2ea70008c1cb08f469496340e5504faa
+timeCreated: 1511700697
+licenseType: Free
 DefaultImporter:
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

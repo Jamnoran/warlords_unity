@@ -10,8 +10,7 @@ public class CreateHero : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -41,8 +40,7 @@ public class CreateHero : MonoBehaviour {
 
 		getLobbyCommunication ().createHero (classType);
 
-		SceneManager.LoadScene ("Lobby");
-
+        SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Single);
     }
 
 

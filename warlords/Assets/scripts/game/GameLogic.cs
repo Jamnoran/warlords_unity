@@ -32,25 +32,18 @@ public class GameLogic : MonoBehaviour
     public Transform shieldAnimation;
 
     private List<Ability> abilities = null;
-
     public bool isInGame = false;
     public World world;
-
     private int thisHeroId;
-    // Use this for initialization
+
     void Start() {
         Debug.Log("Game logic has started");
-
-        if (GameObject.Find("TestGameObject") != null)
-        {
-            Debug.Log("Took this long to change scene : " + (DeviceUtil.getMillis() - ((Test)GameObject.Find("TestGameObject").GetComponent(typeof(Test))).timeStarted) );
-        }
         if ((GameObject.Find("Communication")) == null){
             Debug.Log("Go to connect screen.");
-            SceneManager.LoadScene("Connect");
+            SceneManager.LoadScene("Connect", LoadSceneMode.Additive);
         }
-
-        if (getLobbyCommunication() != null) {
+        else
+        {
             try
             {
                 thisHeroId = getLobbyCommunication().heroId;
@@ -61,8 +54,19 @@ public class GameLogic : MonoBehaviour
                 throw new Exception("Could not load lobbycommunication: " + e);
             }
         }
-
     }
+
+    // Update is called once per frame
+    void Update() {
+        if (heroes != null && heroes.Count > 0) {
+            foreach (var hero in heroes) {
+                hero.update();
+            }
+        }
+    }
+
+
+
 
     public Hero getHeroByTransform(Transform transform)
     {
@@ -76,21 +80,6 @@ public class GameLogic : MonoBehaviour
         MinionInfo minionInfo = (MinionInfo)transform.GetComponent(typeof(MinionInfo));
         return getMinion(minionInfo.getMinionId());
     }
-
-    // Update is called once per frame
-    void Update() {
-        if (heroes != null && heroes.Count > 0) {
-            foreach (var hero in heroes) {
-                hero.update();
-            }
-        }
-        if (Input.GetKeyUp("n"))
-        {
-            getCommunication().heroHasClickedPortal(getMyHero().id);
-        }
-    }
-
-   
 
     internal Hero getHero(int heroId) {
         foreach (var hero in heroes) {
@@ -805,8 +794,13 @@ public class GameLogic : MonoBehaviour
 
         getTestSpawn().startJobForSpawnPoints();
 
-		if(isGameMode(World.HORDE_MODE)){
-			StartCoroutine("startCheckIfLevelIsComplete");
+		if(isGameMode(World.HORDE_MODE))
+        {
+			StartCoroutine("hordeLogicStart");
+        }
+        else if (isGameMode(World.GAUNTLET))
+        {
+            StartCoroutine("gauntletLogicStart");
         }
         else
         {
@@ -817,12 +811,20 @@ public class GameLogic : MonoBehaviour
 
 
 
-	IEnumerator startCheckIfLevelIsComplete() {
+	IEnumerator hordeLogicStart() {
 		yield return new WaitForSeconds(5.0f);
 		getHordeMode().currentMode = true;
         getNotificationhandler().setHordeMode(true);
 		Debug.Log ("Current game mode is horde!");
 	}
+
+    IEnumerator gauntletLogicStart()
+    {
+        yield return new WaitForSeconds(5.0f);
+        getGauntletMode().startTimer();
+        getGauntletMode().currentMode = true;
+        Debug.Log("Current game mode is gauntlet!");
+    }
 
     public void endGame()
     {
@@ -840,6 +842,10 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Game ended");
     }
     
+
+
+
+
     ServerCommunication getCommunication() {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
@@ -869,6 +875,11 @@ public class GameLogic : MonoBehaviour
 		return ((HordeMode)GameObject.Find("GameLogicObject").GetComponent(typeof(HordeMode)));
 	}
 
+    GauntletMode getGauntletMode()
+    {
+        return ((GauntletMode)GameObject.Find("GameLogicObject").GetComponent(typeof(GauntletMode)));
+    }
+
     NotificationHandler getNotificationhandler()
     {
         return ((NotificationHandler)GameObject.Find("GameLogicObject").GetComponent(typeof(NotificationHandler)));
@@ -882,5 +893,11 @@ public class GameLogic : MonoBehaviour
     HideWalls getHideWalls()
     {
         return ((HideWalls)GameObject.Find("GameLogicObject").GetComponent(typeof(HideWalls)));
+    }
+
+
+    LoadingInGame getLoadingInGame()
+    {
+        return ((LoadingInGame)GameObject.Find("GameLogicObject").GetComponent(typeof(LoadingInGame)));
     }
 }

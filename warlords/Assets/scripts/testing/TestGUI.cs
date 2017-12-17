@@ -82,7 +82,7 @@ public class TestGUI : MonoBehaviour {
         getCommunication().closeCommunication();
 
         Debug.Log("Exit to lobby screen");
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Single);
         getLobbyCommunication().getHeroes();
     }
 

@@ -7,25 +7,32 @@ using UnityEngine;
 
 public class DunGenerator : MonoBehaviour {
     public RuntimeDungeon DungeonGenerator;
+
     public DungeonFlow crawlerFlow;
     public GameObject hordeLevel;
-    private GameObject currentHordeLevel;
+    public GameObject gauntletLevel;
+    private GameObject currentLevel;
 
     private void Start() {
         DungeonGenerator = GetComponentInChildren<RuntimeDungeon>();
         DungeonGenerator.Generator.OnGenerationStatusChanged += OnGenerationStatusChanged;
+        DungeonGenerator.Generator.Seed = 123456;
+        DungeonGenerator.Generate();
     }
 
     private void OnGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status) {
         if (status != GenerationStatus.Complete)
+        {
+            //Debug.Log("World is generated");
             return;
+        }
     }
 
     public void GenerateRandom(int seed, int typeOfLevel) {
         Debug.Log("Type of level : " + typeOfLevel);
-        if (currentHordeLevel != null)
+        if (currentLevel != null)
         {
-            Destroy(currentHordeLevel);
+            Destroy(currentLevel);
         }
         if (typeOfLevel == 1)
         {
@@ -35,7 +42,12 @@ public class DunGenerator : MonoBehaviour {
         else if (typeOfLevel == 2)
         {
             DungeonGenerator.Clear();
-            currentHordeLevel = Instantiate(hordeLevel, new Vector3(0, 0, 0), Quaternion.identity);
+            currentLevel = Instantiate(hordeLevel, new Vector3(0, 0, 0), Quaternion.identity);
+        }
+        else if (typeOfLevel == 3)
+        {
+            DungeonGenerator.Clear();
+            currentLevel = Instantiate(gauntletLevel, new Vector3(0, 0, 0), Quaternion.identity);
         }
     }
 

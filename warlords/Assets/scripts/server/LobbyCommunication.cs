@@ -11,6 +11,7 @@ using System.Net.Configuration;
 using LitJson;
 using System.Net;
 using UnityEngine.UI;
+using Assets.scripts.util;
 
 public class LobbyCommunication : MonoBehaviour {
 	private SocketConnection socketConnection;
@@ -22,7 +23,10 @@ public class LobbyCommunication : MonoBehaviour {
     public Boolean local = false;
     public int portForLocal = 2080;
 
-	public Text errorMessageHolder;
+
+    public long millisStarted = 0;
+
+    public Text errorMessageHolder;
 
 	private ResponseLobbys responseLobbys;
 
@@ -53,14 +57,18 @@ public class LobbyCommunication : MonoBehaviour {
 
 
 	// User pressed joining custom game, ask server for a solo game
-	public void findCustomGame(){
-		Debug.Log ("Sending to server to find a custom game");
+	public void findCustomGame()
+    {
+        millisStarted = DeviceUtil.getMillis();
+        Debug.Log ("Sending to server to find a custom game");
 		sendRequest (new RequestFindGame(heroId, "CUSTOM", userId));
 	}
 
 	// User pressed joining custom game, ask server for a solo game
-	public void findQuickGame(){
-		Debug.Log ("Sending to server to find a quick game");
+	public void findQuickGame()
+    {
+        millisStarted = DeviceUtil.getMillis();
+        Debug.Log ("Sending to server to find a quick game");
 		sendRequest (new RequestFindGame(heroId, "QUICK", userId));
 	}
 
@@ -109,7 +117,7 @@ public class LobbyCommunication : MonoBehaviour {
     // 			Response
 
     // Code for parsing responses sent from server to client
-    void parseJson(string json) {
+    public void parseJson(string json) {
 		Debug.Log("Trying to parse this string to json object: " + json);
 
 		// Do simple string split get response_type and go to next " and then parse the response to that format later.
@@ -138,36 +146,39 @@ public class LobbyCommunication : MonoBehaviour {
 				if (responseCode == 608) {
 					Debug.Log ("Show error for user, wrong email or password");
 					errorMessageHolder.text = JsonUtil.getMessageFromJson (json);
-
 				} else {	
 					ResponseLogin responseCreateUser = JsonMapper.ToObject<ResponseLogin> (json);
 					Debug.Log ("User logged in with this id to store on device: " + responseCreateUser.user_id);
 					userId = responseCreateUser.user_id;
 					PlayerPrefs.SetInt ("USER_ID", userId);
 					SceneManager.LoadScene ("Lobby");
-					Debug.Log ("Getting heroes for user");
+                    Debug.Log ("Getting heroes for user");
 					getHeroes ();
 					errorMessageHolder.text = "";
 				}
 			} else if (responseType == "HEROES") {
 				ResponseGetHeroes responseGetHeroes = JsonMapper.ToObject<ResponseGetHeroes>(json);
 				Debug.Log("Got these many heroes: " + responseGetHeroes.heroes.Count);
-				//((Lobby)GameObject.Find("LobbyLogic").GetComponent(typeof(Lobby))).updateHeroes(responseGetHeroes.heroes);
                 ((LobbyLogic)GameObject.Find("LobbyLogic").GetComponent(typeof(LobbyLogic))).updateHeroes(responseGetHeroes.heroes);
             } else if (responseType == "GAME_FOUND_RESPONSE"){
                 getLobbyLogic().showLoadingText();
+                Debug.Log(" Response game found after: " + (DeviceUtil.getMillis() - millisStarted));
 
                 ResponseGameFound responseGameFound = JsonMapper.ToObject<ResponseGameFound> (json);
 				Debug.Log ("Response game found: " + responseGameFound.toString ());
+
+                //disconnect();
+
                 if (!local)
                 {
                     getCommunication().connectToServer(responseGameFound.server_ip, responseGameFound.server_port, responseGameFound.game_id);
+                    Debug.Log("Should now be done with connecting to new scene after" + +(DeviceUtil.getMillis() - millisStarted));
+                    //SceneManager.LoadScene("DemoDemo", LoadSceneMode.Single);
                 }
                 else
                 {
                     getCommunication().connectToServer("127.0.0.1", portForLocal, "0");
                 }
-                
             } else if (responseType == "LFG_RESPONSE") {
                 ResponseLFG responseLFG = JsonMapper.ToObject<ResponseLFG>(json);
                 Debug.Log("Response game found: " + responseLFG.ToString());
@@ -185,12 +196,8 @@ public class LobbyCommunication : MonoBehaviour {
 
 	void handleCommunication() {
 		// Handle communication sent from server to client (this can be a response of a request we have sent or status message etc.)
-		if(socketConnection != null){
-			String response = socketConnection.readSocket();
-			if (response != null && response != "") {
-				// Parse response to from json to object
-				parseJson(response);
-			}
+		if(socketConnection != null && socketConnection.isConnected){
+            socketConnection.Update();
 		}
 	}
 
@@ -201,8 +208,8 @@ public class LobbyCommunication : MonoBehaviour {
 	}
 
 
-	// Handle connection 
-	IEnumerator getLobbyListFromWebservice(WWW www){
+    // Handle connection 
+    IEnumerator getLobbyListFromWebservice(WWW www){
 
 		//Debug.Log ("Getting lobbys from url " + webserviceUrl);
 		yield return www;
@@ -231,9 +238,16 @@ public class LobbyCommunication : MonoBehaviour {
 
 	public void connectToServer(String ip, int port) {
 		Debug.Log("Client Started");
-		socketConnection = new SocketConnection (ip, port, false);
+		socketConnection = new SocketConnection (ip, port, false, true);
 	}
 
+
+    void disconnect()
+    {
+        Debug.Log("Closing connection to lobby");
+        socketConnection.closeSocket();
+        socketConnection = null;
+    }
 
     ServerCommunication getCommunication() {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));

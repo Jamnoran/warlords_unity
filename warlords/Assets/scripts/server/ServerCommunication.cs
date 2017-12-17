@@ -46,6 +46,7 @@ public class ServerCommunication : MonoBehaviour {
     public void joinGame(string gameId) {
         print("Joining game with this hero : " + getHeroId() + " game id: " + gameId);
         sendRequest(new RequestJoinGame(getHeroId(), gameId));
+        Debug.Log(" Created socket and sending join game after: " + (DeviceUtil.getMillis() - millisStarted));
     }
 
     public void endGame() {
@@ -170,9 +171,9 @@ public class ServerCommunication : MonoBehaviour {
 
 
     // Code for parsing responses sent from server to client
-    void parseJson(string json)
+    public void parseJson(string json)
     {
-        //Debug.Log("Trying to parse this string to json object: " + json);
+        //Debug.Log("Time[" + (DeviceUtil.getMillis() - millisStarted) + "] Trying to parse this string to json object: " + json);
 
         // Do simple string split get response_type and go to next " and then parse the response to that format later.
         String responseType = JsonUtil.getTypeOfResponseFromJson(json);
@@ -189,6 +190,7 @@ public class ServerCommunication : MonoBehaviour {
         if (responseType != null && !responseType.Equals("")) {
             if (responseType.Equals("GAME_STATUS"))
             {
+                //Debug.Log("Update game status After " + (DeviceUtil.getMillis() - millisStarted));
                 //Debug.Log("GameStatus[" + json + "]");
                 ResponseGameStatus responseGameStatus = JsonMapper.ToObject<ResponseGameStatus>(json);
                 if (responseGameStatus.gameAnimations.Count > 0)
@@ -344,14 +346,9 @@ public class ServerCommunication : MonoBehaviour {
 
     void handleCommunication() {
         // Handle communication sent from server to client (this can be a response of a request we have sent or status message etc.)
-        if (socketConnection != null)
+        if (socketConnection != null && socketConnection.isConnected)
         {
-            String response = socketConnection.readSocket();
-            if (response != null && response != "")
-            {
-                // Parse response to from json to object
-                parseJson(response);
-            }
+            socketConnection.Update();
         }
     }
 
@@ -372,7 +369,9 @@ public class ServerCommunication : MonoBehaviour {
         }
         socketConnection.writeSocket(request);
     }
-    long millisStarted = 0;
+
+
+    public long millisStarted = 0;
 
     public void connectToServer(String ip, int port, String gameId) {
         millisStarted = DeviceUtil.getMillis();
@@ -380,10 +379,10 @@ public class ServerCommunication : MonoBehaviour {
         {
             Debug.Log("Changing to game scene");
             SceneManager.LoadScene("Game");
+            //SceneManager.LoadScene("DemoDemo", LoadSceneMode.Single);
         }
         Debug.Log("Client Started");
-        socketConnection = new SocketConnection(ip, port, getLobbyCommunication().local);
-        Debug.Log(" Created socket and sending join game after: " + (DeviceUtil.getMillis() - millisStarted));
+        socketConnection = new SocketConnection(ip, port, getLobbyCommunication().local, false);
         joinGame(gameId);
     }
 

@@ -36,7 +36,7 @@ public class LobbyLogic : MonoBehaviour {
     // Use this for initialization
     void Start () {
         if (getLobbyCommunication() == null || getLobbyCommunication().userId == 0) {
-            SceneManager.LoadScene("Connect");
+            SceneManager.LoadScene("Connect", LoadSceneMode.Additive);
         }
         showGroup(false);
     }
@@ -183,7 +183,7 @@ public class LobbyLogic : MonoBehaviour {
 
     public void createHero() {
         Debug.Log("Creating a hero");
-        SceneManager.LoadScene("CreateHero");
+        SceneManager.LoadSceneAsync("CreateHero", LoadSceneMode.Single);
     }
 
 

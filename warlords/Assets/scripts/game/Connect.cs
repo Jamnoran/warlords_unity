@@ -42,13 +42,12 @@ public class Connect : MonoBehaviour {
             Debug.Log("Email: " + PlayerPrefs.GetString("EMAIL"));
             Debug.Log("Password: " + PlayerPrefs.GetString("PASSWORD"));
 			getLobbyCommunication().userId = userId;
-            SceneManager.LoadScene("Lobby");
+            SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Single);
         }
     }
 
     // Update is called once per frame
     void Update() {
-
         if (Input.GetKeyDown(KeyCode.Tab)) {
             Debug.Log("Tab pressed");
             if (inputFieldFocused == 0) {
@@ -82,11 +81,11 @@ public class Connect : MonoBehaviour {
     }
 
 	public void startRegisterScreen(){
-		SceneManager.LoadScene ("CreateAccount");
-	}
+        SceneManager.LoadScene("CreateAccount", LoadSceneMode.Additive);
+    }
 
 	public void startLoginScreen(){
-		SceneManager.LoadScene ("Connect");
+		SceneManager.LoadScene("Connect", LoadSceneMode.Additive);
 	}
 
 	public void register() {
@@ -105,22 +104,14 @@ public class Connect : MonoBehaviour {
 
     void sendLogin(string username, string email, string password)     {
         Debug.Log("Login with email : " + email);
-        //string userId = PlayerPrefs.GetString("USER_ID");
-        //if (userId != null && !userId.Equals(""))
-        //{
-            PlayerPrefs.SetString("EMAIL", email);
-            PlayerPrefs.SetString("PASSWORD", password);
-            //PlayerPrefs.SetString("USERNAME", username);
-            Debug.Log("Login");
-            if (getLobbyCommunication() != null) {
-                getLobbyCommunication().loginUser(email, password);
-            } else {
-                Debug.Log("No lobby communication object");
-            }
-        //}else
-        //{
-        //    Debug.Log("You need to register first");
-        //}
+        PlayerPrefs.SetString("EMAIL", email);
+        PlayerPrefs.SetString("PASSWORD", password);
+        Debug.Log("Login");
+        if (getLobbyCommunication() != null) {
+            getLobbyCommunication().loginUser(email, password);
+        } else {
+            Debug.Log("No lobby communication object");
+        }
     }
 
 

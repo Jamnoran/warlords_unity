@@ -58,7 +58,6 @@ namespace Assets.scripts.vo
         }
 
         public void update() {
-            ShieldLogic shieldLogic = (ShieldLogic)trans.GetComponent(typeof(ShieldLogic));
             if (buffs != null && buffs.Count > 0) 
             {
                 for (int i = 0; i < buffs.Count; i++) 
@@ -82,6 +81,7 @@ namespace Assets.scripts.vo
             {
                 // Remove all buffs if they are visible
 
+                ShieldLogic shieldLogic = (ShieldLogic)trans.GetComponent(typeof(ShieldLogic));
                 // Handle shield
                 if (shieldLogic != null && shieldLogic.shieldOn) {
                     shieldLogic.setVisibility(false);

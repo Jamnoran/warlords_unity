@@ -42,6 +42,14 @@ public class KeyboardInput : MonoBehaviour {
         {
 
         }
+
+
+
+        if (Input.GetKeyUp("n"))
+        {
+            getCommunication().heroHasClickedPortal(getCommunication().getHeroId());
+        }
+
         // Targeting system
         if (Input.GetKeyDown(KeyCode.F1))
         {
@@ -68,5 +76,10 @@ public class KeyboardInput : MonoBehaviour {
     {
         return ((TargetingByFKeys)GameObject.Find("GameLogicObject").GetComponent(typeof(TargetingByFKeys)));
     }
-    
+
+
+    ServerCommunication getCommunication()
+    {
+        return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
 }
