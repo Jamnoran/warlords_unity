@@ -15,20 +15,17 @@ using Assets.scripts.util;
 
 public class LobbyCommunication : MonoBehaviour {
 	private SocketConnection socketConnection;
-	public string webserviceUrl = "http://www.warlord.ga/warlords_webservice/lobbys.json";
+	private ResponseLobbys responseLobbys;
 
+	public string webserviceUrl = "http://www.warlord.ga/warlords_webservice/lobbys.json";
 	public int userId = 1;
 	public int heroId = 1;
-
-    public Boolean local = false;
+	public Boolean local = false;
     public int portForLocal = 2080;
-
-
-    public long millisStarted = 0;
-
+	public long millisStarted = 0;
     public Text errorMessageHolder;
+	public GameObject generator;
 
-	private ResponseLobbys responseLobbys;
 
    // Use this for initialization
     void Start(){
@@ -40,6 +37,10 @@ public class LobbyCommunication : MonoBehaviour {
 			}
             StartCoroutine(getLobbyListFromWebservice(new WWW(webserviceUrl)));
         }
+		if(getDunGen() == null){
+			GameObject gene = Instantiate(generator, new Vector3(0, 0, 0), Quaternion.identity);
+			gene.name = "Generator";
+		}
     }
 
     void Awake() {
@@ -256,4 +257,12 @@ public class LobbyCommunication : MonoBehaviour {
     LobbyLogic getLobbyLogic() {
         return ((LobbyLogic)GameObject.Find("LobbyLogic").GetComponent(typeof(LobbyLogic)));
     }
+
+	DunGenerator getDunGen() {
+		if (GameObject.Find ("Generator") != null) {	
+			return ((DunGenerator)GameObject.Find ("Generator").GetComponent (typeof(DunGenerator)));
+		}else{
+			return null;
+		}
+	}
 }

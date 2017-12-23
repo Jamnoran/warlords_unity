@@ -54,6 +54,7 @@ public class GameLogic : MonoBehaviour
                 throw new Exception("Could not load lobbycommunication: " + e);
             }
         }
+		getGenerator ().setReady(true);
     }
 
     // Update is called once per frame

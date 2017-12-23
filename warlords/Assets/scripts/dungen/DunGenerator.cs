@@ -13,12 +13,22 @@ public class DunGenerator : MonoBehaviour {
     public GameObject gauntletLevel;
     private GameObject currentLevel;
 
+	public bool readyToGenerate = false;
+
     private void Start() {
         DungeonGenerator = GetComponentInChildren<RuntimeDungeon>();
         DungeonGenerator.Generator.OnGenerationStatusChanged += OnGenerationStatusChanged;
-        DungeonGenerator.Generator.Seed = 123456;
-        DungeonGenerator.Generate();
+        //DungeonGenerator.Generator.Seed = 123456;
+        //DungeonGenerator.Generate();
     }
+
+	private void Update() {
+
+	}
+
+	void Awake() {
+		DontDestroyOnLoad(transform.gameObject);
+	}
 
     private void OnGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status) {
         if (status != GenerationStatus.Complete)
@@ -29,7 +39,8 @@ public class DunGenerator : MonoBehaviour {
     }
 
     public void GenerateRandom(int seed, int typeOfLevel) {
-        Debug.Log("Type of level : " + typeOfLevel);
+		Debug.Log("Type of level : " + typeOfLevel + " Ready t o generate: " + readyToGenerate);
+		readyToGenerate = false;
         if (currentLevel != null)
         {
             Destroy(currentLevel);
@@ -51,8 +62,7 @@ public class DunGenerator : MonoBehaviour {
         }
     }
 
-    private void Update() {
-
-    }
-    
+	public void setReady(bool ready){
+		readyToGenerate = ready;
+	}
 }
