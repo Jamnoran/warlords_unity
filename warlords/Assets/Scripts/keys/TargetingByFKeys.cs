@@ -16,7 +16,8 @@ public class TargetingByFKeys : MonoBehaviour{
     {
 
     }
-        public void setTarget(int position)
+    
+	public void setTarget(int position)
     {
         Hero myHero = getGameLogic().getMyHero();
         if (getGameLogic().getHeroes().Count > position)

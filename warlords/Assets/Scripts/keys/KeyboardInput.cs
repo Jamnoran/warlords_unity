@@ -22,11 +22,18 @@ public class KeyboardInput : MonoBehaviour {
     void Update() {
         if (Input.GetKeyDown("escape"))
         {
-
+			if(state == CHAT)
+			{
+				// Close chat
+			}
         }
         if (Input.GetKeyUp("enter"))
         { 
+			if(state == READY)
+			{
+				// Show chat
 
+			}
         }
         // Spell input
 
@@ -40,7 +47,7 @@ public class KeyboardInput : MonoBehaviour {
 
         if (Input.GetKeyDown("t"))
         {
-
+			getTalents ().toggleTalents();
         }
 
 
@@ -76,6 +83,11 @@ public class KeyboardInput : MonoBehaviour {
     {
         return ((TargetingByFKeys)GameObject.Find("GameLogicObject").GetComponent(typeof(TargetingByFKeys)));
     }
+
+	Talents getTalents()
+	{
+		return ((Talents)GameObject.Find("TalentsIcons").GetComponent(typeof(Talents)));
+	}
 
 
     ServerCommunication getCommunication()

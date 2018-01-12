@@ -54,7 +54,9 @@ public class GameLogic : MonoBehaviour
                 throw new Exception("Could not load lobbycommunication: " + e);
             }
         }
-		getGenerator ().setReady(true);
+		if (getGenerator() != null) {
+			getGenerator().setReady (true);
+		}
     }
 
     // Update is called once per frame
@@ -788,7 +790,7 @@ public class GameLogic : MonoBehaviour
 
         getHideWalls().clearHiddenObjects();
 
-        if (!getLobbyCommunication().local)
+		if (!getLobbyCommunication().local && getGenerator() != null)
         {
             getGenerator().GenerateRandom(world.seed, world.worldType);
         }
@@ -865,7 +867,10 @@ public class GameLogic : MonoBehaviour
     }
 
     DunGenerator getGenerator() {
-        return ((DunGenerator)GameObject.Find("Generator").GetComponent(typeof(DunGenerator)));
+		if (GameObject.Find ("Generator") != null) {
+			return ((DunGenerator)GameObject.Find ("Generator").GetComponent (typeof(DunGenerator)));
+		}
+		return null;
     }
 
     SpawnLocator getTestSpawn() {

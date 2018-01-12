@@ -25,24 +25,28 @@ public class Talents : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("t") && !getChat().IsInputFieldFocused())
-        {
-            Debug.Log("Showing talents");
-            if (getUIWindow().IsVisible)
-            {
-                getUIWindow().Hide();
-            }
-            else
-            {
-                getUIWindow().Show();
-                refresh();
-            }
-        }
         if (getUIWindow().IsVisible)
         {
             calculatePoints();
         }
     }
+
+	public void toggleTalents(){
+		if (getUIWindow ().IsVisible) {
+			getUIWindow ().Hide ();
+		} else {
+			getUIWindow().Show();
+			refresh();
+		}
+	}
+
+	public void showTalents(){
+		getUIWindow ().Show ();
+	}
+
+	public void hideTalents(){
+		getUIWindow ().Hide ();
+	}
 
 
     public void talentTreePressed(int position)
@@ -62,7 +66,7 @@ public class Talents : MonoBehaviour {
         foreach (Ability ability in abilities)
         {
             // Set all icons in menu bar
-            Debug.Log("Trying to find talent icon on position : " + ability.position + " With ability id: " + ability.id + " i : " + i + " ability name: " + ability.name);
+            //Debug.Log("Trying to find talent icon on position : " + ability.position + " With ability id: " + ability.id + " i : " + i + " ability name: " + ability.name);
             GameObject spellicon = GameObject.Find("TalentMenuIcon (" + i  + ")");
             UISpellSlot script = ((UISpellSlot)spellicon.GetComponent(typeof(UISpellSlot)));
             UISpellInfo spInfo = new UISpellInfo();

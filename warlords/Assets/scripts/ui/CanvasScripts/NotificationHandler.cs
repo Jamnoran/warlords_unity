@@ -11,6 +11,8 @@ public class NotificationHandler : MonoBehaviour {
 
     private bool hordeMode = false;
     private List<string> notifications;
+	private int minionsLeft;
+
 	// Use this for initialization
 	void Start () {
         topNotification.transform.Find("Text").GetComponent<Text>().text = "";
@@ -22,7 +24,9 @@ public class NotificationHandler : MonoBehaviour {
 	void Update () {
         if (hordeMode)
         {
-            int minionsLeft = getHordeMode().getMinionsLeft();
+			if(getHordeMode().getMinionsLeft() <= minionsLeft || (minionsLeft == 0 && (getHordeMode().getMinionsLeft () > 0))){
+				minionsLeft = getHordeMode().getMinionsLeft();
+			}
             topNotification.transform.Find("Text").GetComponent<Text>().text = minionsLeft + " minions left";
         }
 	}
@@ -64,7 +68,8 @@ public class NotificationHandler : MonoBehaviour {
     }
 
     public void setHordeMode(bool active)
-    {
+	{
+		minionsLeft = 0;
         hordeMode = active;
     }
 
