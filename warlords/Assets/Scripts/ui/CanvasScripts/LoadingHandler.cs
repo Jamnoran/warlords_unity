@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoadingInGame : MonoBehaviour {
+public class LoadingHandler : MonoBehaviour {
 
     public GameObject loadingOverlay;
 
-    // Use this for initialization
-    void Start () {
-		
+	// Use this for initialization
+	void Start () {
+        if (loadingOverlay != null)
+        {
+            loadingOverlay.SetActive(true);
+        }
 	}
 	
 	// Update is called once per frame

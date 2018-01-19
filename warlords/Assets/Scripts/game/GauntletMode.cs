@@ -16,7 +16,7 @@ public class GauntletMode : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(currentMode && !enabled){
+		if(currentMode){
             if (DeviceUtil.getMillis() >= (startTime + timeLimit))
             {
                 // Team lost, show failed message
@@ -25,9 +25,19 @@ public class GauntletMode : MonoBehaviour {
             else
             {
                 getNotificationhandler().showNotification(1, "Time left : " + getPrettyTime((startTime + timeLimit) - DeviceUtil.getMillis()));
+                // Handle time bar:
+                float timePassed = DeviceUtil.getMillis() - startTime;
+                float timeLeftPercentage = 1 - (timePassed / timeLimit);
+                getNotificationhandler().setTimeLeftPercentage(timeLeftPercentage);
             }
 		}
 	}
+
+    public void setMode(bool value)
+    {
+        currentMode = value;
+        getNotificationhandler().setVisibleTimeNotification(value);
+    }
 
     private long getPrettyTime(long time)
     {

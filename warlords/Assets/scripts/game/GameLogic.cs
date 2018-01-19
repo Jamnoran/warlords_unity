@@ -251,7 +251,7 @@ public class GameLogic : MonoBehaviour
 			getCommunication ().sendUpdateMinionPosition (getMyHero ().id, updatePositionMinions);
 			updatePositionMinions = null; 
 		}
-	}
+    }
 
     public void updateListOfHeroes(List<Hero> newHeroes) {
         foreach (var newHero in newHeroes) {
@@ -380,7 +380,7 @@ public class GameLogic : MonoBehaviour
             }
             if (buff.type == Buff.SPEED)
             {
-                Debug.Log("Buff speed! Calculating new speed");
+                //Debug.Log("Buff speed! Calculating new speed");
                 hero.calculateSpeed();
                 hero.setAutoAttacking(true);
             }
@@ -785,7 +785,8 @@ public class GameLogic : MonoBehaviour
 
     public void createWorld(ResponseWorld responseWorld)
     {
-        Debug.Log("Server sent to create world");
+        getLoading().showLoading();
+        Debug.Log("Server sent to create world of type : " + responseWorld.world.worldType);
         world = responseWorld.world;
 
         getHideWalls().clearHiddenObjects();
@@ -809,24 +810,36 @@ public class GameLogic : MonoBehaviour
         {
             getNotificationhandler().setHordeMode(false);
             getNotificationhandler().showNotification(1, "");
+            getGauntletMode().setMode(false);
+            StartCoroutine("crawlerLogicStart");
         }
     }
 
+    IEnumerator crawlerLogicStart()
+    {
+        yield return new WaitForSeconds(2.5f);
+        getLoading().hideLoading();
+    }
 
-
-	IEnumerator hordeLogicStart() {
-		yield return new WaitForSeconds(5.0f);
+    IEnumerator hordeLogicStart()
+    {
+		yield return new WaitForSeconds(1.0f);
 		getHordeMode().currentMode = true;
+        getGauntletMode().setMode(false);
         getNotificationhandler().setHordeMode(true);
 		Debug.Log ("Current game mode is horde!");
-	}
+        getLoading().hideLoading();
+    }
 
     IEnumerator gauntletLogicStart()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(1.0f);
         getGauntletMode().startTimer();
-        getGauntletMode().currentMode = true;
+        getHordeMode().currentMode = false;
+        getGauntletMode().setMode(true);
+        getNotificationhandler().setHordeMode(false);
         Debug.Log("Current game mode is gauntlet!");
+        getLoading().hideLoading();
     }
 
     public void endGame()
@@ -901,9 +914,8 @@ public class GameLogic : MonoBehaviour
         return ((HideWalls)GameObject.Find("GameLogicObject").GetComponent(typeof(HideWalls)));
     }
 
-
-    LoadingInGame getLoadingInGame()
+    LoadingHandler getLoading()
     {
-        return ((LoadingInGame)GameObject.Find("GameLogicObject").GetComponent(typeof(LoadingInGame)));
+        return ((LoadingHandler)GameObject.Find("GameLogicObject").GetComponent(typeof(LoadingHandler)));
     }
 }

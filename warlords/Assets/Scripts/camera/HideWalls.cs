@@ -71,7 +71,7 @@ public class HideWalls : MonoBehaviour
                     {
                         //Enable renderer, remove from list, and decrement the counter because the list is one smaller now
                         Transform wasHidden = hiddenObjects[i];
-                        if (wasHidden.GetComponent<Renderer>() != null)
+                        if (wasHidden != null && wasHidden.GetComponent<Renderer>() != null)
                         {
                             wasHidden.GetComponent<Renderer>().enabled = true;
                             hiddenObjects.RemoveAt(i);

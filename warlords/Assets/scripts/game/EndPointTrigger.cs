@@ -5,6 +5,8 @@ using Assets.scripts.vo;
 
 public class EndPointTrigger : MonoBehaviour {
 
+    List<int> heroesClickedPortal = new List<int>();
+
 	// Use this for initialization
 	void Start () {
 		
@@ -18,13 +20,22 @@ public class EndPointTrigger : MonoBehaviour {
     void OnTriggerEnter(Collider target) {
         if (target.tag == "Hero") {
             Hero heroEntered = getGameLogic().getClosestHeroByPosition(target.transform.position);
-            Hero hero = getGameLogic().getMyHero();
-            if (heroEntered.id == hero.id) {
-                //FieldOfView field = ((FieldOfView)hero.trans.Find(hero.getModelName()).GetComponent(typeof(FieldOfView)));
-                //if (field.isPortalInRange()) {
-                //    Debug.Log("Stair was in range");
-                //}
-                getCommunication().heroHasClickedPortal(hero.id);
+            bool alreadyClicked = false;
+            foreach (int i in heroesClickedPortal)
+            {
+                if (i == heroEntered.id)
+                {
+                    alreadyClicked = true;
+                }
+            }
+            if (!alreadyClicked)
+            {
+                heroesClickedPortal.Add(heroEntered.id);
+                Hero hero = getGameLogic().getMyHero();
+                if (heroEntered.id == hero.id)
+                {
+                    getCommunication().heroHasClickedPortal(hero.id);
+                }
             }
         }
     }

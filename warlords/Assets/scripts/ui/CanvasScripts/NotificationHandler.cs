@@ -8,6 +8,7 @@ public class NotificationHandler : MonoBehaviour {
     public GameObject topNotification;
     public GameObject bottomNotification;
     public GameObject levelUpNotification;
+    public GameObject timeLeftNotification;
 
     private bool hordeMode = false;
     private List<string> notifications;
@@ -41,14 +42,16 @@ public class NotificationHandler : MonoBehaviour {
         else if (type == 2) 
         {
             bottomNotification.transform.Find("Text").GetComponent<Text>().text = notification;
+            StartCoroutine(hideNotification(type));
         }
         else if (type == 3)
         {
             levelUpNotification.SetActive(true);
             levelUpNotification.transform.Find("Text 2").GetComponent<Text>().text = notification;
+            StartCoroutine(hideNotification(type));
         }
-        StartCoroutine(hideNotification(type));
     }
+
     IEnumerator hideNotification(int type)
     {
         yield return new WaitForSeconds(2);
@@ -73,6 +76,16 @@ public class NotificationHandler : MonoBehaviour {
         hordeMode = active;
     }
 
+    // Want this in 0.20 form
+    public void setTimeLeftPercentage(float timeLeftPercentage)
+    {
+        timeLeftNotification.GetComponent<UIProgressBar>().fillAmount = timeLeftPercentage;
+    }
+
+    public void setVisibleTimeNotification(bool value)
+    {
+        timeLeftNotification.SetActive(value);
+    }
 
 
     HordeMode getHordeMode()

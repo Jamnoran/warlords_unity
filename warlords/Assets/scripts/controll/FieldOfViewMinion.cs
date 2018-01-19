@@ -7,7 +7,7 @@ public class FieldOfViewMinion : MonoBehaviour
 {
     public bool enabled = true;
 
-    private bool sentInitialAggro = false;
+    public bool sentInitialAggro = false;
 
     public float viewRadius;
     [Range(0, 360)]
@@ -67,29 +67,26 @@ public class FieldOfViewMinion : MonoBehaviour
                     if (!visibleTargets.Contains(target))
                     {
                         visibleTargets.Add(target);
-                        // This is what happens if this class is on a minion
                         if (!sentInitialAggro)
                         {
-                            //Debug.Log("This target is in range : " + target.name);
-                            //Debug.Log("Hero, found initiating aggro!");
-                            //Debug.Log(gameObject.name);
-                            Transform currentMinion = gameObject.transform;
-                            //Debug.Log("Minions position is: " + currentMinion.position);
-                            //Debug.Log("Hero position is: " + target.position);
+
+                            // First aggro, send it up to server and rotate towards it
+                            //Transform currentMinion = gameObject.transform;
+                            Transform minionTransform = gameObject.transform.parent;
 
                             //make mob look at target before moving it.
                             Vector3 targetPostition = new Vector3(target.position.x, target.transform.position.y, target.position.z);
-                            currentMinion.transform.LookAt(targetPostition);
+                            minionTransform.transform.LookAt(targetPostition);
 
                             if (getGameLogic() != null)
                             {
                                 // Send this information to server
-                                Hero hero = getGameLogic().getClosestHeroByPosition(target.position);
-                                Minion minion = getGameLogic().getClosestMinionByPosition(target.position);
+                                Hero hero = getGameLogic().getHeroByTransform(target);
+                                Minion minion = getGameLogic().getMinionByTransform(minionTransform);
                                 if (hero != null && minion != null)
                                 {
                                     sentInitialAggro = true;
-                                    //Debug.Log("Got minion aggro on this id: " + minion.id + " And this heroId: " + hero.id);
+                                    Debug.Log("Got minion aggro on this id: " + minion.id + " And this heroId: " + hero.id);
                                     getCommunication().sendMinionAggro(minion.id, hero.id);
                                 }
                             }
