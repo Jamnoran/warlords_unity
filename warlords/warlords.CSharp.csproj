@@ -661,6 +661,7 @@
     <Compile Include="Assets\Scripts\ui\SctController.cs" />
     <Compile Include="Assets\Scripts\ui\Slot.cs" />
     <Compile Include="Assets\Scripts\ui\Stat.cs" />
+    <Compile Include="Assets\Scripts\ui\SwapHero.cs" />
     <Compile Include="Assets\Scripts\ui\UpdateHealthGlobe.cs" />
     <Compile Include="Assets\Scripts\ui2\HideAndShowSpellBook.cs" />
     <Compile Include="Assets\Scripts\ui2\SetSpellDescription.cs" />

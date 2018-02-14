@@ -8,7 +8,7 @@ public class ScrollingCombatText : MonoBehaviour {
 
     public Canvas enemyCanvas;
     public GameObject sctPrefab;
-    public int timeToDie = 1;
+    public float timeToDie = 0.7f;
 
     public void showText(string damage, bool crit, string color)
     {
@@ -36,6 +36,6 @@ public class ScrollingCombatText : MonoBehaviour {
             temp.GetComponent<Text>().fontStyle = FontStyle.Bold;
         }
         temp.GetComponent<Text>().text = damageInDisplayFormat;
-        Destroy(temp, 0.7f);
+        Destroy(temp, timeToDie);
     }
 }
