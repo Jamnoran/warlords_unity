@@ -24,8 +24,21 @@ public class Test_UIItemSlot_Assign : MonoBehaviour {
 		this.slot.Assign(UIItemDatabase.Instance.GetByID(this.assignItem));
 		this.Destruct();
 	}
-	
-	private void Destruct()
+
+    public void Assign(int assignItem)
+    {
+        this.assignItem = assignItem;
+        if (this.slot == null || UIItemDatabase.Instance == null)
+        {
+            this.Destruct();
+            return;
+        }
+
+        this.slot.Assign(UIItemDatabase.Instance.GetByID(this.assignItem));
+        this.Destruct();
+    }
+
+    private void Destruct()
 	{
 		DestroyImmediate(this);
 	}

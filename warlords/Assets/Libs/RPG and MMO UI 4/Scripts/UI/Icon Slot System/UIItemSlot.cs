@@ -96,9 +96,9 @@ namespace UnityEngine.UI
 			
 			// Use the base class assign to set the icon
 			this.Assign(itemInfo.Icon);
-			
-			// Set the spell info
-			this.m_ItemInfo = itemInfo;
+
+            // Set the spell info
+            this.m_ItemInfo = itemInfo;
 			
 			// Invoke the on assign event
 			if (this.onAssign != null)

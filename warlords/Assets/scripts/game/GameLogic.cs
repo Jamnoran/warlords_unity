@@ -23,7 +23,7 @@ public class GameLogic : MonoBehaviour
     // Hold prefab for heroes
     public Transform warrior;
     public Transform priest;
-	public Transform warlock;
+    public Transform warlock;
 
     // Animation Effects
     public Transform healAnimation;
@@ -32,6 +32,7 @@ public class GameLogic : MonoBehaviour
     public Transform shieldAnimation;
 
     private List<Ability> abilities = null;
+    private List<Item> heroItems = new List<Item>();
     public bool isInGame = false;
     public World world;
     private int thisHeroId;
@@ -119,6 +120,12 @@ public class GameLogic : MonoBehaviour
             }
         }
         return null;
+    }
+
+
+    public List<Item> getHeroItems()
+    {
+        return heroItems;
     }
 
     public void AddAoeMinion(Transform minionTransform)
@@ -311,6 +318,12 @@ public class GameLogic : MonoBehaviour
         {
             initiateHero(newHero);
         }
+    }
+
+    public void updateHeroItems(List<Item> newItems)
+    {
+        heroItems = newItems;
+
     }
 
     public void combatText(ResponseCombatText responseCombatText)

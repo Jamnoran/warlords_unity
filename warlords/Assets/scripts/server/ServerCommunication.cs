@@ -267,6 +267,13 @@ public class ServerCommunication : MonoBehaviour {
                 ResponseCombatText responseCombatText = JsonMapper.ToObject<ResponseCombatText>(json);
                 getGameLogic().combatText(responseCombatText);
             }
+            else if (responseType == "HERO_ITEMS")
+            {
+                Debug.Log("Json[" + json + "]");
+                ResponseItems responseItems = JsonMapper.ToObject<ResponseItems>(json);
+                Debug.Log("Got these many items : " + responseItems.getItems().Count);
+                getGameLogic().updateHeroItems(responseItems.getItems());
+            }
             else if (responseType == "MESSAGE")
             {
                 ResponseMessage response = JsonMapper.ToObject<ResponseMessage>(json);

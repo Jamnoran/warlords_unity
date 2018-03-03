@@ -15,7 +15,7 @@ public class CharacterMenu : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown("c") && !getChat().IsInputFieldFocused())
         {
-            Debug.Log("Showing character");
+            //Debug.Log("Showing character");
             if (getUIWindow().IsVisible)
             {
                 getUIWindow().Hide();

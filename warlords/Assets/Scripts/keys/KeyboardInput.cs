@@ -50,7 +50,10 @@ public class KeyboardInput : MonoBehaviour {
 			getTalents ().toggleTalents();
         }
 
-
+        if (Input.GetKeyDown("i"))
+        {
+            getInventory().toggleInventory();
+        }
 
         if (Input.GetKeyUp("n"))
         {
@@ -89,6 +92,10 @@ public class KeyboardInput : MonoBehaviour {
 		return ((Talents)GameObject.Find("TalentsIcons").GetComponent(typeof(Talents)));
 	}
 
+    InventoryScript getInventory()
+    {
+        return ((InventoryScript)GameObject.Find("Window (Inventory)").GetComponent(typeof(InventoryScript)));
+    }
 
     ServerCommunication getCommunication()
     {
