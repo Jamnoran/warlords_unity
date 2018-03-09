@@ -50,6 +50,7 @@ public class CharacterMenu : MonoBehaviour {
     {
         return ((UIWindow)transform.GetComponent(typeof(UIWindow)));
     }
+
     ServerCommunication getCommunication()
     {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));

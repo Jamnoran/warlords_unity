@@ -7,6 +7,7 @@ namespace UnityEngine.UI
 	public class UIItemInfo
 	{
 		public int ID;
+        public int ItemId;
 		public string Name;
 		public Sprite Icon;
 		public string Description;

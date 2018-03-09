@@ -32,7 +32,7 @@ public class GameLogic : MonoBehaviour
     public Transform shieldAnimation;
 
     private List<Ability> abilities = null;
-    private List<Item> heroItems = new List<Item>();
+    public List<Item> heroItems = new List<Item>();
     public bool isInGame = false;
     public World world;
     private int thisHeroId;
@@ -126,6 +126,18 @@ public class GameLogic : MonoBehaviour
     public List<Item> getHeroItems()
     {
         return heroItems;
+    }
+    
+    public Item getHeroItemById(int id)
+    {
+        foreach (var item in heroItems)
+        {
+            if (id == item.id)
+            {
+                return item;
+            }
+        }
+        return null;
     }
 
     public void AddAoeMinion(Transform minionTransform)
@@ -428,7 +440,8 @@ public class GameLogic : MonoBehaviour
 		{
 			prefabToUse = warlock;
 		}
-        Transform heroTransform = (Transform)Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + 1.0f, newHero.desiredPositionZ), Quaternion.identity);
+        float heroHeightStartPosition = 300.0f;
+        Transform heroTransform = (Transform)Instantiate(prefabToUse, new Vector3(newHero.desiredPositionX, newHero.desiredPositionY + heroHeightStartPosition, newHero.desiredPositionZ), Quaternion.identity);
         heroTransform.name = prefabToUse.name;
         newHero.setTrans(heroTransform);
         if (newHero.id == heroid)

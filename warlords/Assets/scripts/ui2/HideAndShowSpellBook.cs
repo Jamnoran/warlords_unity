@@ -1,33 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HideAndShowSpellBook : MonoBehaviour {
-
-    public GameObject spellBookOriginalPosition;
-    private Vector3 hiddenPosition = new Vector3(1000000,0,0);
-    private bool isHidden;
+    
 	// Use this for initialization
 	void Start () {
-        this.transform.position = hiddenPosition;
-        isHidden = true;
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        
+        if (Input.GetKeyDown("p"))
+        {
+            //Debug.Log("Showing character");
+            if (getUIWindow().IsVisible)
+            {
+                getUIWindow().Hide();
+            }
+            else
+            {
+                getUIWindow().Show();
+            }
+        }
+    }
 
-        if (Input.GetKeyDown("p") && isHidden)
-        {
-            this.transform.position = spellBookOriginalPosition.transform.position;
-            isHidden = false;
-        }
-        else if (Input.GetKeyDown("p") && !isHidden)
-        {
-            this.transform.position = hiddenPosition;
-            isHidden = true;
-        }
-		
-	}
+    UIWindow getUIWindow()
+    {
+        return ((UIWindow)transform.GetComponent(typeof(UIWindow)));
+    }
 }

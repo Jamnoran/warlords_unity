@@ -11,6 +11,7 @@ namespace Assets.scripts.vo
 	    public int id;
         public int heroId;
         public int itemId;
+        public int positionId;
         public String name;
         public String position;
         public String image;
@@ -65,7 +66,17 @@ namespace Assets.scripts.vo
 		    this.position = position;
 	    }
 
-	    public String getImage() {
+        public int getPositionId()
+        {
+            return positionId;
+        }
+
+        public void setPositionId(int positionId)
+        {
+            this.positionId = positionId;
+        }
+
+        public String getImage() {
 		    return image;
 	    }
 

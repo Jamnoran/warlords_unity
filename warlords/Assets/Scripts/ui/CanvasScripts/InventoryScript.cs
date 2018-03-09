@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class InventoryScript : MonoBehaviour {
     public GameObject inventoryUiPrefab;
@@ -27,7 +28,6 @@ public class InventoryScript : MonoBehaviour {
         updateItems();
     }
 
-
     public void updateItems()
     {
         List<Item> items = getGameLogic().getHeroItems();
@@ -37,12 +37,14 @@ public class InventoryScript : MonoBehaviour {
             Item updatedItem = items[i];
             UIItemInfo item = new UIItemInfo();
             item.Name = updatedItem.name;
-            item.ID = updatedItem.id;
+            item.ID = updatedItem.positionId;
+            item.ItemId = updatedItem.id;
             //item.ID = 1;
             item.Quality = UIItemQuality.Common;
             item.Description = "Cool item";
             item.AttackSpeed = 1.0f;
             item.Type = "Sword";
+            item.ItemType = (int) UIEquipmentType.Weapon_MainHand;
             item.Subtype = "One handed";
             item.Icon = Resources.Load<Sprite>("sprites/items/" + updatedItem.image);
             item.EquipType = UIEquipmentType.Weapon_MainHand;
@@ -50,9 +52,46 @@ public class InventoryScript : MonoBehaviour {
             // Try to assign equipslots
             UIItemSlot slot = GameObject.Find("Slot (" + (i + 1) +")").GetComponent<UIItemSlot>();
             slot.Assign(item);
-            //RectTransform slotIconTransform = GameObject.Find("Slot (" + (i + 1) + ")/Icon").GetComponent<RectTransform>();
-            //slotIconTransform.localPosition = new Vector3(0, 0, slotIconTransform.localPosition.z);
+            // This needs to be done to all slots, not this way cos it only maps to item counts
+            slot.onAssign.AddListener(ItemWasAssigned);
         }
+
+        for (int i = 0; i < 42; i++)
+        {
+            UIItemSlot slot = GameObject.Find("Slot (" + (i + 1) + ")").GetComponent<UIItemSlot>();
+            slot.ID = i;
+            // This needs to be done to all slots, not this way cos it only maps to item counts
+            slot.onAssign.AddListener(ItemWasAssigned);
+
+            // Need to add this as well
+            //slot.onUnassign.AddListener();
+        }
+    }
+
+    private void ItemWasAssigned(UIItemSlot slot)
+    {
+        if (slot.ID != slot.GetItemInfo().ID)
+        {
+            Debug.Log("Item was assigned " + slot.GetItemInfo().Name + " Position : " + slot.ID + " ItemInfoId: " + slot.GetItemInfo().ID);
+            itemDatabase.items[slot.GetItemInfo().ID].ID = slot.ID;
+
+            Item item = getGameLogic().getHeroItemById(slot.GetItemInfo().ItemId);
+            if (item != null)
+            {
+                item.positionId = slot.ID;
+            }
+            else
+            {
+                Debug.Log("Could not find item with itemId: " + slot.GetItemInfo().ItemId);
+            }
+        }
+        else
+        {
+            Debug.Log("Second time its called, id is same");
+        }
+       
+        // Send this up to server
+        
     }
 
     // Update is called once per frame
