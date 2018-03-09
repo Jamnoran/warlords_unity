@@ -7,6 +7,7 @@ public class NotificationHandler : MonoBehaviour {
 
     public GameObject topNotification;
     public GameObject bottomNotification;
+    public GameObject lootNotification;
     public GameObject levelUpNotification;
     public GameObject timeLeftNotification;
 
@@ -18,6 +19,7 @@ public class NotificationHandler : MonoBehaviour {
 	void Start () {
         topNotification.transform.Find("Text").GetComponent<Text>().text = "";
         bottomNotification.transform.Find("Text").GetComponent<Text>().text = "";
+        lootNotification.transform.Find("Text").GetComponent<Text>().text = "";
         levelUpNotification.SetActive(false);
     }
 	

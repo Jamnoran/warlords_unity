@@ -30,32 +30,6 @@ public class InventoryScript : MonoBehaviour {
 
     public void updateItems()
     {
-        List<Item> items = getGameLogic().getHeroItems();
-        itemDatabase.items = new UIItemInfo[items.Count];
-        for (int i = 0 ; i < items.Count ; i++)
-        {
-            Item updatedItem = items[i];
-            UIItemInfo item = new UIItemInfo();
-            item.Name = updatedItem.name;
-            item.ID = updatedItem.positionId;
-            item.ItemId = updatedItem.id;
-            //item.ID = 1;
-            item.Quality = UIItemQuality.Common;
-            item.Description = "Cool item";
-            item.AttackSpeed = 1.0f;
-            item.Type = "Sword";
-            item.ItemType = (int) UIEquipmentType.Weapon_MainHand;
-            item.Subtype = "One handed";
-            item.Icon = Resources.Load<Sprite>("sprites/items/" + updatedItem.image);
-            item.EquipType = UIEquipmentType.Weapon_MainHand;
-            itemDatabase.items[i] = item;
-            // Try to assign equipslots
-            UIItemSlot slot = GameObject.Find("Slot (" + (i + 1) +")").GetComponent<UIItemSlot>();
-            slot.Assign(item);
-            // This needs to be done to all slots, not this way cos it only maps to item counts
-            slot.onAssign.AddListener(ItemWasAssigned);
-        }
-
         for (int i = 0; i < 42; i++)
         {
             UIItemSlot slot = GameObject.Find("Slot (" + (i + 1) + ")").GetComponent<UIItemSlot>();
@@ -65,29 +39,53 @@ public class InventoryScript : MonoBehaviour {
 
             // Need to add this as well
             //slot.onUnassign.AddListener();
+            slot.Unassign();
+        }
+
+        List<Item> items = getGameLogic().getHeroItems();
+        itemDatabase.items = new UIItemInfo[42];
+        for (int i = 0; i < items.Count; i++)
+        {
+            Item updatedItem = items[i];
+            Debug.Log("Setting item : " + updatedItem.name + " on position : " + updatedItem.positionId);
+            UIItemInfo item = new UIItemInfo();
+            item.Name = updatedItem.name;
+            item.ID = (updatedItem.positionId);
+            item.ItemId = updatedItem.id;
+            item.Quality = UIItemQuality.Common;
+            item.Description = "Cool item";
+            item.AttackSpeed = 1.0f;
+            item.Type = "Sword";
+            item.ItemType = (int)UIEquipmentType.Weapon_MainHand;
+            item.Subtype = "One handed";
+            item.Icon = Resources.Load<Sprite>("sprites/items/" + updatedItem.image);
+            item.EquipType = UIEquipmentType.Weapon_MainHand;
+            itemDatabase.items[updatedItem.positionId] = item;
+            // Try to assign equipslots
+            UIItemSlot slot = GameObject.Find("Slot (" + updatedItem.positionId + ")").GetComponent<UIItemSlot>();
+            slot.Assign(item);
         }
     }
 
     private void ItemWasAssigned(UIItemSlot slot)
     {
-        if (slot.ID != slot.GetItemInfo().ID)
+        if (slot.GetItemInfo() != null && (slot.ID != slot.GetItemInfo().ID))
         {
-            Debug.Log("Item was assigned " + slot.GetItemInfo().Name + " Position : " + slot.ID + " ItemInfoId: " + slot.GetItemInfo().ID);
-            itemDatabase.items[slot.GetItemInfo().ID].ID = slot.ID;
+            itemDatabase.items[slot.GetItemInfo().ID] = null;
+            Debug.Log("Item was assigned " + slot.GetItemInfo().Name + " arrayPos : " + slot.ID + " ItemInfoId: " + slot.GetItemInfo().ID);
+            slot.GetItemInfo().ID = slot.ID;
+            itemDatabase.items[slot.ID] = slot.GetItemInfo();
 
             Item item = getGameLogic().getHeroItemById(slot.GetItemInfo().ItemId);
             if (item != null)
             {
-                item.positionId = slot.ID;
+                Debug.Log("Items new positionId is : " + slot.ID + 1);
+                item.positionId = slot.ID + 1;
             }
             else
             {
                 Debug.Log("Could not find item with itemId: " + slot.GetItemInfo().ItemId);
             }
-        }
-        else
-        {
-            Debug.Log("Second time its called, id is same");
         }
        
         // Send this up to server
@@ -109,9 +107,8 @@ public class InventoryScript : MonoBehaviour {
 		} else {
 			getUIWindow().Show();
             Debug.Log("Items in inventory: " + itemDatabase.items.Length);
-            //refresh();
+            updateItems();
         }
-        updateItems();
 	}
 
 	public void showInventory(){
