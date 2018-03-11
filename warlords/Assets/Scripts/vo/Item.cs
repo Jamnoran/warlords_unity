@@ -25,6 +25,7 @@ namespace Assets.scripts.vo
         public int statId_3;
         public int statId_4;
         public bool equipped = false;
+        public List<ItemStat> stats;
 
 	    public int getId() {
 		    return id;
@@ -164,6 +165,16 @@ namespace Assets.scripts.vo
 		    this.equipped = equipped;
 	    }
         
+        public List<ItemStat> getItemStats()
+        {
+            return stats;
+        }
+
+        public void setItemStats(List<ItemStat> stats)
+        {
+            this.stats = stats;
+        }
+
 	    public String toString() {
 		    return "Item{" +
 				    "id=" + id +

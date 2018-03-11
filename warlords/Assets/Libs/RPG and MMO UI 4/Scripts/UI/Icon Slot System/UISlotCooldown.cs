@@ -63,7 +63,7 @@ namespace UnityEngine.UI
 			}
 			else
 			{
-				Debug.LogWarning("The slot cooldown script cannot operate without a target slot, disabling script.");
+				//Debug.LogWarning("The slot cooldown script cannot operate without a target slot, disabling script.");
 				this.enabled = false;
 				return;
 			}

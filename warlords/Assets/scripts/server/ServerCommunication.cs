@@ -141,6 +141,11 @@ public class ServerCommunication : MonoBehaviour {
 		sendRequest(new RequestUpdateMinionPosition(heroId, updatedList));
 	}
 
+    public void updateItem(int heroId, int lootId, int positionId, bool equipped)
+    {
+        Debug.Log("Updating item : " + lootId + " pos: " + positionId);
+        sendRequest(new RequestUpdateLoot(heroId, lootId, positionId, equipped));
+    }
     
     public void selfDamage()
     {

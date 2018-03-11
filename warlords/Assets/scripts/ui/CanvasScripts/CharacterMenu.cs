@@ -1,4 +1,5 @@
-﻿using Assets.scripts.vo;
+﻿using Assets.scripts.util;
+using Assets.scripts.vo;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,14 +24,12 @@ public class CharacterMenu : MonoBehaviour {
             else
             {
                 getUIWindow().Show();
+                updateInfo(true);
             }
         }
-		if (getUIWindow ().IsVisible) {
-			updateInfo();
-		}
     }
 
-    void updateInfo()
+    public void updateInfo(bool setSlots)
     {
         Hero hero = getGameLogic().getMyHero();
 
@@ -39,13 +38,91 @@ public class CharacterMenu : MonoBehaviour {
         GameObject.Find("Stat (Level)/Value Text").GetComponent<Text>().text = "" + hero.level;
 		GameObject.Find("Stat (Armor)/Value Text").GetComponent<Text>().text = "" + hero.armor;
 		GameObject.Find("Stat (Energy)/Value Text").GetComponent<Text>().text = hero.resource + "/" + hero.maxResource;
-        
+
+
+        if (setSlots)
+        {
+            setSlot("Head");
+            setSlot("Shoulders");
+            setSlot("Chest");
+            setSlot("Main Hand");
+            setSlot("Off Hand");
+            setSlot("Pants");
+            setSlot("Boots");
+            setSlot("Finger");
+        }
+
+
+        List<Item> items = getGameLogic().getHeroItems();
+        foreach(Item item in items)
+        {
+            if (item.equipped) {
+                UIItemInfo itemInfo = GameUtil.convertItemToItemInfo(item);
+                string name = "";
+                if (item.position.Equals("MAIN_HAND"))
+                {
+                    name = "Main Hand";
+                }
+                else if (item.position.Equals("OFF_HAND"))
+                {
+                    name = "Off Hand";
+                }
+                else if (item.position.Equals("HEAD"))
+                {
+                    name = "Head";
+                }
+                else if (item.position.Equals("SHOULDERS"))
+                {
+                    name = "Shoulders";
+                }
+                else if (item.position.Equals("CHEST"))
+                {
+                    name = "Chest";
+                }
+                else if (item.position.Equals("LEGS"))
+                {
+                    name = "Pants";
+                }
+                else if (item.position.Equals("BOOTS"))
+                {
+                    name = "Boots";
+                }
+
+                UIEquipSlot slot = GameObject.Find("Slot (" + name + ")").GetComponent<UIEquipSlot>();
+                slot.Assign(itemInfo);
+            }
+        }
     }
 
+    void setSlot(string name)
+    {
+        Debug.Log("Setting listener on [" + "Slot (" + name + ")" + "]");
+        UIEquipSlot slot = GameObject.Find("Slot (" + name + ")").GetComponent<UIEquipSlot>();
+        // This needs to be done to all slots, not this way cos it only maps to item counts
+        slot.onAssign.AddListener(ItemWasAssigned);
+        slot.Unassign();
+    }
 
-
-
-
+    private void ItemWasAssigned(UIEquipSlot slot)
+    {
+        Debug.Log("Item was assigned for slot id : " + slot.equipType);
+        Item item = getGameLogic().getHeroItemById(slot.GetItemInfo().ItemId);
+        if (item != null)
+        {
+            Debug.Log("Items equipped is : " + item.name);
+            item.equipped = true;
+            item.setPositionId(-1);
+        }
+        else
+        {
+            Debug.Log("Could not find item with itemId: " + slot.GetItemInfo().ItemId);
+        }
+        List<Item> updatedItems = new List<Item>();
+        updatedItems.Add(item);
+        // Send this up to server
+        getGameLogic().sendEquipment(updatedItems);
+    }
+    
     UIWindow getUIWindow()
     {
         return ((UIWindow)transform.GetComponent(typeof(UIWindow)));

@@ -85,6 +85,16 @@ public class GameLogic : MonoBehaviour
         return getMinion(minionInfo.getMinionId());
     }
 
+    public void sendEquipment(List<Item> updatedItems)
+    {
+        Debug.Log("Sending these items to server");
+        foreach(Item item in updatedItems)
+        {
+            Debug.Log("Name: " + item.name + " Equiped: " + item.equipped);
+            getCommunication().updateItem(thisHeroId, item.id, item.positionId, item.equipped);
+        }
+    }
+
     internal Hero getHero(int heroId) {
         foreach (var hero in heroes) {
             if (heroId == hero.id) {

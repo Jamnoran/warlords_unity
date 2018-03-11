@@ -39,7 +39,7 @@ namespace UnityEngine.UI
 		{
 			for (int i = 0; i < this.items.Length; i++)
 			{
-				if (this.items[i].ID == ID)
+				if (this.items != null && this.items[i] != null && this.items[i].ID == ID)
 					return this.items[i];
 			}
 			

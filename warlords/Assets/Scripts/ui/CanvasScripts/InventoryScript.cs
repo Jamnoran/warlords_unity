@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using Assets.scripts.util;
 
 public class InventoryScript : MonoBehaviour {
     public GameObject inventoryUiPrefab;
@@ -16,7 +17,9 @@ public class InventoryScript : MonoBehaviour {
 
     private List<Talent> talents = new List<Talent>();
     private List<Ability> abilities = new List<Ability>();
-    private int calculationOfPoints = 0;
+
+    // Send this up to server
+    List<Item> updatedItems = new List<Item>();
 
 
     private static UIItemDatabase itemDatabase;
@@ -36,9 +39,6 @@ public class InventoryScript : MonoBehaviour {
             slot.ID = i;
             // This needs to be done to all slots, not this way cos it only maps to item counts
             slot.onAssign.AddListener(ItemWasAssigned);
-
-            // Need to add this as well
-            //slot.onUnassign.AddListener();
             slot.Unassign();
         }
 
@@ -47,24 +47,45 @@ public class InventoryScript : MonoBehaviour {
         for (int i = 0; i < items.Count; i++)
         {
             Item updatedItem = items[i];
-            Debug.Log("Setting item : " + updatedItem.name + " on position : " + updatedItem.positionId);
-            UIItemInfo item = new UIItemInfo();
-            item.Name = updatedItem.name;
-            item.ID = (updatedItem.positionId);
-            item.ItemId = updatedItem.id;
-            item.Quality = UIItemQuality.Common;
-            item.Description = "Cool item";
-            item.AttackSpeed = 1.0f;
-            item.Type = "Sword";
-            item.ItemType = (int)UIEquipmentType.Weapon_MainHand;
-            item.Subtype = "One handed";
-            item.Icon = Resources.Load<Sprite>("sprites/items/" + updatedItem.image);
-            item.EquipType = UIEquipmentType.Weapon_MainHand;
-            itemDatabase.items[updatedItem.positionId] = item;
-            // Try to assign equipslots
-            UIItemSlot slot = GameObject.Find("Slot (" + updatedItem.positionId + ")").GetComponent<UIItemSlot>();
-            slot.Assign(item);
+            if (!updatedItem.equipped) { 
+                Debug.Log("Setting item : " + updatedItem.name + " on position : " + updatedItem.positionId);
+                UIItemInfo item = GameUtil.convertItemToItemInfo(updatedItem);
+                if (updatedItem.positionId != -1)
+                {
+                    item.ID = (updatedItem.positionId);
+                }
+                else
+                {
+                    item.ID = getFreeInventoryPosition(items);
+                    updatedItem.positionId = item.ID;
+                    updatedItems.Add(updatedItem);
+                }
+                itemDatabase.items[updatedItem.positionId] = item;
+                // Try to assign equipslots
+                UIItemSlot slot = GameObject.Find("Slot (" + updatedItem.positionId + ")").GetComponent<UIItemSlot>();
+                slot.Assign(item);
+            }
         }
+    }
+
+    private int getFreeInventoryPosition(List<Item> items)
+    {
+        for (int i = 0; i < 42; i++)
+        {
+            bool isFree = true;
+            foreach(Item item in items)
+            {
+                if (item.positionId == i)
+                {
+                    isFree = false;
+                }
+            }
+            if (isFree)
+            {
+                return i;
+            }
+        }
+        return 0;
     }
 
     private void ItemWasAssigned(UIItemSlot slot)
@@ -79,17 +100,16 @@ public class InventoryScript : MonoBehaviour {
             Item item = getGameLogic().getHeroItemById(slot.GetItemInfo().ItemId);
             if (item != null)
             {
-                Debug.Log("Items new positionId is : " + slot.ID + 1);
-                item.positionId = slot.ID + 1;
+                Debug.Log("Items new positionId is : " + (slot.ID + 1));
+                item.positionId = (slot.ID + 1);
+                item.equipped = false;
+                updatedItems.Add(item);
             }
             else
             {
                 Debug.Log("Could not find item with itemId: " + slot.GetItemInfo().ItemId);
             }
         }
-       
-        // Send this up to server
-        
     }
 
     // Update is called once per frame
@@ -117,78 +137,18 @@ public class InventoryScript : MonoBehaviour {
 
 	public void hideInventory(){
 		getUIWindow ().Hide ();
-	}
 
-    
-
-    public void refresh() {
-        Debug.Log("Refreshing the talents");
-        abilities = getGameLogic().getAbilities();
-        talents = getGameLogic().getMyHero().talents;
-        totalPoints = getGameLogic().getMyHero().getTotalTalentPoints();
-        
-        int i = 0;
-        foreach (Ability ability in abilities)
-        {
-            // Set all icons in menu bar
-            //Debug.Log("Trying to find talent icon on position : " + ability.position + " With ability id: " + ability.id + " i : " + i + " ability name: " + ability.name);
-            GameObject spellicon = GameObject.Find("TalentMenuIcon (" + i  + ")");
-            UISpellSlot script = ((UISpellSlot)spellicon.GetComponent(typeof(UISpellSlot)));
-            UISpellInfo spInfo = new UISpellInfo();
-            spInfo.ID = ability.id;
-            if (i == 0)
-            {
-                spInfo.Icon = Resources.Load<Sprite>("sprites/items/general");
-            }
-            else
-            {
-                spInfo.Icon = Resources.Load<Sprite>("sprites/items/" + ability.image);
-            }
-            script.Assign(spInfo);
-            i++;
-        }
+        // Send this up to server
+        getGameLogic().sendEquipment(updatedItems);
     }
-    
-
-    public void saveTalents() {
-        Debug.Log("Saving talents");
-        List<Talent> talentsToSend = new List<Talent>();
-        foreach (var talent in talents) {
-            if (talent.getGameObject() != null)
-            {
-                foreach (var buttonHolder in talent.getGameObject().GetComponentsInChildren<Image>()) {
-                    if (buttonHolder.name.Equals("Talent Slot")) {
-                        UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
-                        Debug.Log("We found UiTalentSlot : " + script.getCurrentPoints() + " For talent " + talent.talentId);
-                        talent.setPointAdded(script.getCurrentPoints());
-                        if (talent.getPointAdded() > 0)
-                        {
-                            talentsToSend.Add(talent);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log("Talent had no gameObject, why? " + talent.description);
-            }
-        }
-
-		Hero myHero = getGameLogic().getMyHero();
-		getCommunication().updateTalents(myHero.id, talentsToSend);
-
-        dismissWindow();
-    }
-
+ 
     public void dismissWindow()
     {
         getUIWindow().Hide();
+
+        // Send this up to server
+        getGameLogic().sendEquipment(updatedItems);
     }
-
-
-
-
-
 
     UIWindow getUIWindow()
     {
