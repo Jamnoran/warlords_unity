@@ -8,24 +8,16 @@ public class ScrollingCombatText : MonoBehaviour {
 
     public Canvas enemyCanvas;
     public GameObject sctPrefab;
-    public float timeToDie = 0.5f;
-
-
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-    }
+    public float timeToDie = 0.7f;
 
     public void showText(string damage, bool crit, string color)
     {
+    
         GameObject temp = Instantiate(sctPrefab) as GameObject;
+        
         RectTransform tempRect = temp.GetComponent<RectTransform>();
         temp.transform.SetParent(enemyCanvas.transform);
-        tempRect.transform.localPosition = sctPrefab.transform.localPosition;
+        tempRect.transform.localPosition = new Vector3(0,0,0);
         tempRect.transform.localScale = sctPrefab.transform.localScale;
         tempRect.transform.localRotation = sctPrefab.transform.localRotation;
         string damageInDisplayFormat = "" + Math.Round(float.Parse(damage));
@@ -36,7 +28,7 @@ public class ScrollingCombatText : MonoBehaviour {
         }
         else if (color == "#FFFF0000")
         {
-            temp.GetComponent<Text>().color = Color.red;
+            temp.GetComponent<Text>().color = Color.blue;
         }
         if (crit)
         {
