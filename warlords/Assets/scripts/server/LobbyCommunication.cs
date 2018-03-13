@@ -54,11 +54,11 @@ public class LobbyCommunication : MonoBehaviour {
 
 
 
-	// 				Requests 
+    // 				Requests 
 
 
-	// User pressed joining custom game, ask server for a solo game
-	public void findCustomGame()
+    // User pressed joining custom game, ask server for a solo game
+    public void findCustomGame()
     {
         millisStarted = DeviceUtil.getMillis();
         Debug.Log ("Sending to server to find a custom game");
@@ -96,7 +96,6 @@ public class LobbyCommunication : MonoBehaviour {
 	public void loginUser(string email, string password)
 	{
 		print("Login the user (here we need to gather email + password)");
-		print("{\"request_type\": \"LOGIN_USER\", email:\"" + email + "\", password: \"" + password + "\", username:\"\"}");
 		sendRequest (new RequestLogin(email, password));
 	}
 
@@ -112,6 +111,16 @@ public class LobbyCommunication : MonoBehaviour {
         requestLFG.lfg = lfg;
         requestLFG.request_type = "CANCEL_SEARCH_GAME";
         sendRequest(requestLFG);
+    }
+
+    public void sendUpdateUsername(string newUsername)
+    {
+        sendRequest(new RequestUpdateUsername(newUsername));
+    }
+
+    public void getUsernameRequest()
+    {
+        sendRequest(new RequestGetUsername(userId));
     }
 
 
@@ -138,62 +147,75 @@ public class LobbyCommunication : MonoBehaviour {
 				sendRequest (new RequestClientType(3));
                 if (PlayerPrefs.GetInt("AUTO_LOGIN") == 1) {
                     getHeroes();
+                    getUsernameRequest();
                 }
 			} else if (responseType == "SERVER_INFO") {
                 ResponseServerInfo responseServerInfo = JsonMapper.ToObject<ResponseServerInfo>(json);
                 Debug.Log("Server information: " + responseServerInfo.clients);
 			} else if (responseType == "LOGIN_USER") {
-				int responseCode = JsonUtil.getStatusCodeFromJson (json);
-				if (responseCode == 608) {
-					Debug.Log ("Show error for user, wrong email or password");
-					errorMessageHolder.text = JsonUtil.getMessageFromJson (json);
-				} else {	
-					ResponseLogin responseCreateUser = JsonMapper.ToObject<ResponseLogin> (json);
-					Debug.Log ("User logged in with this id to store on device: " + responseCreateUser.user_id);
-					userId = responseCreateUser.user_id;
-					PlayerPrefs.SetInt ("USER_ID", userId);
-					SceneManager.LoadScene ("Lobby");
-                    Debug.Log ("Getting heroes for user");
-					getHeroes ();
-					errorMessageHolder.text = "";
-				}
+                loginResponse(json);
 			} else if (responseType == "HEROES") {
 				ResponseGetHeroes responseGetHeroes = JsonMapper.ToObject<ResponseGetHeroes>(json);
 				Debug.Log("Got these many heroes: " + responseGetHeroes.heroes.Count);
                 ((LobbyLogic)GameObject.Find("LobbyLogic").GetComponent(typeof(LobbyLogic))).updateHeroes(responseGetHeroes.heroes);
             } else if (responseType == "GAME_FOUND_RESPONSE"){
-                getLobbyLogic().showLoadingText();
-                Debug.Log(" Response game found after: " + (DeviceUtil.getMillis() - millisStarted));
-
-                ResponseGameFound responseGameFound = JsonMapper.ToObject<ResponseGameFound> (json);
-				Debug.Log ("Response game found: " + responseGameFound.toString ());
-
-                //disconnect();
-
-                if (!local)
-                {
-                    getCommunication().connectToServer(responseGameFound.server_ip, responseGameFound.server_port, responseGameFound.game_id);
-                    Debug.Log("Should now be done with connecting to new scene after" + +(DeviceUtil.getMillis() - millisStarted));
-                    //SceneManager.LoadScene("DemoDemo", LoadSceneMode.Single);
-                }
-                else
-                {
-                    getCommunication().connectToServer("127.0.0.1", portForLocal, "0");
-                }
+                ResponseGameFound responseGameFound = JsonMapper.ToObject<ResponseGameFound>(json);
+                gameFound(responseGameFound);
             } else if (responseType == "LFG_RESPONSE") {
                 ResponseLFG responseLFG = JsonMapper.ToObject<ResponseLFG>(json);
                 Debug.Log("Response game found: " + responseLFG.ToString());
                 getLobbyLogic().setGroup(responseLFG.lfg);
+            } else if (responseType == "USERNAME_RESPONSE")
+            {
+                ResponseUsername responseUsername = JsonMapper.ToObject<ResponseUsername>(json);
+                getUsername().setUsernameHolder(responseUsername.getUsername());
             }
  #pragma warning restore CS0436 // Type conflicts with imported type
         }
     }
 
+    private void loginResponse(string json)
+    {
+        int responseCode = JsonUtil.getStatusCodeFromJson(json);
+        if (responseCode == 608)
+        {
+            Debug.Log("Show error for user, wrong email or password");
+            errorMessageHolder.text = JsonUtil.getMessageFromJson(json);
+        }
+        else
+        {
+            ResponseLogin responseCreateUser = JsonMapper.ToObject<ResponseLogin>(json);
+            Debug.Log("User logged in with this id to store on device: " + responseCreateUser.user_id);
+            userId = responseCreateUser.user_id;
+            PlayerPrefs.SetInt("USER_ID", userId);
+            SceneManager.LoadScene("Lobby");
+            Debug.Log("Getting heroes for user");
+            getHeroes();
+            getUsernameRequest();
+            errorMessageHolder.text = "";
+        }
+    }
 
+    void gameFound(ResponseGameFound responseGameFound)
+    {
+        getLobbyLogic().showLoadingText();
+        Debug.Log(" Response game found after: " + (DeviceUtil.getMillis() - millisStarted));
 
+        Debug.Log("Response game found: " + responseGameFound.toString());
 
+        //disconnect();
 
-
+        if (!local)
+        {
+            getCommunication().connectToServer(responseGameFound.server_ip, responseGameFound.server_port, responseGameFound.game_id);
+            Debug.Log("Should now be done with connecting to new scene after" + +(DeviceUtil.getMillis() - millisStarted));
+            //SceneManager.LoadScene("DemoDemo", LoadSceneMode.Single);
+        }
+        else
+        {
+            getCommunication().connectToServer("127.0.0.1", portForLocal, "0");
+        }
+    }
 
 	void handleCommunication() {
 		// Handle communication sent from server to client (this can be a response of a request we have sent or status message etc.)
@@ -252,6 +274,11 @@ public class LobbyCommunication : MonoBehaviour {
 
     ServerCommunication getCommunication() {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
+    }
+
+    Username getUsername()
+    {
+        return ((Username)GameObject.Find("LobbyLogic").GetComponent(typeof(Username)));
     }
 
     LobbyLogic getLobbyLogic() {
