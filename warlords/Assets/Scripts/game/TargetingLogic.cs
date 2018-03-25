@@ -76,21 +76,38 @@ public class TargetingLogic : MonoBehaviour {
         }
         else if (abi.targetType == "CONE")
         {
-            //sendSpell = false;
-            //abilityToWaitForMoreInput = abi;
-            //handleInput();
-            List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(90f, abi.range, false);
-            if (enemiesInRange != null && enemiesInRange.Count > 0)
+
+            Collider[] hitColliders = Physics.OverlapSphere(GameObject.Find("Warrior").transform.position, abi.range);
+
+
+            foreach (var collider in hitColliders)
             {
-                enemies = enemiesInRange;
-                Debug.Log(enemiesInRange.Count + " targets in range");
+                Vector3 forward = transform.TransformDirection(Vector3.forward);
+                Vector3 toOther = collider.transform.position - GameObject.Find("Warrior").transform.position;
+                if (Vector3.Dot(forward, toOther) > 0 && collider.tag == "Enemy")
+                {
+                    Debug.Log(collider.name + "is infront of me");
+                }
+
             }
-            else
-            {
-                getNotificationHandler().showNotification(2, "Didnt find any targets");
-                Debug.Log("Didnt find any targets");
-                return false;
-            }
+
+
+
+            ////sendSpell = false;
+            ////abilityToWaitForMoreInput = abi;
+            ////handleInput();
+            //List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(90f, abi.range, false);
+            //if (enemiesInRange != null && enemiesInRange.Count > 0)
+            //{
+            //    enemies = enemiesInRange;
+            //    Debug.Log(enemiesInRange.Count + " targets in range");
+            //}
+            //else
+            //{
+            //    getNotificationHandler().showNotification(2, "Didnt find any targets");
+            //    Debug.Log("Didnt find any targets");
+            //    return false;
+            //}
         }
         else
         {
