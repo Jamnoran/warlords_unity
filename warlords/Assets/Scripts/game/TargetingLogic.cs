@@ -82,12 +82,25 @@ public class TargetingLogic : MonoBehaviour {
 
             foreach (var collider in hitColliders)
             {
-                Vector3 forward = transform.TransformDirection(Vector3.forward);
-                Vector3 toOther = collider.transform.position - GameObject.Find("Warrior").transform.position;
-                if (Vector3.Dot(forward, toOther) > 0 && collider.tag == "Enemy")
+                if (collider.tag == "Enemy")
                 {
-                    Debug.Log(collider.name + "is infront of me");
+                    var heroTransform = GameObject.Find("Warrior").transform;
+                    Debug.LogWarning("Hero rotation: " + heroTransform.rotation.eulerAngles.y);
+                    Debug.LogWarning("Hero position: " + heroTransform.position);
+                    //TODO: calculate negative angles, for example, 270 degrees should instead be -90 degrees!
+                    if (collider.transform.position.z < heroTransform.position.z && heroTransform.rotation.eulerAngles.y > 90 && heroTransform.rotation.eulerAngles.y < 270)
+                    {
+                        Debug.LogWarning("Heureka");
+                    }
+
+                    //Vector3 up = transform.TransformDirection(Vector3.up);
+                    //Vector3 toOther = collider.transform.position - GameObject.Find("Warrior").transform.position;
+                    //if (Vector3.Dot(up, toOther) > 0)
+                    //{
+                    //    Debug.LogWarning(collider.name + "is infront of me");
+                    //}
                 }
+                
 
             }
 

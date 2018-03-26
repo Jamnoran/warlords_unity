@@ -40,6 +40,8 @@ public class CharacterAnimations : MonoBehaviour {
             }
 
             character.transform.LookAt(targetPostition);
+            //we do not only want to rotate the model, we must also rotate the actual transform so we know when things are behind/infront of us
+            this.transform.rotation = character.transform.rotation;
 
             // find the target position relative to the player:
             Vector3 dir = targetPosition - transform.position;
@@ -75,7 +77,7 @@ public class CharacterAnimations : MonoBehaviour {
     }
 
     public void rotateToTarget(Vector3 postition) {
-        //Debug.Log("Rotating towards target");
+        Debug.Log("Rotating towards target");
         Vector3 rotatingPostition = new Vector3(postition.x, character.transform.position.y, postition.z);
         character.transform.LookAt(rotatingPostition);
 
