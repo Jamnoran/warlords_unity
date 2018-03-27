@@ -14,7 +14,7 @@ namespace Werewolf.StatusIndicators.Components {
 
 		/// <summary>
 		/// Returns all Spell Indicators belonging to the Manager.
-		/// </summary>
+		/// </summary> 
 		public SpellIndicator[] SpellIndicators { get; set; }
 
 		/// <summary>

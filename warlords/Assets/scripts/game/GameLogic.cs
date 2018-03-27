@@ -324,6 +324,7 @@ public class GameLogic : MonoBehaviour
             Transform sctObject = hero.trans.Find("3dmodel/FriendlyCanvas/frame/SCTpoint");
             ScrollingCombatText sct = (ScrollingCombatText)sctObject.GetComponent(typeof(ScrollingCombatText));
             sct.showText(responseCombatText.amount, responseCombatText.crit, responseCombatText.color);
+      
         }
         else
         {
