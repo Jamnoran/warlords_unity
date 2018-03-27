@@ -9,16 +9,13 @@ public class TargetingLogic : MonoBehaviour {
 
     public GameObject activeSpellPrefab;
     private Ability abilityToWaitForMoreInput;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private float gizmoRadius;
+    private Transform gizmoTransform;
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(gizmoTransform.position, gizmoRadius);
+    }
 
 
     public bool sendSpell(Ability abi)
@@ -76,51 +73,28 @@ public class TargetingLogic : MonoBehaviour {
         }
         else if (abi.targetType == "CONE")
         {
+            gizmoRadius = abi.range;
+            gizmoTransform = hero.trans;
 
             Collider[] hitColliders = Physics.OverlapSphere(GameObject.Find("Warrior").transform.position, abi.range);
-
 
             foreach (var collider in hitColliders)
             {
                 if (collider.tag == "Enemy")
                 {
-                    var heroTransform = GameObject.Find("Warrior").transform;
-                    Debug.LogWarning("Hero rotation: " + heroTransform.rotation.eulerAngles.y);
-                    Debug.LogWarning("Hero position: " + heroTransform.position);
-                    //TODO: calculate negative angles, for example, 270 degrees should instead be -90 degrees!
-                    if (collider.transform.position.z < heroTransform.position.z && heroTransform.rotation.eulerAngles.y > 90 && heroTransform.rotation.eulerAngles.y < 270)
-                    {
-                        Debug.LogWarning("Heureka");
-                    }
+                    var heroTransform = hero.trans;
+                    Vector3 enemyRelativePosition = heroTransform.InverseTransformPoint(collider.transform.position);
 
-                    //Vector3 up = transform.TransformDirection(Vector3.up);
-                    //Vector3 toOther = collider.transform.position - GameObject.Find("Warrior").transform.position;
-                    //if (Vector3.Dot(up, toOther) > 0)
-                    //{
-                    //    Debug.LogWarning(collider.name + "is infront of me");
-                    //}
+                    if (enemyRelativePosition.z > 0)
+                    {
+                        Minion min = getGameLogic().getClosestMinionByPosition(collider.transform.position);
+                        enemies.Add(min.id);
+                    }
                 }
-                
 
             }
 
-
-
-            ////sendSpell = false;
-            ////abilityToWaitForMoreInput = abi;
-            ////handleInput();
-            //List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(90f, abi.range, false);
-            //if (enemiesInRange != null && enemiesInRange.Count > 0)
-            //{
-            //    enemies = enemiesInRange;
-            //    Debug.Log(enemiesInRange.Count + " targets in range");
-            //}
-            //else
-            //{
-            //    getNotificationHandler().showNotification(2, "Didnt find any targets");
-            //    Debug.Log("Didnt find any targets");
-            //    return false;
-            //}
+            enemies.ForEach(x => Debug.LogError("enemy id's: " + x));
         }
         else
         {
@@ -130,6 +104,8 @@ public class TargetingLogic : MonoBehaviour {
         getGameLogic().sendSpell(abi.id, enemies, friends);
         return true;
     }
+
+
 
     private void handleInput()
     {
