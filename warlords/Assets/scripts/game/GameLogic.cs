@@ -216,7 +216,7 @@ public class GameLogic : MonoBehaviour
                     if (minion.hp != newMinion.hp) {
                         //update minion hp
                         minion.setHp(newMinion.hp);
-                        Debug.Log("Minions new hp = " + minion.hp);
+                        //Debug.Log("Minions new hp = " + minion.hp);
                     }
                     MinionAnimations minionAnimations = (MinionAnimations)minion.minionTransform.GetComponent(typeof(MinionAnimations));
 
