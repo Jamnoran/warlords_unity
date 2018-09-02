@@ -87,10 +87,10 @@ public class GameLogic : MonoBehaviour
 
     public void sendEquipment(List<Item> updatedItems)
     {
-        Debug.Log("Sending these items to server");
+        //Debug.Log("Sending these items to server");
         foreach(Item item in updatedItems)
         {
-            Debug.Log("Name: " + item.name + " Equiped: " + item.equipped);
+            //Debug.Log("Name: " + item.name + " Equiped: " + item.equipped);
             getCommunication().updateItem(thisHeroId, item.id, item.positionId, item.equipped);
         }
     }
@@ -356,13 +356,11 @@ public class GameLogic : MonoBehaviour
             Transform sctObject = hero.trans.Find("3dmodel/FriendlyCanvas/frame/SCTpoint");
             ScrollingCombatText sct = (ScrollingCombatText)sctObject.GetComponent(typeof(ScrollingCombatText));
             sct.showText(responseCombatText.amount, responseCombatText.crit, responseCombatText.color);
-      
         }
         else
         {
             Minion minion = getMinion(responseCombatText.idOfTarget);
             Transform sctObject = minion.minionTransform.Find("mob/EnemyCanvas/frame/SCTpoint");
-            Debug.Log("Found object : " + sctObject.tag);
             ScrollingCombatText sct = (ScrollingCombatText)sctObject.GetComponent(typeof(ScrollingCombatText));
             sct.showText(responseCombatText.amount, responseCombatText.crit, responseCombatText.color);
         }
@@ -373,17 +371,14 @@ public class GameLogic : MonoBehaviour
         CharacterAnimations anim = (CharacterAnimations)getMyHero().trans.GetComponent(typeof(CharacterAnimations));
         if (responseRotateTarget.getTargetPosition() != null && responseRotateTarget.getTargetPosition().x != 0 && responseRotateTarget.getTargetPosition().z != 0)
         {
-            Debug.Log("Rotate towards : " + responseRotateTarget.getTargetPosition());
             anim.rotateToTarget(responseRotateTarget.getTargetPosition());
         }
         else if (responseRotateTarget.isFriendly() && responseRotateTarget.getIdOfTarget() > 0)
         {
-            Debug.Log("Rotate to hero : " + responseRotateTarget.getIdOfTarget());
             anim.rotateToTarget(getHero(responseRotateTarget.getIdOfTarget()).getTransformPosition());
         }
         else
         {
-            Debug.Log("Rotate to minion : " + responseRotateTarget.getIdOfTarget());
             anim.rotateToTarget(getMinion(responseRotateTarget.getIdOfTarget()).getTransformPosition());
         }
     }
@@ -429,6 +424,10 @@ public class GameLogic : MonoBehaviour
         if (ability.id > 0)
         {
             GetCooldown().setCooldown(ability.position, ability.timeWhenOffCooldown, ability.id);
+            if (ability.calculatedCastTime > 0)
+            {
+                getCastbar().showSpell(ability);
+            }
         }
         else
         {
@@ -479,11 +478,9 @@ public class GameLogic : MonoBehaviour
     public void updateAnimations(List<GameAnimation> gameAnimations) {
         foreach (var gameAnimation in gameAnimations) {
             if (gameAnimation.animation_type == "MINION_DIED") {
-                Debug.Log("Minion died");
                 Minion minion = getMinion(gameAnimation.target_id);
 
                 ((HealthUpdate)minion.minionTransform.GetComponent(typeof(HealthUpdate))).hideBar();
-                Debug.Log("Minion died, disable everything!");
 
                 ((FieldOfViewMinion)minion.minionTransform.Find("mob").GetComponent(typeof(FieldOfViewMinion))).enabled = false;
                 // Disable capsle collider + Character animation
@@ -601,7 +598,6 @@ public class GameLogic : MonoBehaviour
         minions = new List<Minion>();
 
         world = null;
-        Debug.Log("World is cleared");
     }
 
     public List<Minion> getMinions()
@@ -702,12 +698,22 @@ public class GameLogic : MonoBehaviour
     }
 
     public void updateCooldown(Ability ability) {
-        if (getAbility(ability.id) != null)
+        if (updateAbility(ability))
         {
+            Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " CD : " + ability.timeWhenOffCooldown);
+            getCastbar().showSpell(getAbility(ability.id));
+        }
+    }
+
+    public bool updateAbility(Ability ability)
+    {
+        if(getAbility(ability.id) != null) { 
             getAbility(ability.id).timeWhenOffCooldown = ability.timeWhenOffCooldown;
             getAbility(ability.id).waitingForCdResponse = false;
-            Debug.Log("User got a new cooldown on this ability untill can use again : " + ability.name + " CD : " + ability.timeWhenOffCooldown);
+            getAbility(ability.id).calculatedCastTime = ability.calculatedCastTime;
+            return true;
         }
+        return false;
     }
 
     public Ability getAbility(int id) {
@@ -822,8 +828,10 @@ public class GameLogic : MonoBehaviour
 
     public void createWorld(ResponseWorld responseWorld)
     {
-        getLoading().showLoading();
-        Debug.Log("Server sent to create world of type : " + responseWorld.world.worldType);
+        if (getLoading() != null)
+        {
+            getLoading().showLoading();
+        }
         world = responseWorld.world;
 
         getHideWalls().clearHiddenObjects();
@@ -944,6 +952,11 @@ public class GameLogic : MonoBehaviour
     Cooldown GetCooldown()
     {
         return ((Cooldown)GameObject.Find("GameLogicObject").GetComponent(typeof(Cooldown)));
+    }
+
+    CastBar getCastbar()
+    {
+        return ((CastBar)GameObject.Find("GameLogicObject").GetComponent(typeof(CastBar)));
     }
 
     HideWalls getHideWalls()

@@ -8,7 +8,7 @@ public class GauntletMode : MonoBehaviour {
 	public bool currentMode = false;
     public long startTime = 0;
     public long timeLimit = 30000;
-    private GameObject[] objectsToEnableWhenLevelIsComplete = null;
+    private GameObject[] objectsToDisableWhenLevelIsComplete = null;
 
     // Use this for initialization
     void Start () {
@@ -22,10 +22,10 @@ public class GauntletMode : MonoBehaviour {
             {
                 // Team lost, show failed message
                 getNotificationhandler().showNotification(1, "You lost, restart to continue!");
-                if (objectsToEnableWhenLevelIsComplete == null)
+                if (objectsToDisableWhenLevelIsComplete == null)
                 {
-                    objectsToEnableWhenLevelIsComplete = GameObject.FindGameObjectsWithTag("LevelCompleteObjects"); ;
-                    foreach (GameObject gObject in objectsToEnableWhenLevelIsComplete)
+                    objectsToDisableWhenLevelIsComplete = GameObject.FindGameObjectsWithTag("LevelCompleteObjects"); ;
+                    foreach (GameObject gObject in objectsToDisableWhenLevelIsComplete)
                     {
                         gObject.SetActive(false);
                     }

@@ -61,14 +61,13 @@ public class UseAbilitiesActionBar : MonoBehaviour
 
     private void FindSpellAux(GameObject spell)
     {
-   
         if (spell.transform.childCount > 0)
         {
             // This return false if we dont have a target
-            //if (!getTargetingLogic().sendSpell(getGameLogic().getAbilityByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name)))
-            //{
+            if (!getTargetingLogic().sendSpell(getGameLogic().getAbilityByAbilityName(spell.transform.GetChild(0).GetComponent<Image>().sprite.name)))
+            {
                 // Show no target message to user
-            //}
+            }
         }
         else
         {

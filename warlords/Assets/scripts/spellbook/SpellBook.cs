@@ -92,7 +92,7 @@ public class SpellBook : MonoBehaviour {
             spellObject.transform.position = slots[i].transform.position;
             Debug.Log(abilities[i].image);
             
-            Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/"+ abilities[i].image);
+            Sprite abilitySprite = Resources.Load<Sprite>("Spells/"+ abilities[i].image);
             spellObject.GetComponent<Image>().sprite = abilitySprite;
 
             spellObject.transform.name = abilities[i].name;

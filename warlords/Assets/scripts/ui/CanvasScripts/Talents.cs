@@ -40,11 +40,16 @@ public class Talents : MonoBehaviour {
 		}
 	}
 
-	public void showTalents(){
+    public bool IsVisible()
+    {
+        return getUIWindow().IsVisible;
+    }
+    public void Show(){
 		getUIWindow ().Show ();
-	}
+        refresh();
+    }
 
-	public void hideTalents(){
+	public void Hide(){
 		getUIWindow ().Hide ();
 	}
 
@@ -77,7 +82,7 @@ public class Talents : MonoBehaviour {
             }
             else
             {
-                spInfo.Icon = Resources.Load<Sprite>("sprites/items/" + ability.image);
+                spInfo.Icon = Resources.Load<Sprite>("Spells/" + ability.image);
             }
             script.Assign(spInfo);
             i++;
@@ -136,7 +141,7 @@ public class Talents : MonoBehaviour {
                 UITalentSlot script = ((UITalentSlot)buttonHolder.GetComponent(typeof(UITalentSlot)));
                 UISpellInfo spInfo = new UISpellInfo();
                 spInfo.ID = talent.spellId;
-                spInfo.Icon = Resources.Load<Sprite>("sprites/items/taunt");
+                spInfo.Icon = Resources.Load<Sprite>("Spells/taunt");
                 UITalentInfo taInfo = new UITalentInfo();
                 taInfo.ID = talent.talentId;
                 taInfo.maxPoints = talent.getMaxPoints();
@@ -230,11 +235,7 @@ public class Talents : MonoBehaviour {
     {
         getUIWindow().Hide();
     }
-
-
-
-
-
+    
 
     UIWindow getUIWindow()
     {

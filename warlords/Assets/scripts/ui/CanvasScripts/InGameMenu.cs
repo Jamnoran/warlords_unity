@@ -16,18 +16,6 @@ public class InGameMenu : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown("escape") && !getChat().IsInputFieldFocused())
-        {
-            Debug.Log("Showing menu");
-            if (getUIWindow().IsVisible)
-            {
-                getUIWindow().Hide();
-            }
-            else
-            {
-                getUIWindow().Show();
-            }
-        }
     }
 
     public void restartLevel()
@@ -45,10 +33,15 @@ public class InGameMenu : MonoBehaviour {
         SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Single);
         getLobbyCommunication().getHeroes();
     }
-
-    public void showSettings()
+    
+    public void Hide()
     {
+        getUIWindow().Hide();
+    }
 
+    public void Show()
+    {
+        getUIWindow().Show();
     }
 
 

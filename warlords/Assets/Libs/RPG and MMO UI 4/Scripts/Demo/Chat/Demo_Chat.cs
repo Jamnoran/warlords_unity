@@ -64,7 +64,7 @@ namespace UnityEngine.UI
                 }
             }
         }
-        
+
         protected void OnEnable()
         {
             // Hook the submit button click event

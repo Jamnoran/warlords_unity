@@ -21,6 +21,7 @@ public class NotificationHandler : MonoBehaviour {
         bottomNotification.transform.Find("Text").GetComponent<Text>().text = "";
         lootNotification.transform.Find("Text").GetComponent<Text>().text = "";
         levelUpNotification.SetActive(false);
+        setVisibleTimeNotification(false);
     }
 	
 	// Update is called once per frame

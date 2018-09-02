@@ -11,6 +11,10 @@ public class KeyboardInput : MonoBehaviour {
     public static int IN_GAME = 2;
     public static int CHAT = 3;
     public static int MENU = 4;
+    public static int CHARACTER = 5;
+    public static int INVENTORY = 6;
+    public static int TALENTS = 7;
+    public static int SPELLS = 8;
 
 
     // Use this for initialization
@@ -22,44 +26,115 @@ public class KeyboardInput : MonoBehaviour {
     void Update() {
         if (Input.GetKeyDown("escape"))
         {
-			if(state == CHAT)
+            Debug.Log("Escape is pressed state is : " + state);
+            if (state == MENU)
+            {
+                Debug.Log("Hiding menu");
+                getMenu().Hide();
+                state = READY;
+            }
+            else if (state == READY)
+            {
+                state = MENU;
+                getMenu().Show();
+            }else if (state == CHAT)
 			{
-				// Close chat
-			}
+                getChat().escPressed();
+            }
+            if (state != MENU)
+            {
+                getCharacter().Hide();
+                getInventory().Hide();
+                getTalents().Hide();
+                state = READY;
+            }
         }
-        if (Input.GetKeyUp("enter"))
+        if (Input.GetKeyUp("enter") || Input.GetKeyUp("return"))
         { 
 			if(state == READY)
 			{
-				// Show chat
-
-			}
+                // Show chat
+                state = CHAT;
+                getChat().enterPressed();
+            }else if (state == CHAT)
+            {
+                getChat().enterPressed();
+                state = READY;
+            }
         }
         // Spell input
 
-        // Chat input
 
-        // Menu input
-
-        // Character input
-
-        // Talent input
-
-        if (Input.GetKeyDown("t"))
+        // TODO : cant use toggle need to check each
+        if (state != CHAT)
         {
-			getTalents ().toggleTalents();
-        }
+            // Character input
+            if (Input.GetKeyDown("c"))
+            {
+                if (getCharacter().IsVisible())
+                {
+                    state = READY;
+                }
+                else
+                {
+                    state = CHARACTER;
+                }
+                getCharacter().Toggle();
 
-        if (Input.GetKeyDown("i"))
-        {
-            getInventory().toggleInventory();
-        }
+            }
 
-        if (Input.GetKeyUp("n"))
-        {
-            getCommunication().heroHasClickedPortal(getCommunication().getHeroId());
-        }
+            // Talent input
+            if (Input.GetKeyDown("t"))
+            {
+                Debug.Log("T is pressed and talent window is visible: " + getTalents().IsVisible());
+                if (getTalents().IsVisible())
+                {
+                    state = READY;
+                    Debug.Log("Hiding menu");
+                    getTalents().Hide();
+                }
+                else
+                {
+                    state = TALENTS;
+                    getTalents().Show();
+                }
+            }
 
+            // Inventory
+            if (Input.GetKeyDown("i"))
+            {
+                if (getInventory().IsVisible())
+                {
+                    state = READY;
+                }
+                else
+                {
+                    state = INVENTORY;
+                }
+                getInventory().toggleInventory();
+            }
+
+            // Spells
+            if (Input.GetKeyDown("p"))
+            {
+                if (getSpells().IsVisible())
+                {
+                    state = READY;
+                }
+                else
+                {
+                    state = SPELLS;
+                }
+                getSpells().ToggleSpellBook();
+            }
+
+            // Next level
+            if (Input.GetKeyUp("n"))
+            {
+                getCommunication().heroHasClickedPortal(getCommunication().getHeroId());
+            }
+
+        }
         // Targeting system
         if (Input.GetKeyDown(KeyCode.F1))
         {
@@ -80,14 +155,16 @@ public class KeyboardInput : MonoBehaviour {
     }
 
 
-
-
     TargetingByFKeys getTargetingByFKeys()
     {
         return ((TargetingByFKeys)GameObject.Find("GameLogicObject").GetComponent(typeof(TargetingByFKeys)));
     }
 
-	Talents getTalents()
+    InGameMenu getMenu()
+    {
+        return ((InGameMenu)GameObject.Find("GameLogicObject").GetComponent(typeof(InGameMenu)));
+    }
+    Talents getTalents()
 	{
 		return ((Talents)GameObject.Find("TalentsIcons").GetComponent(typeof(Talents)));
 	}
@@ -95,6 +172,21 @@ public class KeyboardInput : MonoBehaviour {
     InventoryScript getInventory()
     {
         return ((InventoryScript)GameObject.Find("Window (Inventory)").GetComponent(typeof(InventoryScript)));
+    }
+
+    CharacterMenu getCharacter()
+    {
+        return ((CharacterMenu)GameObject.Find("Window (Character)").GetComponent(typeof(CharacterMenu)));
+    }
+
+    HideAndShowSpellBook getSpells()
+    {
+        return ((HideAndShowSpellBook)GameObject.Find("Window (Spell Book)").GetComponent(typeof(HideAndShowSpellBook)));
+    }
+
+    Chat getChat()
+    {
+        return ((Chat)GameObject.Find("GameLogicObject").GetComponent(typeof(Chat)));
     }
 
     ServerCommunication getCommunication()

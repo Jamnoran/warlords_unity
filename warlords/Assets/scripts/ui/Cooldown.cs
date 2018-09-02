@@ -20,12 +20,10 @@ public class Cooldown : MonoBehaviour
         long currentMillis = DeviceUtil.getMillis();
         long timeOffCd = long.Parse(timeOfCooldown);
         long timeUntillOffCd = (timeOffCd - currentMillis);
-        Debug.Log("Millis left until of cd: " + timeUntillOffCd + " Position of ability : " + position);
         float timeUntillOfCdInFloat = (timeUntillOffCd / 1000);
         GameObject cooldownObject = GameObject.Find("Slot " + position);
         Transform cd = cooldownObject.transform.Find("Cooldown");
         UISlotCooldown cooldownScript = ((UISlotCooldown)cd.GetComponent(typeof(UISlotCooldown)));
-        Debug.Log("Children : " + cd.name);
         cooldownScript.StartCooldown(abilityId, timeUntillOfCdInFloat);
     }
 }

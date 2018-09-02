@@ -33,7 +33,7 @@ public class SpellShadow : MonoBehaviour
                 {
                     if ((abilities.Count > i - 1) && abilities[i] != null)
                     {
-                        Sprite abilitySprite = Resources.Load<Sprite>("sprites/items/" + abilities[i].image);
+                        Sprite abilitySprite = Resources.Load<Sprite>("Spells/" + abilities[i].image);
                         this.GetComponent<Image>().sprite = abilitySprite;
                         var tmp = this.GetComponent<Image>().color;
                         tmp.a = 0.5f;

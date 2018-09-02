@@ -115,7 +115,7 @@ public class LobbyCommunication : MonoBehaviour {
 
     public void sendUpdateUsername(string newUsername)
     {
-        sendRequest(new RequestUpdateUsername(newUsername));
+        sendRequest(new RequestUpdateUsername(newUsername, userId));
     }
 
     public void getUsernameRequest()

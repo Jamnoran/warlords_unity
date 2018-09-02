@@ -18,7 +18,7 @@ namespace Assets.scripts.util {
             item.Type = "Sword";
             item.ItemType = (int)UIEquipmentType.Weapon_MainHand;
             item.Subtype = "One handed";
-            item.Icon = Resources.Load<Sprite>("sprites/items/" + updatedItem.image);
+            item.Icon = Resources.Load<Sprite>("Spells/" + updatedItem.image);
             item.EquipType = UIEquipmentType.Weapon_MainHand;
             return item;
         }

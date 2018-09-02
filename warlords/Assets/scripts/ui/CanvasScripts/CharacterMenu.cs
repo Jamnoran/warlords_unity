@@ -14,19 +14,35 @@ public class CharacterMenu : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown("c") && !getChat().IsInputFieldFocused())
+    }
+
+    public void Toggle()
+    {
+        if (getUIWindow().IsVisible)
         {
-            //Debug.Log("Showing character");
-            if (getUIWindow().IsVisible)
-            {
-                getUIWindow().Hide();
-            }
-            else
-            {
-                getUIWindow().Show();
-                updateInfo(true);
-            }
+            getUIWindow().Hide();
         }
+        else
+        {
+            getUIWindow().Show();
+            updateInfo(true);
+        }
+    }
+
+    public bool IsVisible()
+    {
+        return getUIWindow().IsVisible;
+    }
+
+    public void Show()
+    {
+        getUIWindow().Show();
+        updateInfo(true);
+    }
+
+    public void Hide()
+    {
+        getUIWindow().Hide();
     }
 
     public void updateInfo(bool setSlots)

@@ -1,4 +1,6 @@
-﻿using Assets.scripts.vo;
+﻿using Assets.scripts.util;
+using Assets.scripts.vo;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,11 +16,13 @@ public class Chat : MonoBehaviour {
     [SerializeField] private Color warlockColor = Color.white;
     [SerializeField] private Color rogueColor = Color.white;
 
-
     public InputField inputField;
     private bool historyVisible = false;
     
     private List<Message> historyList = new List<Message>();
+
+    private long lastTimeActivated = 0;
+    public long windowActiveTime = 2000;
 
     // Use this for initialization
     void Start() {
@@ -27,22 +31,37 @@ public class Chat : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyUp("enter") || Input.GetKeyUp("return")) {
-            if (!IsInputFieldFocused()) {
-                EventSystem.current.SetSelectedGameObject(inputField.gameObject, null);
-                inputField.OnPointerClick(new PointerEventData(EventSystem.current));
-                inputField.placeholder.GetComponent<Text>().text = "";
-                Debug.Log("Enter pressed and input field is selected");
-            } else {
-                //TODO: If we got user name here send it!
-                sendMessageInField();
-            }
-        }
-        if (Input.GetKeyDown("escape") && IsInputFieldFocused())
+        
+        if ((lastTimeActivated + windowActiveTime) <= DeviceUtil.getMillis())
         {
-        //    I have not gotten this to work yet since this will get everyother scripts checking if its focused to give false positive
+            m_Chat.transform.gameObject.SetActive(false);
+        }
+    }
+
+    public void escPressed()
+    {
+        if (IsInputFieldFocused())
+        {
+            //    I have not gotten this to work yet since this will get everyother scripts checking if its focused to give false positive
             inputField.text = "";
             EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
+    public void enterPressed()
+    {
+        lastTimeActivated = DeviceUtil.getMillis();
+        m_Chat.transform.gameObject.SetActive(true);
+        if (!IsInputFieldFocused())
+        {
+            EventSystem.current.SetSelectedGameObject(inputField.gameObject, null);
+            inputField.OnPointerClick(new PointerEventData(EventSystem.current));
+            inputField.placeholder.GetComponent<Text>().text = "";
+            Debug.Log("Enter pressed and input field is selected");
+        }
+        else
+        {
+            sendMessageInField();
         }
     }
 
@@ -96,6 +115,8 @@ public class Chat : MonoBehaviour {
     public void addMessage(Message message) {
         historyList.Add(message);
         this.m_Chat.ReceiveChatMessage(1, "<color=#" + CommonColorBuffer.ColorToString(getClassColor(message.sender)) + "><b>" + message.sender + "</b></color><color=#59524bff>:</color> " + message.message);
+        lastTimeActivated = DeviceUtil.getMillis();
+        m_Chat.transform.gameObject.SetActive(true);
     }
 
     GameLogic getGameLogic()

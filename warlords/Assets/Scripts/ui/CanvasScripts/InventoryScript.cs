@@ -129,13 +129,17 @@ public class InventoryScript : MonoBehaviour {
             Debug.Log("Items in inventory: " + itemDatabase.items.Length);
             updateItems();
         }
-	}
+    }
 
-	public void showInventory(){
+    public bool IsVisible()
+    {
+        return getUIWindow().IsVisible;
+    }
+    public void Show(){
 		getUIWindow ().Show ();
 	}
 
-	public void hideInventory(){
+	public void Hide(){
 		getUIWindow ().Hide ();
 
         // Send this up to server
