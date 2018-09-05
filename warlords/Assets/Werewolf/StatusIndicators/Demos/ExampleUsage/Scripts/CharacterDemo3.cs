@@ -14,6 +14,7 @@ namespace Werewolf.StatusIndicators.Demo {
 
         void Update() {
       if (Input.GetMouseButtonDown(0)) {
+                getTargets();
         Splats.CancelSpellIndicator();
         Splats.CancelRangeIndicator();
         Splats.CancelStatusIndicator();
@@ -37,5 +38,11 @@ namespace Werewolf.StatusIndicators.Demo {
         Splats.SelectRangeIndicator("Range");
       }
     }
+
+        void getTargets()
+        {
+            //Debug.Log("Trying to find targets inside targeting system");
+
+        }
   }
 }

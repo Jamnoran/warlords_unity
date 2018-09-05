@@ -2,13 +2,16 @@
 using System.Collections;
 using System.Linq;
 using Werewolf.StatusIndicators.Services;
+using System.Collections.Generic;
 
 namespace Werewolf.StatusIndicators.Components {
 	public class Cone : SpellIndicator {
 
-		// Constants
+        public List<GameObject> collectionList = new List<GameObject>();
 
-		public const float CONE_ANIM_SPEED = 0.15f;
+        // Constants
+
+        public const float CONE_ANIM_SPEED = 0.15f;
 
 		// Fields
 
@@ -31,11 +34,10 @@ namespace Werewolf.StatusIndicators.Components {
 		}
 
         // Methods
-
-
         private void OnCollisionEnter(Collision collision)
         {
             Debug.Log("collision detected");
+            collectionList.Add(collision.gameObject);
         }
 
         public override void Update() {

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Werewolf.StatusIndicators.Components;
 
 public class KeyboardInput : MonoBehaviour {
 
@@ -62,12 +63,27 @@ public class KeyboardInput : MonoBehaviour {
                 state = READY;
             }
         }
-        // Spell input
-
 
         // TODO : cant use toggle need to check each
         if (state != CHAT)
         {
+            // Combat actions
+            if (Input.GetKeyUp("a"))
+            {
+                bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
+                Debug.Log("Hero is now attacking : " + !autoAttacking);
+                getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
+            }
+
+            if (Input.GetKeyUp("s"))
+            {
+                Debug.Log("Send stop");
+                getGameLogic().stopHero(getGameLogic().getMyHero().id);
+            }
+
+            // Spell input
+
+
             // Character input
             if (Input.GetKeyDown("c"))
             {
@@ -152,7 +168,78 @@ public class KeyboardInput : MonoBehaviour {
         {
             getTargetingByFKeys().setTarget(3);
         }
+
+        // For targeting system (cone/aoe/etc)
+        //GetInputForSpells();
     }
+
+
+
+
+
+
+
+    public SplatManager splats { get; set; }
+
+    public void setUpSplats(Transform transform)
+    {
+        // Only works for warlocks so far
+        splats = transform.GetComponentInChildren<SplatManager>();
+    }
+
+    void GetInputForSpells()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Confirming with left mouse, time to find target");
+            splats.CancelSpellIndicator();
+            splats.CancelRangeIndicator();
+            splats.CancelStatusIndicator();
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("Canceling with right mouse");
+            splats.CancelSpellIndicator();
+            splats.CancelRangeIndicator();
+            splats.CancelStatusIndicator();
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            splats.SelectSpellIndicator("Point");
+        }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            splats.SelectSpellIndicator("Cone");
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            splats.SelectSpellIndicator("Direction");
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            splats.SelectSpellIndicator("Line");
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            splats.SelectStatusIndicator("Status");
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            splats.SelectRangeIndicator("Range");
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     TargetingByFKeys getTargetingByFKeys()
@@ -193,4 +280,10 @@ public class KeyboardInput : MonoBehaviour {
     {
         return ((ServerCommunication)GameObject.Find("Communication").GetComponent(typeof(ServerCommunication)));
     }
+
+    GameLogic getGameLogic()
+    {
+        return ((GameLogic)GameObject.Find("GameLogicObject").GetComponent(typeof(GameLogic)));
+    }
+
 }

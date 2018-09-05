@@ -38,16 +38,6 @@ public class clickToMove : MonoBehaviour {
                 //where did the player click?
                 movePlayer();
             }
-            if (isMyHero && Input.GetKeyUp("a"))
-            {
-                bool autoAttacking = getGameLogic().getMyHero().getAutoAttacking();
-                Debug.Log("Hero is now attacking : " + !autoAttacking);
-                getGameLogic().getMyHero().setAutoAttacking(!autoAttacking);
-            }else if (isMyHero && Input.GetKeyUp("s"))
-            {
-                Debug.Log("Send stop");
-                getGameLogic().stopHero(hero.id);
-            }
 
             // Check if hero wants to auto attack
             if (isMyHero) {

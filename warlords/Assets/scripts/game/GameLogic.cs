@@ -379,7 +379,9 @@ public class GameLogic : MonoBehaviour
         }
         else
         {
-            anim.rotateToTarget(getMinion(responseRotateTarget.getIdOfTarget()).getTransformPosition());
+            //anim.rotateToTarget(getMinion(responseRotateTarget.getIdOfTarget()).getTransformPosition());
+            Debug.Log("Rotate to transform");
+            anim.rotateToTransform(getMinion(responseRotateTarget.getIdOfTarget()).minionTransform);
         }
     }
 
@@ -459,6 +461,7 @@ public class GameLogic : MonoBehaviour
             Debug.Log("Setting hero id: " + newHero.id + " To my own hero");
             ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).isMyHero = true;
             newHero.updateHealthBar(true);
+            getKeyboardInput().setUpSplats(heroTransform);
         }
         ((clickToMove)heroTransform.GetComponent(typeof(clickToMove))).heroId = newHero.id;
 
@@ -968,4 +971,10 @@ public class GameLogic : MonoBehaviour
     {
         return ((LoadingHandler)GameObject.Find("GameLogicObject").GetComponent(typeof(LoadingHandler)));
     }
+
+    KeyboardInput getKeyboardInput()
+    {
+        return ((KeyboardInput)GameObject.Find("GameLogicObject").GetComponent(typeof(KeyboardInput)));
+    }
+
 }

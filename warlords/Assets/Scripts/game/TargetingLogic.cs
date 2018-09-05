@@ -10,11 +10,14 @@ public class TargetingLogic : MonoBehaviour {
     public GameObject activeSpellPrefab;
     private Ability abilityToWaitForMoreInput;
     private float gizmoRadius;
-    private Transform gizmoTransform;
+    //private Transform gizmoTransform;
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(gizmoTransform.position, gizmoRadius);
+        //Gizmos.color = Color.yellow;
+        //if (gizmoTransform != null)
+        //{
+        //    Gizmos.DrawWireSphere(gizmoTransform.position, gizmoRadius);
+        //}
     }
 
 
@@ -73,8 +76,8 @@ public class TargetingLogic : MonoBehaviour {
         }
         else if (abi.targetType == "CONE")
         {
-            gizmoRadius = abi.range;
-            gizmoTransform = hero.trans;
+            //gizmoRadius = abi.range;
+            //gizmoTransform = hero.trans;
 
             Collider[] hitColliders = Physics.OverlapSphere(GameObject.Find("Warrior").transform.position, abi.range);
 
