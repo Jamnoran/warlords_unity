@@ -14,8 +14,9 @@ public class RequestSpell {
     public float target_position_z;
     public float target_position_y;
     public long time;
+    public bool initial_cast;
 
-    public RequestSpell(int hId, int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3, long t)
+    public RequestSpell(int hId, int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3, long t, bool initialCast)
     {
         setRequestType("SPELL");
         hero_id = hId;
@@ -26,6 +27,7 @@ public class RequestSpell {
         target_position_z = vector3.z;
         target_position_y = vector3.y;
         time = t;
+        initial_cast = initialCast;
 	}
 
 	public void setRequestType(String requestType) {

@@ -101,10 +101,15 @@ public class ServerCommunication : MonoBehaviour {
         sendRequest(new RequestStopHero(heroId));
     }
 
-	public void sendSpell(int heroId, int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3) {
+    public void sendSpell(int heroId, int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3)
+    {
+        sendSpell(heroId, spellId, targetEnemy, targetFriendly, vector3, false);
+    }
+
+    public void sendSpell(int heroId, int spellId, List<int> targetEnemy, List<int> targetFriendly, Vector3 vector3, bool initialCast) {
         var time = DeviceUtil.getMillis();
         Debug.Log("Sending spell request spell id: " + spellId + " At time: " + time);
-		sendRequest(new RequestSpell(heroId, spellId, targetEnemy, targetFriendly, vector3, time));
+		sendRequest(new RequestSpell(heroId, spellId, targetEnemy, targetFriendly, vector3, time, initialCast));
     }
 
     public void sendMinionAggro(int minionId, int heroId) {

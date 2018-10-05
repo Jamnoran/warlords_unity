@@ -248,5 +248,15 @@ namespace Assets.scripts.vo
         {
             return ((NotificationHandler)GameObject.Find("GameLogicObject").GetComponent(typeof(NotificationHandler)));
         }
+
+        public Quaternion getRotation()
+        {
+            return trans.Find("3dmodel").transform.rotation;
+        }
+
+        public Vector3 getPosition()
+        {
+            return trans.Find("3dmodel").transform.position;
+        }
     }
 }

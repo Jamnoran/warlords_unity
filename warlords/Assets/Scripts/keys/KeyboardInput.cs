@@ -17,6 +17,7 @@ public class KeyboardInput : MonoBehaviour {
     public static int TALENTS = 7;
     public static int SPELLS = 8;
 
+    public GameObject prefabEffect;
 
     // Use this for initialization
     void Start () {
@@ -82,7 +83,10 @@ public class KeyboardInput : MonoBehaviour {
             }
 
             // Spell input
-
+            if (Input.GetKeyDown("b"))
+            {
+                Instantiate(prefabEffect, new Vector3(0,0,0), prefabEffect.transform.rotation);
+            }
 
             // Character input
             if (Input.GetKeyDown("c"))

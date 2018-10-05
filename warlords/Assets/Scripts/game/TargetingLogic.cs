@@ -27,6 +27,8 @@ public class TargetingLogic : MonoBehaviour {
         List<int> enemies = new List<int>();
         List<int> friends = new List<int>();
         FieldOfViewAbility fieldOfViewAbility = hero.trans.GetComponent<FieldOfViewAbility>();
+        bool sendMousePosition = false;
+        bool initialCast = false;
 
         // TODO: Need to check range of abilities else give error message
 
@@ -66,49 +68,52 @@ public class TargetingLogic : MonoBehaviour {
         }
         else if (abi.targetType == "AOE")
         {
-            List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, abi.range, false);
-            if (enemiesInRange != null && enemiesInRange.Count > 0)
-            {
-                enemies = enemiesInRange;
-            } else {
-                return false;
-            }
+            //List<int> enemiesInRange = fieldOfViewAbility.FindVisibleTargets(360f, abi.range, false);
+            //if (enemiesInRange != null && enemiesInRange.Count > 0)
+            //{
+            //    enemies = enemiesInRange;
+            //} else {
+            //    return false;
+            //}
+            Debug.Log("Sending AOE ability");
         }
         else if (abi.targetType == "CONE")
         {
-            //gizmoRadius = abi.range;
-            //gizmoTransform = hero.trans;
-
-            Collider[] hitColliders = Physics.OverlapSphere(GameObject.Find("Warrior").transform.position, abi.range);
-
-            foreach (var collider in hitColliders)
-            {
-                if (collider.tag == "Enemy")
-                {
-                    var heroTransform = hero.trans;
-                    Vector3 enemyRelativePosition = heroTransform.InverseTransformPoint(collider.transform.position);
-
-                    if (enemyRelativePosition.z > 0)
-                    {
-                        Minion min = getGameLogic().getClosestMinionByPosition(collider.transform.position);
-                        enemies.Add(min.id);
-                    }
-                }
-
-            }
-
-            enemies.ForEach(x => Debug.LogError("enemy id's: " + x));
+            sendMousePosition = true;
+            initialCast = true;
+            Debug.Log("Sending CONE Ability (no need for targets?)");
         }
         else
         {
             enemies.Add(hero.targetEnemy);
             friends.Add(hero.targetFriendly);
         }
-        getGameLogic().sendSpell(abi.id, enemies, friends);
+        if(sendMousePosition)
+        {
+            getGameLogic().sendSpell(abi.id, enemies, friends, getMousePosition(), initialCast);
+        }
+        else
+        {
+            getGameLogic().sendSpell(abi.id, enemies, friends);
+        }
+        
         return true;
     }
 
+    private Vector3 getMousePosition()
+    {
+            RaycastHit hit;
+            //cast a ray from our camera onto the ground to get our desired position
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+            //if we hit our ray, save the information to our "hit" variable
+            if (Physics.Raycast(ray, out hit, 10000))
+            {
+                //update our desired position with the coordinates clicked
+                return new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            }
+        return new Vector3(0,0,0);
+    }
 
     private void handleInput()
     {

@@ -8,6 +8,7 @@ public class TestProjectile : MonoBehaviour {
     public GameObject spawnPoint;
     public GameObject target;
     public float timeToTarget = 1.0f;
+    public GameObject spellPrefab;
 
     // Use this for initialization
     void Start () {
@@ -26,6 +27,14 @@ public class TestProjectile : MonoBehaviour {
             projectileScript.setTarget(target);
             projectileScript.timeToReachGoal = timeToTarget;
             projectileScript.source = spawnPoint;
+        }
+        if (Input.GetKeyDown("c"))
+        {
+            GameObject spell = Instantiate(spellPrefab, spawnPoint.transform.position, Quaternion.identity);
+            //GameObject spell = Instantiate(spellPrefab, target.transform.position, Quaternion.identity);
+            FollowGameObject followGameOjbect = ((FollowGameObject)spell.GetComponent(typeof(FollowGameObject)));
+            //followGameOjbect.setObjectToLookAt(target.transform);
+            //followGameOjbect.setObjectToFollow(target.transform);
         }
 	}
 }

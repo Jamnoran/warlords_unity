@@ -26,10 +26,19 @@ public class GameLogic : MonoBehaviour
     public Transform warlock;
 
     // Animation Effects
+    // Priest
     public Transform healAnimation;
+    public Transform smiteAnimation;
+    public Transform shieldAnimation;
+    // Warrior
     public Transform tauntAnimation;
     public Transform cleaveAnimation;
-    public Transform shieldAnimation;
+    // Warlock
+    public Transform drainAnimation;
+    public Transform hemmorageAnimation;
+    public Transform restoreAnimation;
+    public Transform bloodBoltAnimation;
+    public Transform rainOfDeathAnimation;
 
     private List<Ability> abilities = null;
     public List<Item> heroItems = new List<Item>();
@@ -58,6 +67,9 @@ public class GameLogic : MonoBehaviour
 		if (getGenerator() != null) {
 			getGenerator().setReady (true);
 		}
+
+        GameSettings settings = new GameSettings();
+        settings.loadAllSettings();
     }
 
     // Update is called once per frame
@@ -381,7 +393,9 @@ public class GameLogic : MonoBehaviour
         {
             //anim.rotateToTarget(getMinion(responseRotateTarget.getIdOfTarget()).getTransformPosition());
             Debug.Log("Rotate to transform");
-            anim.rotateToTransform(getMinion(responseRotateTarget.getIdOfTarget()).minionTransform);
+            if(anim != null && responseRotateTarget != null && getMinion(responseRotateTarget.getIdOfTarget()) != null){
+                anim.rotateToTransform(getMinion(responseRotateTarget.getIdOfTarget()).minionTransform);
+            }
         }
     }
 
@@ -544,45 +558,128 @@ public class GameLogic : MonoBehaviour
                 }
             }
 
-
-            // SPELLS
-            // TODO: Update if hero has animation as well
-            if (gameAnimation.animation_type == "HEAL") {
-                Debug.Log("Heal animation");
-                Hero target = getHero(gameAnimation.target_id);
-                Transform healAn = Instantiate(healAnimation, new Vector3(target.positionX, target.positionY, target.positionZ), Quaternion.identity);
-                FollowGameObject anim = (FollowGameObject)healAn.GetComponent(typeof(FollowGameObject));
-                anim.objectToFollow = target.trans;
-            }
-            if (gameAnimation.animation_type == "TAUNT") {
-                Debug.Log("Taunt animation");
-                Hero source = getHero(gameAnimation.source_id);
-                Instantiate(tauntAnimation, new Vector3(source.positionX, source.positionY, source.positionZ), Quaternion.identity);
-            }
-            if (gameAnimation.animation_type == "DRAIN")
-            {
-                Debug.Log("Drain life animation");
-                Hero source = getHero(gameAnimation.source_id);
-                CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
-                anim.spellAnimation(gameAnimation.spellAnimationId);
-            }
-            if (gameAnimation.animation_type == "SMITE")
-            {
-                Debug.Log("Smite animation");
-                Hero source = getHero(gameAnimation.source_id);
-                CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
-                anim.spellAnimation(gameAnimation.spellAnimationId);
-            }
-            if (gameAnimation.animation_type == "CLEAVE")
-            {
-                Debug.Log("Cleave animation");
-                Hero source = getHero(gameAnimation.source_id);
-                Instantiate(cleaveAnimation, new Vector3(source.positionX, source.positionY, source.positionZ), Quaternion.identity);
-            }
+            handleAnimation(gameAnimation);
         }
     }
 
-    
+    private void handleAnimation(GameAnimation gameAnimation)
+    {
+        //Debug.Log("Got animation " + gameAnimation.animation_type);
+        Hero source = getHero(gameAnimation.source_id);
+        //handleSpellPositioningAndRotation(Transform prefab, GameAnimation gameAnimation, bool followTarget, bool lookAt, bool spawnSource, bool friendly)
+        // Priest
+        if (gameAnimation.animation_type == "HEAL")
+        {
+            Debug.Log("Heal animation");
+            handleSpellPositioningAndRotation(healAnimation, gameAnimation, true, true,true,true, false);
+        }
+        if (gameAnimation.animation_type == "SMITE")
+        {
+            Debug.Log("Smite animation");
+            CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
+            anim.spellAnimation(gameAnimation.spellAnimationId);
+        }
+        else if (gameAnimation.animation_type == "SMITE_CAST")
+        {
+            Debug.Log("Smite cast animation");
+            handleSpellPositioningAndRotation(smiteAnimation, gameAnimation, true, true, true, false, false);
+        }
+
+        // Warrior
+        if (gameAnimation.animation_type == "TAUNT")
+        {
+            Debug.Log("Taunt animation");
+            Transform animationTransform = handleSpellPositioningAndRotation(tauntAnimation, gameAnimation, true, false, true, false, true);
+            SpellCollissionListener listener = animationTransform.GetComponentInChildren<SpellCollissionListener>();
+            listener.setAbility(getAbilityByAbilityName(gameAnimation.animation_type));
+        }
+        if (gameAnimation.animation_type == "CLEAVE")
+        {
+            Debug.Log("Cleave animation");
+            Transform animationTransform = handleSpellPositioningAndRotation(cleaveAnimation, gameAnimation, true, false, true, false, true);
+            SpellCollissionListener listener = animationTransform.GetComponentInChildren<SpellCollissionListener>();
+            listener.setAbility(getAbilityByAbilityName(gameAnimation.animation_type));
+        }
+
+        // Warlock
+        if (gameAnimation.animation_type == "DRAIN")
+        {
+            Debug.Log("Drain life animation");
+            CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
+            anim.spellAnimation(gameAnimation.spellAnimationId);
+            handleSpellPositioningAndRotation(drainAnimation, gameAnimation, false, true, true, false, false);
+        }
+        if (gameAnimation.animation_type == "BLOOD_BOLT")
+        {
+            Debug.Log("Blood bolt animation");
+            CharacterAnimations anim = (CharacterAnimations)source.trans.GetComponent(typeof(CharacterAnimations));
+            anim.spellAnimation(gameAnimation.spellAnimationId);
+            handleSpellPositioningAndRotation(bloodBoltAnimation, gameAnimation, false, true, true, false, false);
+        }
+        if (gameAnimation.animation_type == "HAEMORRHAGE")
+        {
+            Debug.Log("HAEMORRHAGE animation");
+            handleSpellPositioningAndRotation(hemmorageAnimation, gameAnimation, true, false, false, false, false);
+        }
+        if (gameAnimation.animation_type == "RESTORE")
+        {
+            Debug.Log("Restore animation");
+            handleSpellPositioningAndRotation(restoreAnimation, gameAnimation, false, true, true, true, false);
+        }
+    }
+
+    // prefab: Prefab to animate
+    // gameanimation: request to handle
+    private Transform handleSpellPositioningAndRotation(Transform prefab, GameAnimation gameAnimation, bool followTarget, bool lookAt, bool spawnSource, bool friendly, bool towardsPosition)
+    {
+        Debug.Log("GameAnimation target : " + gameAnimation.target_id + " source: " + gameAnimation.source_id);
+        Transform animationTransform = null;
+        Hero source = getHero(gameAnimation.source_id);
+        Transform target = null;
+        Vector3 targetPos = new Vector3();
+        if (!towardsPosition) {
+            if (friendly)
+            {
+                target = getHero(gameAnimation.target_id).trans;
+                targetPos = getHero(gameAnimation.target_id).getTransformPosition();
+            }
+            else
+            {
+                target = getMinion(gameAnimation.target_id).minionTransform;
+                targetPos = getMinion(gameAnimation.target_id).getTransformPosition();
+            }
+            if (spawnSource)
+            {
+
+                animationTransform = Instantiate(prefab, source.getPosition(), Quaternion.identity);
+            }
+            else if (!spawnSource && !towardsPosition)
+            {
+                animationTransform = Instantiate(prefab, targetPos, Quaternion.identity);
+            }
+        }
+        else
+        {
+            animationTransform = Instantiate(prefab, source.getPosition(), source.getRotation());
+        }
+      
+        FollowGameObject followGameOjbect = ((FollowGameObject)animationTransform.GetComponent(typeof(FollowGameObject)));
+        if (followTarget)
+        {
+            followGameOjbect.setObjectToFollow(target);
+        }
+        if (lookAt)
+        {
+            followGameOjbect.setObjectToLookAt(target);
+        }
+        if (towardsPosition)
+        {
+            Debug.Log("Setting position to Look at");
+            followGameOjbect.setPositionToLookAt(new Vector3(gameAnimation.position_x, gameAnimation.position_y, gameAnimation.position_z));
+        }
+        return animationTransform;
+    }
+
     public void stopHero(int heroId) {
         //Debug.Log("Stopping hero.");
         Hero hero = getHero(heroId);
@@ -676,16 +773,32 @@ public class GameLogic : MonoBehaviour
         return null;
     }
 
-    public void sendSpell(int spellId, List<int> enemies, List<int> friendly) {
+
+    public void sendSpell(int spellId, List<int> enemies, List<int> friendly)
+    {
+        Hero myHero = getMyHero();
+        sendSpell(spellId, enemies, friendly, myHero.getTargetPosition(), true);
+    }
+
+    public void sendSpell(int spellId, List<int> enemies, List<int> friendly, Vector3 targetPosition, bool initialCast)
+    {
         Debug.Log("Send spell " + spellId);
         if (isMyHeroAlive())
         {
             Hero myHero = getMyHero();
             getCommunication().sendStopHero(myHero.id);
-            // TODO: Turn hero towards target (either against aoe/enemy/friendly)
-			getCommunication().sendSpell(myHero.id, spellId, enemies, friendly, myHero.getTargetPosition());
+            if (SpellUtil.getSpell(spellId).initialCast && initialCast)
+            {
+                getCommunication().sendSpell(myHero.id, spellId, enemies, friendly, targetPosition, true);
+            }
+            else
+            {
+                getCommunication().sendSpell(myHero.id, spellId, enemies, friendly, targetPosition);
+            }
+            
         }
     }
+
 
     public List<Ability> getAbilities() {
         return abilities;
@@ -747,7 +860,7 @@ public class GameLogic : MonoBehaviour
     {
         foreach (var ability in abilities)
         {
-            if (ability.image == name)
+            if (ability.image.ToLower() == name.ToLower())
             {
                 return ability;
             }

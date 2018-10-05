@@ -30,6 +30,7 @@ namespace Assets.scripts.vo
         public bool isCasting = false;
         public int resourceCost = 0;
         public float range;
+        public bool initialCast = false;
 
         public bool isReady() {
             if ((timeWhenOffCooldown != null && !timeWhenOffCooldown.Equals("") && (long.Parse(timeWhenOffCooldown) >= DeviceUtil.getMillis()))) {
