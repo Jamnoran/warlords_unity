@@ -509,9 +509,12 @@ public class GameLogic : MonoBehaviour
                 anim.deadAnimation();
                 minion.setAlive(false);
 
+                Transform collider = minion.minionTransform.Find("minion_rigidbody");
+                collider.gameObject.SetActive(false);
+
                 // This is wrong, shouldnt do it while in loop (find out correct way to do it) normally done by an iterator but not sure how to do it in c#
                 //minions.Remove(minion);
-                foreach(Hero hero in heroes)
+                foreach (Hero hero in heroes)
                 {
                     if (minion.id == hero.targetEnemy)
                     {
