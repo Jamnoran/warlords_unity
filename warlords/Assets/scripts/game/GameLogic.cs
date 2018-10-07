@@ -512,6 +512,11 @@ public class GameLogic : MonoBehaviour
                 Transform collider = minion.minionTransform.Find("minion_rigidbody");
                 collider.gameObject.SetActive(false);
 
+                if (getMyHero().targetEnemy == minion.id)
+                {
+                    deselectTarget(minion.id, false);
+                }
+
                 // This is wrong, shouldnt do it while in loop (find out correct way to do it) normally done by an iterator but not sure how to do it in c#
                 //minions.Remove(minion);
                 foreach (Hero hero in heroes)
@@ -744,17 +749,60 @@ public class GameLogic : MonoBehaviour
     public void setHeroTargetEnemy(int minion_id) {
         Hero myHero = getMyHero();
         if (myHero != null) {
+            if (myHero.targetEnemy > 0) {
+                deselectTarget(myHero.targetEnemy, false);
+            }
+
             myHero.targetFriendly = 0;
             myHero.targetEnemy = minion_id;
+            selectTarget(myHero.targetEnemy, false);
         }
     }
+
 
     public void setHeroTargetFriendly(int hero_id) {
         Hero myHero = getMyHero();
         if (myHero != null)
         {
+            if (myHero.targetEnemy > 0)
+            {
+                deselectTarget(myHero.targetFriendly, true);
+            }
             myHero.targetEnemy = 0;
             myHero.targetFriendly = hero_id;
+            selectTarget(myHero.targetFriendly, true);
+        }
+    }
+
+    private void deselectTarget(int targetId, bool friendly)
+    {
+        if (friendly)
+        {
+
+        }
+        else
+        {
+            Minion min = getMinion(targetId);
+            MinionInfo minInfo = min.minionTransform.GetComponent<MinionInfo>();
+            minInfo.setSelected(false);
+        }
+    }
+
+    private void selectTarget(int targetId, bool friendly)
+    {
+        if (targetId > 0)
+        {
+            if (friendly)
+            {
+
+            }
+            else
+            {
+                Minion min = getMinion(targetId);
+                MinionInfo minInfo = min.minionTransform.GetComponent<MinionInfo>();
+                minInfo.setSelected(true);
+            }
+
         }
     }
 

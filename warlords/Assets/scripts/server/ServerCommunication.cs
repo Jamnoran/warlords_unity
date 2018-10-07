@@ -371,7 +371,7 @@ public class ServerCommunication : MonoBehaviour {
 
     public void sendRequest(object request) {
         String reqJson = JsonMapper.ToJson(request);
-        if (reqJson != null && (!reqJson.Contains("UPDATE_MINION_POSITION") && !reqJson.Contains("\"request_type\": \"MOVE\"") && !reqJson.Contains("UPDATE_MINION_POSITION")))
+        if (reqJson != null && (!reqJson.Contains("UPDATE_MINION_POSITION") && !reqJson.Contains("\"request_type\":\"MOVE\"") && !reqJson.Contains("UPDATE_MINION_POSITION")))
         {
             Debug.Log("Sending this request: " + reqJson);
         }
@@ -380,7 +380,7 @@ public class ServerCommunication : MonoBehaviour {
 
     public void writeSocket(string request)
     {
-        if (!request.Contains("\"request_type\": \"MOVE\"") && !request.Contains("\"request_type\": \"MINION_TARGET_IN_RANGE\""))
+        if (!request.Contains("\"request_type\":\"MOVE\"") && !request.Contains("\"request_type\": \"MINION_TARGET_IN_RANGE\""))
         {
             Debug.Log("Sending this request: " + request);
         }

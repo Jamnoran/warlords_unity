@@ -13,8 +13,14 @@ public class MinionInfo : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
 	}
+
+
+    public void setSelected(bool sel)
+    {
+        Transform selectTarget = gameObject.transform.Find("SelectedTarget");
+        selectTarget.gameObject.SetActive(sel);
+    }
 
     public int getMinionId()
     {
