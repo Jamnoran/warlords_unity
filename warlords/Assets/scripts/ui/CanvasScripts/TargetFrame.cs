@@ -37,6 +37,12 @@ public class TargetFrame : MonoBehaviour {
                 Hero heroTarget = getGameLogic().getHero(friendlyTarget);
                 float hpPerc = (float)heroTarget.hp / (float)heroTarget.maxHp;
                 updateInformation(targetFrame, hpPerc, 0.0f, true, heroTarget.class_type);
+                ChangeTargetColor changeTargetColor = ((ChangeTargetColor)GameObject.Find("Unit Frame (Target)").GetComponent(typeof(ChangeTargetColor)));
+                // Base these colors on class
+                changeTargetColor.setColor(ChangeTargetColor.WHITE);
+
+                HeroInfo heroInfo = heroTarget.trans.GetComponent<HeroInfo>();
+                heroInfo.setSelected(true);
             }
             else
             {
@@ -45,15 +51,28 @@ public class TargetFrame : MonoBehaviour {
                 {
                     Minion minion = getGameLogic().getMinion(targetEnemy);
                     float hpPerc = (float)minion.hp / (float)minion.maxHp;
+
+                    MinionInfo minInfo = minion.minionTransform.GetComponent<MinionInfo>();
+                    minInfo.setSelected(true);
+
                     updateInformation(targetFrame, hpPerc, 0.0f, false, "" + minion.minionType);
+
+                    ChangeTargetColor changeTargetColor = ((ChangeTargetColor)GameObject.Find("Unit Frame (Target)").GetComponent(typeof(ChangeTargetColor)));
+                    changeTargetColor.setColor(ChangeTargetColor.RED);
                 }
                 else
                 {
-                    targetFrame.SetActive(false);
+                    if (targetFrame.active)
+                    {
+                        ChangeTargetColor changeTargetColor = ((ChangeTargetColor)GameObject.Find("Unit Frame (Target)").GetComponent(typeof(ChangeTargetColor)));
+                        changeTargetColor.clearColor();
+                        targetFrame.SetActive(false);
+                    }
                 }
             }
         }
     }
+
 
     private void updateInformation(GameObject frame, float hp, float resource, bool friendly, string classType)
     {
@@ -61,6 +80,8 @@ public class TargetFrame : MonoBehaviour {
         frame.transform.Find("Red Border").gameObject.SetActive(!friendly);
         frame.transform.Find("HP Bar").GetComponent<UIProgressBar>().fillAmount = hp;
         setTextDescription(frame.transform.Find("HP Bar/Text").GetComponent<Text>(), hp);
+
+
     }
 
 

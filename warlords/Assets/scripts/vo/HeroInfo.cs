@@ -24,4 +24,10 @@ public class HeroInfo : MonoBehaviour {
     {
         return heroId;
     }
+
+    public void setSelected(bool sel)
+    {
+        Transform selectTarget = gameObject.transform.Find("SelectedTarget");
+        selectTarget.gameObject.SetActive(sel);
+    }
 }

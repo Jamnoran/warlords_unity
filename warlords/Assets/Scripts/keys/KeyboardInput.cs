@@ -46,7 +46,7 @@ public class KeyboardInput : MonoBehaviour {
             if (state != MENU)
             {
                 getCharacter().Hide();
-                getInventory().Hide();
+                getInventory().CloseInventory();
                 getTalents().Hide();
                 state = READY;
             }
@@ -126,12 +126,14 @@ public class KeyboardInput : MonoBehaviour {
                 if (getInventory().IsVisible())
                 {
                     state = READY;
+                    getInventory().CloseInventory();
                 }
                 else
                 {
                     state = INVENTORY;
+                    getInventory().OpenInventory();
                 }
-                getInventory().toggleInventory();
+                //getInventory().toggleInventory();
             }
 
             // Spells
@@ -178,6 +180,13 @@ public class KeyboardInput : MonoBehaviour {
     }
 
 
+    public void clearState(int checkState)
+    {
+        if (state == checkState)
+        {
+            state = READY;
+        }
+    }
 
 
 
@@ -260,9 +269,9 @@ public class KeyboardInput : MonoBehaviour {
 		return ((Talents)GameObject.Find("TalentsIcons").GetComponent(typeof(Talents)));
 	}
 
-    InventoryScript getInventory()
+    TestInventory getInventory()
     {
-        return ((InventoryScript)GameObject.Find("Window (Inventory)").GetComponent(typeof(InventoryScript)));
+        return ((TestInventory)GameObject.Find("Window (Inventory)").GetComponent(typeof(TestInventory)));
     }
 
     CharacterMenu getCharacter()

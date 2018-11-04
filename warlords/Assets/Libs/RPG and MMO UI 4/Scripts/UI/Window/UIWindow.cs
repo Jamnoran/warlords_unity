@@ -196,7 +196,15 @@ namespace UnityEngine.UI
 			// Apply starting state
 			if (this.m_CanvasGroup != null)
 			{
-				this.m_CanvasGroup.alpha = (this.m_StartingState == VisualState.Hidden) ? 0f : 1f;
+                try
+                {
+                    this.m_CanvasGroup.alpha = (this.m_StartingState == VisualState.Hidden) ? 0f : 1f;
+                }
+                catch
+                {
+
+                }
+				
 			}
 		}
 #endif

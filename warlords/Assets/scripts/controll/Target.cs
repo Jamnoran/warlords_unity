@@ -18,8 +18,15 @@ public class Target : MonoBehaviour {
     #endregion
     public int layer = 9;
 
+
+    public CursorMode cursorMode = CursorMode.Auto;
+    public Vector2 hotSpot = Vector2.zero;
+    public Texture2D defaultCursor;
+
     void Start() {
         listOfHeroes = getGameLogic().getHeroes();
+
+        Cursor.SetCursor(defaultCursor, hotSpot, cursorMode);
     }
 
 	// Update is called once per frame
@@ -96,7 +103,8 @@ public class Target : MonoBehaviour {
                 float dist = Vector3.Distance(heroPosition, targetPosition);
                 //Debug.Log("Class: " + hero.class_type + " Distance from click [" + targetPosition.x + "x"  + targetPosition.z + "] is: " + dist);
                 if ((dist < closestDistanse) && dist <= MinTargetDistance) {
-                   // print("Hero is closest at a distance at: " + dist);
+                    getGameLogic().setHeroTargetEnemy(0);
+                    // print("Hero is closest at a distance at: " + dist);
                     getGameLogic().setHeroTargetFriendly(hero.id);
                     closestDistanse = dist;
                 }
@@ -107,8 +115,9 @@ public class Target : MonoBehaviour {
         }
 
         if (leftClick) {
-            getGameLogic().setHeroTargetEnemy(0);
             getGameLogic().setHeroTargetFriendly(0);
+            getGameLogic().setHeroTargetEnemy(0);
+            
         }
         return false;
     }

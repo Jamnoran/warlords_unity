@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
 using Assets.scripts.util;
+using UnityEngine.UI;
 
 public class GameLogic : MonoBehaviour
 {
@@ -341,6 +342,12 @@ public class GameLogic : MonoBehaviour
                     animation.setDesiredLocation(target);
                     Vector3 currentPositionFromServer = new Vector3(newHero.positionX, newHero.positionY + 1.0f, newHero.positionZ);
                     animation.setPositionFromServer(currentPositionFromServer);
+                }
+                else
+                {
+                    // Logic for own hero
+                    // Update xp bar
+                    getXpBar().fillAmount = ((float)hero.xp / (float)hero.xpForLevel);
                 }
                 hero.positionX = newHero.positionX;
                 hero.positionZ = newHero.positionZ;
@@ -746,21 +753,26 @@ public class GameLogic : MonoBehaviour
         return heroesWithoutSelf;
     }
 
-    public void setHeroTargetEnemy(int minion_id) {
+    public void setHeroTargetEnemy(int minionId) {
         Hero myHero = getMyHero();
         if (myHero != null) {
             if (myHero.targetEnemy > 0) {
                 deselectTarget(myHero.targetEnemy, false);
             }
-
-            myHero.targetFriendly = 0;
-            myHero.targetEnemy = minion_id;
-            selectTarget(myHero.targetEnemy, false);
+            if (myHero.targetFriendly > 0)
+            {
+                deselectTarget(myHero.targetFriendly, true);
+            }
+            if (minionId > 0)
+            {
+                myHero.targetFriendly = 0;
+            }
+            myHero.targetEnemy = minionId;
         }
     }
 
 
-    public void setHeroTargetFriendly(int hero_id) {
+    public void setHeroTargetFriendly(int heroId) {
         Hero myHero = getMyHero();
         if (myHero != null)
         {
@@ -768,9 +780,15 @@ public class GameLogic : MonoBehaviour
             {
                 deselectTarget(myHero.targetFriendly, true);
             }
-            myHero.targetEnemy = 0;
-            myHero.targetFriendly = hero_id;
-            selectTarget(myHero.targetFriendly, true);
+            if (myHero.targetFriendly > 0)
+            {
+                deselectTarget(myHero.targetFriendly, true);
+            }
+            if (heroId > 0)
+            {
+                myHero.targetEnemy = 0;
+            }
+            myHero.targetFriendly = heroId;
         }
     }
 
@@ -778,31 +796,20 @@ public class GameLogic : MonoBehaviour
     {
         if (friendly)
         {
-
+            Hero hero = getHero(targetId);
+            if (hero != null)
+            {
+                HeroInfo heroInfo = hero.trans.GetComponent<HeroInfo>();
+                heroInfo.setSelected(false);
+            }
         }
         else
         {
             Minion min = getMinion(targetId);
-            MinionInfo minInfo = min.minionTransform.GetComponent<MinionInfo>();
-            minInfo.setSelected(false);
-        }
-    }
-
-    private void selectTarget(int targetId, bool friendly)
-    {
-        if (targetId > 0)
-        {
-            if (friendly)
-            {
-
-            }
-            else
-            {
-                Minion min = getMinion(targetId);
+            if (min != null) {
                 MinionInfo minInfo = min.minionTransform.GetComponent<MinionInfo>();
-                minInfo.setSelected(true);
+                minInfo.setSelected(false);
             }
-
         }
     }
 
@@ -1141,4 +1148,10 @@ public class GameLogic : MonoBehaviour
         return ((KeyboardInput)GameObject.Find("GameLogicObject").GetComponent(typeof(KeyboardInput)));
     }
 
+
+    UIProgressBar getXpBar()
+    {
+        GameObject canvas = GameObject.Find("Canvas/Action Bar/XP Bar");
+        return ((UIProgressBar) canvas.GetComponent(typeof(UIProgressBar)));
+    }
 }
