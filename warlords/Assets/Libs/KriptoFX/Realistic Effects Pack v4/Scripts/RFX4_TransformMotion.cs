@@ -133,7 +133,7 @@ public class RFX4_TransformMotion : MonoBehaviour
             var instance = Instantiate(effect, hit.point + hit.normal * CollisionOffset, new Quaternion()) as GameObject;
             CollidedInstances.Add(instance);
             if (HUE > -0.9f)
-            {  
+            {
                 RFX4_ColorHelper.ChangeObjectColorByHUE(instance, HUE);
             }
             instance.transform.LookAt(hit.point + hit.normal + hit.normal * CollisionOffset);

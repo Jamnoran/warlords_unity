@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Werewolf.StatusIndicators.Components;
@@ -91,63 +92,25 @@ public class KeyboardInput : MonoBehaviour {
             // Character input
             if (Input.GetKeyDown("c"))
             {
-                if (getCharacter().IsVisible())
-                {
-                    state = READY;
-                }
-                else
-                {
-                    state = CHARACTER;
-                }
-                getCharacter().Toggle();
-
+                toggleCharacter();
             }
 
             // Talent input
             if (Input.GetKeyDown("t"))
             {
-                Debug.Log("T is pressed and talent window is visible: " + getTalents().IsVisible());
-                if (getTalents().IsVisible())
-                {
-                    state = READY;
-                    Debug.Log("Hiding menu");
-                    getTalents().Hide();
-                }
-                else
-                {
-                    state = TALENTS;
-                    getTalents().Show();
-                }
+                toggleTalents();
             }
 
             // Inventory
             if (Input.GetKeyDown("i"))
             {
-                if (getInventory().IsVisible())
-                {
-                    state = READY;
-                    getInventory().CloseInventory();
-                }
-                else
-                {
-                    state = INVENTORY;
-                    getInventory().OpenInventory();
-                }
-                //getInventory().toggleInventory();
+                toggleInventory();
             }
 
             // Spells
             if (Input.GetKeyDown("p"))
             {
-                if (getSpells().IsVisible())
-                {
-                    state = READY;
-                }
-                else
-                {
-                    state = SPELLS;
-                }
-                getSpells().ToggleSpellBook();
+                toggleSpells();
             }
 
             // Next level
@@ -155,8 +118,8 @@ public class KeyboardInput : MonoBehaviour {
             {
                 getCommunication().heroHasClickedPortal(getCommunication().getHeroId());
             }
-
         }
+
         // Targeting system
         if (Input.GetKeyDown(KeyCode.F1))
         {
@@ -179,6 +142,67 @@ public class KeyboardInput : MonoBehaviour {
         //GetInputForSpells();
     }
 
+    public void toggleInventory()
+    {
+        if (getInventory().IsVisible())
+        {
+            state = READY;
+            getInventory().CloseInventory();
+        }
+        else
+        {
+            state = INVENTORY;
+            getInventory().OpenInventory();
+        }
+    }
+
+    public void toggleMenu()
+    {
+        state = MENU;
+        getMenu().Show();
+    }
+
+    public void toggleCharacter()
+    {
+        if (getCharacter().IsVisible())
+        {
+            state = READY;
+        }
+        else
+        {
+            state = CHARACTER;
+        }
+        getCharacter().Toggle();
+    }
+
+    public void toggleSpells()
+    {
+        if (getSpells().IsVisible())
+        {
+            state = READY;
+        }
+        else
+        {
+            state = SPELLS;
+        }
+        getSpells().ToggleSpellBook();
+    }
+
+    public void toggleTalents()
+    {
+        Debug.Log("T is pressed and talent window is visible: " + getTalents().IsVisible());
+        if (getTalents().IsVisible())
+        {
+            state = READY;
+            Debug.Log("Hiding menu");
+            getTalents().Hide();
+        }
+        else
+        {
+            state = TALENTS;
+            getTalents().Show();
+        }
+    }
 
     public void clearState(int checkState)
     {

@@ -27,9 +27,18 @@ public class CharacterMenu : MonoBehaviour {
 
         GameObject.Find("Character Title Text").GetComponent<Text>().text = hero.class_type;
         GameObject.Find("Stat (HP)/Value Text").GetComponent<Text>().text = "" + hero.maxHp;
-        GameObject.Find("Stat (Level)/Value Text").GetComponent<Text>().text = "" + hero.level;
+        GameObject.Find("Stat (Resource)/Value Text").GetComponent<Text>().text = hero.resource + "/" + hero.maxResource;
+
+        GameObject.Find("Stat (Strength)/Value Text").GetComponent<Text>().text = "" + hero.strength;
+        GameObject.Find("Stat (Stamina)/Value Text").GetComponent<Text>().text = "" + hero.stamina;
+        GameObject.Find("Stat (Dexterity)/Value Text").GetComponent<Text>().text = "" + hero.dexterity;
+        GameObject.Find("Stat (Intelligence)/Value Text").GetComponent<Text>().text = "" + hero.intelligence;
+
         GameObject.Find("Stat (Armor)/Value Text").GetComponent<Text>().text = "" + hero.armor;
-        GameObject.Find("Stat (Energy)/Value Text").GetComponent<Text>().text = hero.resource + "/" + hero.maxResource;
+        GameObject.Find("Stat (Magic Resist)/Value Text").GetComponent<Text>().text = "" + hero.magicResistance;
+
+        GameObject.Find("Stat (Level)/Value Text").GetComponent<Text>().text = "" + hero.level;
+        GameObject.Find("Stat (Experience)/Value Text").GetComponent<Text>().text = "" + hero.xp + "/" + hero.xpForLevel;
     }
 
     public void Toggle()

@@ -597,7 +597,7 @@ public class GameLogic : MonoBehaviour
         else if (gameAnimation.animation_type == "SMITE_CAST")
         {
             Debug.Log("Smite cast animation");
-            handleSpellPositioningAndRotation(smiteAnimation, gameAnimation, true, true, true, false, false);
+            handleSpellPositioningAndRotation(smiteAnimation, gameAnimation, false, true, true, false, false);
         }
 
         // Warrior

@@ -19,22 +19,23 @@ public class FollowGameObject : MonoBehaviour {
 	void Update () {
         if (objectToFollow != null)
         {
+            //Debug.Log("Have object to follow");
             Vector3 positionOfObject = objectToFollow.position;
             positionOfObject.y = positionOfObject.y - 1;
             transform.position = positionOfObject;
         }
         if (objectToLookAt != null)
         {
-            //transform.LookAt(objectToLookAt.transform);
-
+            //Debug.Log("Have object to look at");
             Vector3 rotatingPostition = new Vector3(objectToLookAt.transform.position.x, transform.position.y, objectToLookAt.transform.position.z);
             transform.LookAt(rotatingPostition);
+            //transform.LookAt(objectToLookAt.transform);
         }
-        if(positionToLookAt != null)
+        if (positionToLookAt != null && (positionToLookAt.x != 0 || positionToLookAt.y != 0 || positionToLookAt.z != 0))
         {
+            Debug.Log("Have position to look at");
             transform.LookAt(positionToLookAt);
         }
-
 	}
 
     public void setUp(Transform lookAt, Transform follow, long time)
