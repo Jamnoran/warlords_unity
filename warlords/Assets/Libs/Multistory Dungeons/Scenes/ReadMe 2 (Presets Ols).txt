@@ -1,1 +1,0 @@
-The scene "Presets Old" is obsolete. Please use improved prefabs from Prefabs > TD TILES folder instead.
