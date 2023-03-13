@@ -1,0 +1,22 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\keys\KeyboardInput.cs">
+    <Files>
+      <File FileName="Assets\scripts\server\LobbyCommunication.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\dungen\DunGenerator.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\server\ServerCommunication.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\vo\communication\RequestFindGame.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\vo\communication\ResponseGameFound.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\game\GameLogic.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\keys\TargetingByFKeys.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\keys\KeyboardInput.cs" Line="34" Column="17" />
+      <File FileName="Assets\Scripts\ui\CanvasScripts\Talents.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\game\HordeMode.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\ui\CanvasScripts\NotificationHandler.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
